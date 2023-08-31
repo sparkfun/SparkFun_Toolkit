@@ -1,1 +1,1 @@
-# sfe-core-library
+# SparkFun Toolkit Arduino Library
