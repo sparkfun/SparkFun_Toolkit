@@ -37,7 +37,7 @@ const static uint16_t buffSize = maxI2CBufferLength
 
 // To repeatedly use this bus toolkit, it will need its own namespace
 //namespace sfe_XXX {
-QwI2C::QwI2C(void) : _i2cPort{nullptr}
+SfeI2C::SfeI2C(void) : _i2cPort{nullptr}
 {
 }
 
@@ -46,7 +46,7 @@ QwI2C::QwI2C(void) : _i2cPort{nullptr}
 //
 // Methods to init/setup this device. The caller can provide a Wire Port, or this class
 // will use the default
-bool QwI2C::init(TwoWire &wirePort, bool bInit)
+bool SfeI2C::init(TwoWire &wirePort, bool bInit)
 {
 
     // if we don't have a wire port already
@@ -66,7 +66,7 @@ bool QwI2C::init(TwoWire &wirePort, bool bInit)
 //
 // Methods to init/setup this device. The caller can provide a Wire Port, or this class
 // will use the default
-bool QwI2C::init()
+bool SfeI2C::init()
 {
 		if( !_i2cPort )
 			return init(Wire);
@@ -80,29 +80,29 @@ bool QwI2C::init()
 // ping()
 //
 // Is a device connected?
-bool QwI2C::ping(uint8_t i2c_address)
+bool SfeI2C::ping(uint8_t i2cAddr)
 {
 
     if( !_i2cPort )
         return false;
 
-    _i2cPort->beginTransmission(i2c_address);
+    _i2cPort->beginTransmission(i2cAddr);
     return _i2cPort->endTransmission() == 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // writeRegisterByte()
 //
-// Write a byte to a register
+// Write a byte to a devRegister
 
-bool QwI2C::writeRegisterByte(uint8_t i2c_address, uint8_t offset, uint8_t dataToWrite)
+bool SfeI2C::writeRegisterByte(uint8_t i2cAddr, uint8_t devReg, uint8_t dataToWrite)
 {
 
     if (!_i2cPort)
         return false;
 
-    _i2cPort->beginTransmission(i2c_address);
-    _i2cPort->write(offset);
+    _i2cPort->beginTransmission(i2cAddr);
+    _i2cPort->write(devReg);
     _i2cPort->write(dataToWrite);
     return _i2cPort->endTransmission() == 0;
 }
@@ -114,11 +114,11 @@ bool QwI2C::writeRegisterByte(uint8_t i2c_address, uint8_t offset, uint8_t dataT
 //
 // Write a block of data to a device.
 
-int QwI2C::writeRegisterRegion(uint8_t i2c_address, uint8_t offset, const uint8_t *data, uint16_t length)
+int SfeI2C::writeRegisterRegion(uint8_t i2cAddr, uint8_t devReg, const uint8_t *data, uint16_t length)
 {
 
-    _i2cPort->beginTransmission(i2c_address);
-    _i2cPort->write(offset);
+    _i2cPort->beginTransmission(i2cAddr);
+    _i2cPort->write(devReg);
     _i2cPort->write(data, (int)length);
 
     return _i2cPort->endTransmission() ? -1 : 0; // -1 = error, 0 = success
@@ -127,12 +127,12 @@ int QwI2C::writeRegisterRegion(uint8_t i2c_address, uint8_t offset, const uint8_
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // readRegisterRegion()
 //
-// Reads a block of data from an i2c register on the devices.
+// Reads a block of data from an i2c devRegister on the devices.
 //
 // For large buffers, the data is chuncked over KMaxI2CBufferLength at a time
 //
 //
-int QwI2C::readRegisterRegion(uint8_t addr, uint8_t reg, uint8_t *data, uint16_t numBytes)
+int SfeI2C::readRegisterRegion(uint8_t i2cAddr, uint8_t devReg, uint8_t *data, uint16_t numBytes)
 {
     uint8_t nChunk;
     uint16_t nReturned;
@@ -141,15 +141,15 @@ int QwI2C::readRegisterRegion(uint8_t addr, uint8_t reg, uint8_t *data, uint16_t
         return -1;
 
     int i;                   // counter in loop
-    bool bFirstInter = true; // Flag for first iteration - used to send register
+    bool bFirstInter = true; // Flag for first iteration - used to send devRegister
 
     while (numBytes > 0)
     {
-        _i2cPort->beginTransmission(addr);
+        _i2cPort->beginTransmission(i2cAddr);
 
         if (bFirstInter)
         {
-            _i2cPort->write(reg);
+            _i2cPort->write(devReg);
             bFirstInter = false;
         }
 
@@ -159,7 +159,7 @@ int QwI2C::readRegisterRegion(uint8_t addr, uint8_t reg, uint8_t *data, uint16_t
         // We're chunking in data - keeping the max chunk to kMaxI2CBufferLength
         nChunk = numBytes > buffSize ? buffSize : numBytes;
 
-        nReturned = _i2cPort->requestFrom((int)addr, (int)nChunk, (int)true);
+        nReturned = _i2cPort->requestFrom((int)i2cAddr, (int)nChunk, (int)true);
 
         // No data returned, no dice
         if (nReturned == 0)
@@ -228,7 +228,7 @@ bool SfeSPI::init(uint8_t cs,  bool bInit)
 {
 
     //If the transaction settings are not provided by the user they are built here.
-    SPISettings spiSettings = SPISettings(3000000, MSBFIRST, SPI_MODE3); 
+    SPISettings spiSettings = SPISettings(3000000, MSB_FIRST, SPI_MODE3); 
 
     //In addition of the port is not provided by the user, it defaults to SPI here. 
     return init(SPI, spiSettings, cs, bInit);
@@ -244,7 +244,7 @@ bool SfeSPI::init(uint8_t cs,  bool bInit)
 //
 
 
-bool SfeSPI::ping(uint8_t i2c_address)
+bool SfeSPI::ping(uint8_t i2cAddr)
 {
 	return true;
 }
@@ -252,9 +252,9 @@ bool SfeSPI::ping(uint8_t i2c_address)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // writeRegisterByte()
 //
-// Write a byte to a register
+// Write a byte to a devRegister
 
-bool SfeSPI::writeRegisterByte(uint8_t i2c_address, uint8_t offset, uint8_t dataToWrite)
+bool SfeSPI::writeRegisterByte(uint8_t i2cAddr, uint8_t devReg, uint8_t dataToWrite)
 {
 
     if( !_spiPort )
@@ -265,7 +265,7 @@ bool SfeSPI::writeRegisterByte(uint8_t i2c_address, uint8_t offset, uint8_t data
     // Signal communication start
     digitalWrite(_cs, LOW);
 
-    _spiPort->transfer(offset);
+    _spiPort->transfer(devReg);
     _spiPort->transfer(dataToWrite);
 
     // End communcation
@@ -280,7 +280,7 @@ bool SfeSPI::writeRegisterByte(uint8_t i2c_address, uint8_t offset, uint8_t data
 // writeRegisterRegion()
 //
 // Write a block of data to a device.
-int SfeSPI::writeRegisterRegion(uint8_t i2c_address, uint8_t offset, const uint8_t *data, uint16_t length)
+int SfeSPI::writeRegisterRegion(uint8_t i2cAddr, uint8_t devReg, const uint8_t *data, uint16_t length)
 {
 
     int i;
@@ -289,7 +289,7 @@ int SfeSPI::writeRegisterRegion(uint8_t i2c_address, uint8_t offset, const uint8
     _spiPort->beginTransaction(_sfeSPISettings);
 		// Signal communication start
     digitalWrite(_cs, LOW);
-    _spiPort->transfer(offset);
+    _spiPort->transfer(devReg);
 
     for(i = 0; i < length; i++)
     {
@@ -305,11 +305,11 @@ int SfeSPI::writeRegisterRegion(uint8_t i2c_address, uint8_t offset, const uint8
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // readRegisterRegion()
 //
-// Reads a block of data from the register on the device.
+// Reads a block of data from the devRegister on the device.
 //
 //
 //
-int SfeSPI::readRegisterRegion(uint8_t addr, uint8_t reg, uint8_t *data, uint16_t numBytes)
+int SfeSPI::readRegisterRegion(uint8_t i2cAddr, uint8_t devReg, uint8_t *data, uint16_t numBytes)
 {
     if (!_spiPort)
         return -1;
@@ -320,9 +320,9 @@ int SfeSPI::readRegisterRegion(uint8_t addr, uint8_t reg, uint8_t *data, uint16_
      _spiPort->beginTransaction(_sfeSPISettings);
     // Signal communication start
     digitalWrite(_cs, LOW);
-    // A leading "1" must be added to transfer with register to indicate a "read"
-    reg = (reg | SPI_READ);
-    _spiPort->transfer(reg);
+    // A leading "1" must be added to transfer with devRegister to indicate a "read"
+    devReg = (devReg | SPI_READ);
+    _spiPort->transfer(devReg);
 
     for(i = 0; i < numBytes; i++)
     {

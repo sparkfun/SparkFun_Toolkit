@@ -38,11 +38,11 @@ class QwIDeviceBus
 {
 	public: 
 
-		virtual bool ping(uint8_t address) = 0;
+		virtual bool ping(uint8_t i2cAddr) = 0;
 
-		virtual	bool writeRegisterByte(uint8_t address, uint8_t offset, uint8_t data) = 0;
+		virtual	bool writeRegisterByte(uint8_t i2cAddr, uint8_t devReg, uint8_t data) = 0;
 
-		virtual int writeRegisterRegion(uint8_t address, uint8_t offset, const uint8_t* data, uint16_t length) = 0;
+		virtual int writeRegisterRegion(uint8_t i2cAddr, uint8_t devReg, const uint8_t* data, uint16_t length) = 0;
 
 		virtual int readRegisterRegion(uint8_t addr, uint8_t reg, uint8_t* data, uint16_t numBytes) = 0;
 
@@ -60,11 +60,11 @@ class QwI2C : public QwIDeviceBus
 
 		bool init(TwoWire& wirePort, bool bInit=false);
 
-		bool ping(uint8_t address);
+		bool ping(uint8_t i2cAddr);
 
-		bool writeRegisterByte(uint8_t address, uint8_t offset, uint8_t data);
+		bool writeRegisterByte(uint8_t i2cAddr, uint8_t devReg, uint8_t data);
 
-		int writeRegisterRegion(uint8_t address, uint8_t offset, const uint8_t* data, uint16_t length);
+		int writeRegisterRegion(uint8_t i2cAddr, uint8_t devReg, const uint8_t* data, uint16_t length);
 
 		int readRegisterRegion(uint8_t addr, uint8_t reg, uint8_t* data, uint16_t numBytes);
 
@@ -75,7 +75,7 @@ class QwI2C : public QwIDeviceBus
 
 // The SfeSPI class defines behavior for SPI implementation based around the SPIClass class (SPI).
 // This is Arduino specific. 
-// Paramaters like "address" are kept although irrelevant to SPI due to the use of the abstract class
+// Paramaters like "i2cAddr" are kept although irrelevant to SPI due to the use of the abstract class
 // as interface, QwIDeviceBus.
 class SfeSPI : public QwIDeviceBus
 {
@@ -87,11 +87,11 @@ class SfeSPI : public QwIDeviceBus
 
 		bool init(SPIClass& spiPort, SPISettings& ismSPISettings, uint8_t cs,  bool bInit=false);
 
-		bool ping(uint8_t address);
+		bool ping(uint8_t i2cAddr);
 
-		bool writeRegisterByte(uint8_t address, uint8_t offset, uint8_t data);
+		bool writeRegisterByte(uint8_t i2cAddr, uint8_t devReg, uint8_t data);
 
-		int writeRegisterRegion(uint8_t address, uint8_t offset, const uint8_t* data, uint16_t length);
+		int writeRegisterRegion(uint8_t i2cAddr, uint8_t devReg, const uint8_t* data, uint16_t length);
 
 		int readRegisterRegion(uint8_t addr, uint8_t reg, uint8_t* data, uint16_t numBytes);
 
