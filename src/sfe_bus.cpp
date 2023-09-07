@@ -1,27 +1,28 @@
-// sfe_bus.cpp
-//
-//    The MIT License (MIT)
-//
-//    Copyright (c) 2022 SparkFun Electronics
-//    Permission is hereby granted, free of charge, to any person obtaining a
-//    copy of this software and associated documentation files (the "Software"),
-//    to deal in the Software without restriction, including without limitation
-//    the rights to use, copy, modify, merge, publish, distribute, sublicense,
-//    and/or sell copies of the Software, and to permit persons to whom the
-//    Software is furnished to do so, subject to the following conditions: The
-//    above copyright notice and this permission notice shall be included in all
-//    copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED
-//    "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
-//    NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-//    PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-//    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-//    ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-//    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+sfe_bus.cpp
 
+The MIT License (MIT)
 
-// The following classes specify the behavior for communicating
-// over the respective data buses: Inter-Integrated Circuit (I2C)
-// and Serial Peripheral Interface (SPI). 
+Copyright (c) 2022 SparkFun Electronics
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions: The
+above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED
+"AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+The following classes specify the behavior for communicating
+over the respective data buses: Inter-Integrated Circuit (I2C)
+and Serial Peripheral Interface (SPI).
+*/
 
 #include "sfe_bus.h"
 
@@ -29,15 +30,16 @@
 #define SPI_READ 0x80
 
 // What we use for transfer chunk size
-const static uint16_t buffSize = maxI2CBufferLength
+const static uint16_t buffSize = maxI2CBufferLength;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Constructor
 //
 
 // To repeatedly use this bus toolkit, it will need its own namespace
-//namespace sfe_XXX {
-SfeI2C::SfeI2C(void) : _i2cPort{nullptr}
+// namespace sfe_XXX {
+SfeI2C::SfeI2C(void)
+    : _i2cPort{nullptr}
 {
 }
 
@@ -50,14 +52,14 @@ bool SfeI2C::init(TwoWire &wirePort, bool bInit)
 {
 
     // if we don't have a wire port already
-    if( !_i2cPort )
+    if (!_i2cPort)
     {
         _i2cPort = &wirePort;
 
-        if( bInit )
+        if (bInit)
             _i2cPort->begin();
     }
-		
+
     return true;
 }
 
@@ -68,25 +70,23 @@ bool SfeI2C::init(TwoWire &wirePort, bool bInit)
 // will use the default
 bool SfeI2C::init()
 {
-		if( !_i2cPort )
-			return init(Wire);
-		else
-			return false;
+    if (!_i2cPort)
+        return init(Wire);
+    else
+        return false;
 }
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // ping()
 //
 // Is a device connected?
-bool SfeI2C::ping(uint8_t i2cAddr)
+bool SfeI2C::ping(uint8_t devAddr)
 {
 
-    if( !_i2cPort )
+    if (!_i2cPort)
         return false;
 
-    _i2cPort->beginTransmission(i2cAddr);
+    _i2cPort->beginTransmission(devAddr);
     return _i2cPort->endTransmission() == 0;
 }
 
@@ -95,29 +95,27 @@ bool SfeI2C::ping(uint8_t i2cAddr)
 //
 // Write a byte to a devRegister
 
-bool SfeI2C::writeRegisterByte(uint8_t i2cAddr, uint8_t devReg, uint8_t dataToWrite)
+bool SfeI2C::writeRegisterByte(uint8_t devAddr, uint8_t devReg, uint8_t dataToWrite)
 {
 
     if (!_i2cPort)
         return false;
 
-    _i2cPort->beginTransmission(i2cAddr);
+    _i2cPort->beginTransmission(devAddr);
     _i2cPort->write(devReg);
     _i2cPort->write(dataToWrite);
     return _i2cPort->endTransmission() == 0;
 }
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // writeRegisterRegion()
 //
 // Write a block of data to a device.
 
-int SfeI2C::writeRegisterRegion(uint8_t i2cAddr, uint8_t devReg, const uint8_t *data, uint16_t length)
+int SfeI2C::writeRegisterRegion(uint8_t devAddr, uint8_t devReg, const uint8_t *data, uint16_t length)
 {
 
-    _i2cPort->beginTransmission(i2cAddr);
+    _i2cPort->beginTransmission(devAddr);
     _i2cPort->write(devReg);
     _i2cPort->write(data, (int)length);
 
@@ -132,7 +130,7 @@ int SfeI2C::writeRegisterRegion(uint8_t i2cAddr, uint8_t devReg, const uint8_t *
 // For large buffers, the data is chuncked over KMaxI2CBufferLength at a time
 //
 //
-int SfeI2C::readRegisterRegion(uint8_t i2cAddr, uint8_t devReg, uint8_t *data, uint16_t numBytes)
+int SfeI2C::readRegisterRegion(uint8_t devAddr, uint8_t devReg, uint8_t *data, uint16_t numBytes)
 {
     uint8_t nChunk;
     uint16_t nReturned;
@@ -145,7 +143,7 @@ int SfeI2C::readRegisterRegion(uint8_t i2cAddr, uint8_t devReg, uint8_t *data, u
 
     while (numBytes > 0)
     {
-        _i2cPort->beginTransmission(i2cAddr);
+        _i2cPort->beginTransmission(devAddr);
 
         if (bFirstInter)
         {
@@ -159,7 +157,7 @@ int SfeI2C::readRegisterRegion(uint8_t i2cAddr, uint8_t devReg, uint8_t *data, u
         // We're chunking in data - keeping the max chunk to kMaxI2CBufferLength
         nChunk = numBytes > buffSize ? buffSize : numBytes;
 
-        nReturned = _i2cPort->requestFrom((int)i2cAddr, (int)nChunk, (int)true);
+        nReturned = _i2cPort->requestFrom((int)devAddr, (int)nChunk, (int)true);
 
         // No data returned, no dice
         if (nReturned == 0)
@@ -169,7 +167,7 @@ int SfeI2C::readRegisterRegion(uint8_t i2cAddr, uint8_t devReg, uint8_t *data, u
         for (i = 0; i < nReturned; i++)
         {
             *data++ = _i2cPort->read();
-		}
+        }
 
         // Decrement the amount of data recieved from the overall data request amount
         numBytes = numBytes - nReturned;
@@ -178,8 +176,6 @@ int SfeI2C::readRegisterRegion(uint8_t i2cAddr, uint8_t devReg, uint8_t *data, u
 
     return 0; // Success
 }
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Constructor
@@ -193,27 +189,26 @@ SfeSPI::SfeSPI(void) : _spiPort{nullptr}
 //
 // Methods to init/setup this device. The caller can provide a SPI Port, or this class
 // will use the default
-bool SfeSPI::init(SPIClass &spiPort, SPISettings& ismSPISettings, uint8_t cs,  bool bInit)
+bool SfeSPI::init(SPIClass &spiPort, SPISettings &ismSPISettings, uint8_t cs, bool bInit)
 {
 
     // if we don't have a SPI port already
-    if( !_spiPort )
+    if (!_spiPort)
     {
         _spiPort = &spiPort;
 
-        if( bInit )
+        if (bInit)
             _spiPort->begin();
     }
 
-
     // SPI settings are needed for every transaction
-    _sfeSPISettings = ismSPISettings; 
+    _sfeSPISettings = ismSPISettings;
 
     // The chip select pin can vary from platform to platform and project to project
-    // and so it must be given by the user. 
-    if( !cs )
-        return false; 
-    
+    // and so it must be given by the user.
+    if (!cs)
+        return false;
+
     _cs = cs;
 
     return true;
@@ -224,17 +219,15 @@ bool SfeSPI::init(SPIClass &spiPort, SPISettings& ismSPISettings, uint8_t cs,  b
 //
 // Methods to init/setup this device. The caller can provide a SPI Port, or this class
 // will use the default
-bool SfeSPI::init(uint8_t cs,  bool bInit)
+bool SfeSPI::init(uint8_t cs, bool bInit)
 {
 
-    //If the transaction settings are not provided by the user they are built here.
-    SPISettings spiSettings = SPISettings(3000000, MSB_FIRST, SPI_MODE3); 
+    // If the transaction settings are not provided by the user they are built here.
+    SPISettings spiSettings = SPISettings(3000000, MSB_FIRST, SPI_MODE3);
 
-    //In addition of the port is not provided by the user, it defaults to SPI here. 
+    // In addition of the port is not provided by the user, it defaults to SPI here.
     return init(SPI, spiSettings, cs, bInit);
-
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // ping()
@@ -243,10 +236,9 @@ bool SfeSPI::init(uint8_t cs,  bool bInit)
 // I2C class i.e. provided for the interface.
 //
 
-
-bool SfeSPI::ping(uint8_t i2cAddr)
+bool SfeSPI::ping(uint8_t devAddr)
 {
-	return true;
+    return true;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -254,10 +246,10 @@ bool SfeSPI::ping(uint8_t i2cAddr)
 //
 // Write a byte to a devRegister
 
-bool SfeSPI::writeRegisterByte(uint8_t i2cAddr, uint8_t devReg, uint8_t dataToWrite)
+bool SfeSPI::writeRegisterByte(uint8_t devAddr, uint8_t devReg, uint8_t dataToWrite)
 {
 
-    if( !_spiPort )
+    if (!_spiPort)
         return false;
 
     // Apply settings
@@ -272,26 +264,25 @@ bool SfeSPI::writeRegisterByte(uint8_t i2cAddr, uint8_t devReg, uint8_t dataToWr
     digitalWrite(_cs, HIGH);
     _spiPort->endTransaction();
 
-		return true;
+    return true;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // writeRegisterRegion()
 //
 // Write a block of data to a device.
-int SfeSPI::writeRegisterRegion(uint8_t i2cAddr, uint8_t devReg, const uint8_t *data, uint16_t length)
+int SfeSPI::writeRegisterRegion(uint8_t devAddr, uint8_t devReg, const uint8_t *data, uint16_t length)
 {
 
     int i;
 
-		// Apply settings
+    // Apply settings
     _spiPort->beginTransaction(_sfeSPISettings);
-		// Signal communication start
+    // Signal communication start
     digitalWrite(_cs, LOW);
     _spiPort->transfer(devReg);
 
-    for(i = 0; i < length; i++)
+    for (i = 0; i < length; i++)
     {
         _spiPort->transfer(*data++);
     }
@@ -299,7 +290,7 @@ int SfeSPI::writeRegisterRegion(uint8_t i2cAddr, uint8_t devReg, const uint8_t *
     // End communication
     digitalWrite(_cs, HIGH);
     _spiPort->endTransaction();
-		return 0; 
+    return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -309,22 +300,22 @@ int SfeSPI::writeRegisterRegion(uint8_t i2cAddr, uint8_t devReg, const uint8_t *
 //
 //
 //
-int SfeSPI::readRegisterRegion(uint8_t i2cAddr, uint8_t devReg, uint8_t *data, uint16_t numBytes)
+int SfeSPI::readRegisterRegion(uint8_t devAddr, uint8_t devReg, uint8_t *data, uint16_t numBytes)
 {
     if (!_spiPort)
         return -1;
 
-    int i; 
+    int i;
 
     // Apply settings
-     _spiPort->beginTransaction(_sfeSPISettings);
+    _spiPort->beginTransaction(_sfeSPISettings);
     // Signal communication start
     digitalWrite(_cs, LOW);
     // A leading "1" must be added to transfer with devRegister to indicate a "read"
     devReg = (devReg | SPI_READ);
     _spiPort->transfer(devReg);
 
-    for(i = 0; i < numBytes; i++)
+    for (i = 0; i < numBytes; i++)
     {
         *data++ = _spiPort->transfer(0x00);
     }
@@ -332,8 +323,7 @@ int SfeSPI::readRegisterRegion(uint8_t i2cAddr, uint8_t devReg, uint8_t *data, u
     // End transaction
     digitalWrite(_cs, HIGH);
     _spiPort->endTransaction();
-    return 0; 
-
+    return 0;
 }
 
 //} namespace sfe_XXX
