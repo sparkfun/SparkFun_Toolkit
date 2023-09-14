@@ -24,11 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define maxI2CBufferLength 32
 // What we use for transfer chunk size
-const static uint16_t buffSize = maxI2CBufferLength;
-
-SfeI2C::SfeI2C(void) : _i2cPort{nullptr}
-{
-}
+#define buffSize maxI2CBufferLength;
 
 bool SfeI2C::init(TwoWire &wirePort, bool bInit)
 {

@@ -26,10 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "sfe_spi.h"
 #define SPI_READ 0x80
 
-SfeSPI::SfeSPI(void) : _spiPort{nullptr}
-{
-}
-
 bool SfeSPI::init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t cs, bool bInit)
 {
 

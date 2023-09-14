@@ -36,7 +36,7 @@ class SfeI2C : public SfeBus
 {
   public:
     /// @brief Constructor
-    SfeI2C(void);
+    SfeI2C(void) : _i2cPort(nullptr) {};
 
     /// @brief Method sets up the required I2C settings. This function
     /// provides a default I2C Port.

@@ -39,7 +39,7 @@ class SfeSPI : public SfeBus
 {
   public:
     /// @brief Constructor
-    SfeSPI(void);
+    SfeSPI(void) : _spiPort(nullptr) {};
 
     /// @brief Method sets up the required SPI settings. This function
     /// provides a default SPI Port.
