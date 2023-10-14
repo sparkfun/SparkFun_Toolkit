@@ -1,24 +1,15 @@
 /*
-The MIT License (MIT)
+  SPDX-License-Identifier: MIT
 
-Copyright (c) 2022 SparkFun Electronics
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions: The
-above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED
-"AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
-NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  Copyright (c) 2023 SparkFun Electronics
+
+  A pure virtual base class for implementing a common communication interface
+  in SparkFun products.
 */
 
 #pragma once
+
+#include <stdint.h>
 
 // Error and warning codes
 #define SFE_BUS_OK 0
@@ -28,23 +19,50 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define SFE_BUS_E_NO_RESPONSE -4
 #define SFE_BUS_E_DATA_TOO_LONG -5
 #define SFE_BUS_W_UNKNOWN 1
-#define SFE_BUS_W_UNDER_READ 1
+#define SFE_BUS_W_UNDER_READ 2
+
+/// @brief An abstract Bus address class for enabling multiple types of addresses.
+class SFEBusDevSettings{}; // Nothing to see here...
 
 /// @brief An abstract interface for a communication bus
-class SFE_Bus
+class SFEBus
 {
   public:
+    /// @brief Begin bus.
+    /// @return 0 for success, negative for failure, positive for warning.
+    virtual int8_t begin(void) = 0;
+
+    /// @brief End bus.
+    /// @return 0 for success, negative for failure, positive for warning.
+    virtual int8_t end(void) = 0;
+
     /// @brief Writes a number of bytes starting at the given register address.
+    /// @param devSettings Settings of the device.
     /// @param regAddr The first register address to write to.
     /// @param data Data buffer to write to registers.
     /// @param numBytes Number of bytes to write.
     /// @return 0 for success, negative for failure, positive for warning.
-    virtual int8_t writeRegisters(uint8_t regAddr, const uint8_t *data, uint8_t numBytes) = 0;
+    virtual int8_t writeRegisterBytes(const SFEBusDevSettings *devSettings, const uint8_t regAddr, const uint8_t *data, const uint32_t numBytes) = 0;
 
     /// @brief Reads a number of bytes starting at the given register address.
+    /// @param devSettings Settings of the device.
     /// @param regAddr The first register address to read from.
     /// @param data Data buffer to read from registers.
     /// @param numBytes Number of bytes to read.
     /// @return 0 for success, negative for failure, positive for warning.
-    virtual int8_t readRegisters(uint8_t regAddr, uint8_t *data, uint8_t numBytes) = 0;
+    virtual int8_t readRegisterBytes(const SFEBusDevSettings *devSettings, const uint8_t regAddr, uint8_t *data, const uint32_t numBytes) = 0;
+
+    /// @brief Writes a number of bytes to a device that doesn't use registers for communications.
+    /// @param devSettings Settings of the device.
+    /// @param data Data buffer to read from registers.
+    /// @param numBytes Number of bytes to read.
+    /// @return 0 for success, negative for failure, positive for warning.
+    virtual int8_t writeBytes(const SFEBusDevSettings *devSettings, const uint8_t *data, const uint32_t numBytes) = 0;
+
+    /// @brief Reads a number of bytes to a device that doesn't use registers for communications.
+    /// @param devSettings Settings of the device.
+    /// @param data Data buffer to read from registers.
+    /// @param numBytes Number of bytes to read.
+    /// @return 0 for success, negative for failure, positive for warning.
+    virtual int8_t readBytes(const SFEBusDevSettings *devSettings, uint8_t *data, const uint32_t numBytes) = 0;
 };

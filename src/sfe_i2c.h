@@ -1,40 +1,60 @@
 /*
-The MIT License (MIT)
+  SPDX-License-Identifier: MIT
 
-Copyright (c) 2022 SparkFun Electronics
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions: The
-above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED
-"AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
-NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  Copyright (c) 2023 SparkFun Electronics
 */
 
 #pragma once
 
 #include "sfe_bus.h"
 
-/// @brief An abstract interface for an I2C communication bus
-class SFE_I2C : public SFE_Bus
+#define SFE_BUS_I2C_DEFAULT_ADDRESS 0x00
+#define SFE_BUS_I2C_DEFAULT_I2C_SPEED 100000
+#define SFE_BUS_I2C_BUFFER_SIZE 32
+
+// @brief A simple bus address implementation for a generic I2C.
+class SFEBusDevSettingsI2C : public SFEBusDevSettings
 {
   public:
-    /// @brief Initialize I2C parameters.
-    /// @param devAddr I2C address of device.
+    uint8_t devAddr = SFE_BUS_I2C_DEFAULT_ADDRESS; // Default I2C Address
+    uint32_t maxDataRate = SFE_BUS_I2C_DEFAULT_I2C_SPEED; // Default I2C Speed
+};
+
+/// @brief An abstract interface for an I2C communication bus
+class SFEBusI2C : public SFEBus
+{
+  public:
+    /// @brief Pings I2C device and looks for an ACK response.
+    /// @param devAddr Address to ping.
     /// @return 0 for success, negative for failure, positive for warning.
-    virtual int8_t init(uint8_t devAddr) = 0;
+    virtual int8_t ping(const uint8_t *devAddr) = 0;
 
     /// @brief Pings I2C device and looks for an ACK response.
+    /// @param devSettings Settings of device to ping.
     /// @return 0 for success, negative for failure, positive for warning.
-    virtual int8_t ping() = 0;
-  
+    virtual int8_t ping(const SFEBusDevSettingsI2C *devSettings) = 0;
+
+    /// @brief Changes the I2C buffer size.
+    /// @param bufferSize New buffer size.
+    /// @return 0 for success, negative for failure, positive for warning.
+    virtual int8_t setBufferSize(const uint32_t bufferSize) = 0;
+
+    /// @brief Returns the I2C buffer size.
+    /// @param bufferSize Buffer to return the size of the transmit buffer.
+    /// @return 0 for success, negative for failure, positive for warning.
+    virtual int8_t getBufferSize(uint32_t *bufferSize) = 0;
+
+    /// @brief Changes the Bus transmit frequency.
+    /// @param frequency New bus frequency.
+    /// @return 0 for success, negative for failure, positive for warning.
+    virtual int8_t setBusFrequency(const uint32_t frequency) = 0;
+
+    /// @brief Returns the Bus transmit frequency.
+    /// @param frequency Buffer to return the frequency.
+    /// @return 0 for success, negative for failure, positive for warning.
+    virtual int8_t getBusFrequency(uint32_t *frequency) = 0;
+
   protected:
-    uint8_t _devAddr;
+    uint32_t _i2cBufferSize = SFE_BUS_I2C_BUFFER_SIZE; // Default Buffer Size
+    uint32_t _busFrequency = SFE_BUS_I2C_DEFAULT_I2C_SPEED; // Default Speed is 100kHz
 };

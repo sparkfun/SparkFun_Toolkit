@@ -1,62 +1,103 @@
 /*
-The MIT License (MIT)
+  SPDX-License-Identifier: MIT
 
-Copyright (c) 2022 SparkFun Electronics
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions: The
-above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED
-"AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
-NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  Copyright (c) 2023 SparkFun Electronics
 */
 
 #pragma once
 
+#include <Arduino.h>
 #include "sfe_i2c.h"
 #include <Wire.h>
 
 /// @brief An I2C communication bus implementation for Arduino
-class SFE_I2C_Arduino : public SFE_I2C
+class SFEBusArduinoI2C : public SFEBusI2C
 {
   public:
-    /// @brief Initialize I2C parameters.
-    /// @param devAddr I2C address of device.
-    /// @return 0 for success, negative for failure, positive for warning.
-    int8_t init(uint8_t devAddr);
+    /// @brief Empty Constructor.
+    SFEBusArduinoI2C(void) : _i2cBus(nullptr){};
 
-    /// @brief Initialize I2C parameters.
-    /// @param devAddr I2C address of device.
-    /// @param i2cPort Arduino Wire port to use.
-    /// @param beginBus Whether to initialize the I2C bus.
+    /// @brief Passing in a TwoWire Object.
+    SFEBusArduinoI2C(TwoWire &wirePort) : _i2cBus(wirePort) {};
+
+    /// @brief Begin the I2C object with the default Wire object.
     /// @return 0 for success, negative for failure, positive for warning.
-    int8_t init(uint8_t devAddr, TwoWire& i2cPort, bool beginBus = false);
+    int8_t begin(void);
+
+    /// @brief Begin the I2C object with the inputted Wire object.
+    /// @param wirePort I2C object to use for this bus.
+    /// @return 0 for success, negative for failure, positive for warning.
+    int8_t begin(TwoWire *wirePort);
+
+    /// @brief End the I2C object.
+    /// @return 0 for success, negative for failure, positive for warning.
+    int8_t end(void);
 
     /// @brief Pings I2C device and looks for an ACK response.
+    /// @param devAddr Address to ping.
     /// @return 0 for success, negative for failure, positive for warning.
-    virtual int8_t ping();
+    int8_t ping(const uint8_t *devAddr);
+
+    /// @brief Pings I2C device and looks for an ACK response.
+    /// @param devSettings Settings object containing the address to ping.
+    /// @return 0 for success, negative for failure, positive for warning.
+    int8_t ping(const SFEBusDevSettingsI2C *devSettings);
 
     /// @brief Writes a number of bytes starting at the given register address.
-    /// @param regAddr The first register address to write to.
+    /// @param devSettings I2C Settings object containing the address of the device.
+    /// @param regAddr The register address to write to.
     /// @param data Data buffer to write to registers.
     /// @param numBytes Number of bytes to write.
     /// @return 0 for success, negative for failure, positive for warning.
-    virtual int8_t writeRegisters(uint8_t regAddr, const uint8_t *data, uint8_t numBytes);
+    int8_t writeRegisterBytes(const SFEBusDevSettingsI2C *devSettings, const uint8_t regAddr, const uint8_t *data, const uint32_t numBytes);
 
     /// @brief Reads a number of bytes starting at the given register address.
+    /// @param devSettings I2C Settings object containing the address of the device.
     /// @param regAddr The first register address to read from.
     /// @param data Data buffer to read from registers.
     /// @param numBytes Number of bytes to read.
     /// @return 0 for success, negative for failure, positive for warning.
-    virtual int8_t readRegisters(uint8_t regAddr, uint8_t *data, uint8_t numBytes);
+    int8_t readRegisterBytes(const SFEBusDevSettingsI2C *devSettings, const uint8_t regAddr, uint8_t *data, const uint32_t numBytes);
 
-  protected:
-    TwoWire* _i2cPort;
+    /// @brief Writes a number of bytes to a device that doesn't use registers for communications.
+    /// @param devSettings I2C Settings object containing the address of the device.
+    /// @param data Data buffer to write to registers.
+    /// @param numBytes Number of bytes to write.
+    /// @return 0 for success, negative for failure, positive for warning.
+    int8_t writeBytes(const SFEBusDevSettingsI2C *devSettings, const uint8_t *data, const uint32_t numBytes);
+
+    /// @brief Reads a number of bytes to a device that doesn't use registers for communications.
+    /// @param devSettings I2C Settings object containing the address of the device.
+    /// @param data Data buffer to read from registers.
+    /// @param numBytes Number of bytes to read.
+    /// @return 0 for success, negative for failure, positive for warning.
+    int8_t readBytes(const SFEBusDevSettingsI2C *devSettings, uint8_t *data, const uint32_t numBytes);
+
+    /// @brief Changes the I2C buffer size.
+    /// @param bufferSize New buffer size.
+    /// @return 0 for success, negative for failure, positive for warning.
+    int8_t setBufferSize(const uint32_t bufferSize);
+
+    /// @brief Returns the I2C buffer size.
+    /// @param bufferSize Buffer to return the buffer... yep.
+    /// @return 0 for success, negative for failure, positive for warning.
+    int8_t getBufferSize(uint32_t *bufferSize);
+
+    /// @brief Changes the Bus transmit frequency.
+    /// @param frequency New bus frequency.
+    /// @return 0 for success, negative for failure, positive for warning.
+    int8_t setBusFrequency(const uint32_t frequency);
+
+    /// @brief Returns the Bus transmit frequency.
+    /// @param frequency Buffer to return the frequency.
+    /// @return 0 for success, negative for failure, positive for warning.
+    int8_t getBusFrequency(uint32_t *frequency);
+
+  private:
+    TwoWire* _i2cBus;
+
+    /// @brief Maps the TwoWire interface error scheme to the common bus error scheme.
+    /// @param error TwoWire error code.
+    /// @return 0 for success, negative for failure, positive for warning.
+    int8_t _mapError(const uint8_t error);
 };
