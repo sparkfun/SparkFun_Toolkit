@@ -29,6 +29,8 @@ class SFEBusDevSettings{}; // Nothing to see here...
 class SFEBus
 {
   public:
+    // virtual ~SFEBus() = 0;
+    
     /// @brief Begin bus.
     /// @return 0 for success, negative for failure, positive for warning.
     virtual int8_t begin(void) = 0;

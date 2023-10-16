@@ -9,10 +9,13 @@
 int8_t SFEBusArduinoI2C::begin(void)
 {
   // Default Wire from Arduino.
-  if(!_i2cBus)
+  if(_i2cBus == nullptr)
     _i2cBus = &Wire;
 
-  return begin(_i2cBus);
+  if(!_i2cBus)
+    return SFE_BUS_E_NULL_PTR;
+
+  return begin(&_i2cBus);
 }
 
 int8_t SFEBusArduinoI2C::begin(TwoWire &wirePort)
@@ -51,16 +54,18 @@ int8_t SFEBusArduinoI2C::ping(const uint8_t *devAddr)
   return _mapError(_i2cBus->endTransmission());
 }
 
-int8_t SFEBusArduinoI2C::ping(const SFEBusDevSettingsI2C *devSettings)
+int8_t SFEBusArduinoI2C::ping(const SFEBusDevSettings *devSettings)
 {
   // Null pointer check.
   if(!devSettings)
     return SFE_BUS_E_NULL_DEV_SETTINGS;
 
-  return ping(&devSettings->devAddr);
+  SFEBusDevSettingsI2C *pAddr = (SFEBusDevSettingsI2C *) devSettings;
+
+  return ping(&pAddr->devAddr);
 }
 
-int8_t SFEBusArduinoI2C::writeRegisterBytes(const SFEBusDevSettingsI2C *devSettings, const uint8_t regAddr, const uint8_t *data, const uint32_t numBytes)
+int8_t SFEBusArduinoI2C::writeRegisterBytes(const SFEBusDevSettings *devSettings, const uint8_t regAddr, const uint8_t *data, const uint32_t numBytes)
 {
   // Null pointer check.
   if(!_i2cBus)
@@ -70,12 +75,14 @@ int8_t SFEBusArduinoI2C::writeRegisterBytes(const SFEBusDevSettingsI2C *devSetti
   if(!devSettings)
     return SFE_BUS_E_NULL_DEV_SETTINGS;
 
+  SFEBusDevSettingsI2C *pAddr = (SFEBusDevSettingsI2C *) devSettings;
+
   uint32_t writeOffset = 0;
   uint32_t bytesToSend = numBytes;
   int8_t result = 0;
 
   // Start transmission and send register address.
-  _i2cBus->beginTransmission(devSettings->devAddr);
+  _i2cBus->beginTransmission(pAddr->devAddr);
   _i2cBus->write(regAddr);
 
   while (bytesToSend > 0)
@@ -102,7 +109,7 @@ int8_t SFEBusArduinoI2C::writeRegisterBytes(const SFEBusDevSettingsI2C *devSetti
   return _mapError(_i2cBus->endTransmission());
 }
 
-int8_t SFEBusArduinoI2C::readRegisterBytes(const SFEBusDevSettingsI2C *devSettings, const uint8_t regAddr, uint8_t *data, const uint32_t numBytes)
+int8_t SFEBusArduinoI2C::readRegisterBytes(const SFEBusDevSettings *devSettings, const uint8_t regAddr, uint8_t *data, const uint32_t numBytes)
 {
   // Null pointer check.
   if(!_i2cBus)
@@ -111,9 +118,11 @@ int8_t SFEBusArduinoI2C::readRegisterBytes(const SFEBusDevSettingsI2C *devSettin
   // Null pointer check.
   if(!devSettings)
     return SFE_BUS_E_NULL_DEV_SETTINGS;
+
+  SFEBusDevSettingsI2C *pAddr = (SFEBusDevSettingsI2C *) devSettings;
   
   // Start transmission and send register address.
-  _i2cBus->beginTransmission(devSettings->devAddr);
+  _i2cBus->beginTransmission(pAddr->devAddr);
   _i2cBus->write(regAddr);
 
   // Repeat start condition, return if there's an error.
@@ -130,7 +139,7 @@ int8_t SFEBusArduinoI2C::readRegisterBytes(const SFEBusDevSettingsI2C *devSettin
     uint8_t readLength = (bytesLeftToRead > _i2cBufferSize) ? _i2cBufferSize : bytesLeftToRead;
 
     // Request bytes, then read them into the data buffer.
-    uint32_t numRead = _i2cBus->requestFrom(devSettings->devAddr, readLength);
+    uint32_t numRead = _i2cBus->requestFrom(pAddr->devAddr, readLength);
 
     if(numRead < readLength)
       return SFE_BUS_W_UNDER_READ;
@@ -150,7 +159,7 @@ int8_t SFEBusArduinoI2C::readRegisterBytes(const SFEBusDevSettingsI2C *devSettin
   return SFE_BUS_OK;
 }
 
-int8_t SFEBusArduinoI2C::writeBytes(const SFEBusDevSettingsI2C *devSettings, const uint8_t *data, uint32_t numBytes)
+int8_t SFEBusArduinoI2C::writeBytes(const SFEBusDevSettings *devSettings, const uint8_t *data, uint32_t numBytes)
 {
   // Null pointer check.
   if(!_i2cBus)
@@ -160,12 +169,14 @@ int8_t SFEBusArduinoI2C::writeBytes(const SFEBusDevSettingsI2C *devSettings, con
   if(!devSettings)
     return SFE_BUS_E_NULL_DEV_SETTINGS;
 
+  SFEBusDevSettingsI2C *pAddr = (SFEBusDevSettingsI2C *) devSettings;
+
   uint32_t writeOffset = 0;
   uint32_t bytesToSend = numBytes;
   int8_t result = 0;
 
   // Start transmission.
-  _i2cBus->beginTransmission(devSettings->devAddr);
+  _i2cBus->beginTransmission(pAddr->devAddr);
 
   while (bytesToSend > 0)
   {
@@ -191,7 +202,7 @@ int8_t SFEBusArduinoI2C::writeBytes(const SFEBusDevSettingsI2C *devSettings, con
   return _mapError(_i2cBus->endTransmission());
 }
 
-int8_t SFEBusArduinoI2C::readBytes(const SFEBusDevSettingsI2C *devSettings, uint8_t *data, uint32_t numBytes)
+int8_t SFEBusArduinoI2C::readBytes(const SFEBusDevSettings *devSettings, uint8_t *data, uint32_t numBytes)
 {
   // Null pointer check.
   if(!_i2cBus)
@@ -200,9 +211,11 @@ int8_t SFEBusArduinoI2C::readBytes(const SFEBusDevSettingsI2C *devSettings, uint
   // Null pointer check.
   if(!devSettings)
     return SFE_BUS_E_NULL_DEV_SETTINGS;
+
+  SFEBusDevSettingsI2C *pAddr = (SFEBusDevSettingsI2C *) devSettings;
   
   // Start transmission.
-  _i2cBus->beginTransmission(devSettings->devAddr);
+  _i2cBus->beginTransmission(pAddr->devAddr);
 
   // Repeat start condition, return if there's an error.
   int8_t result = _mapError(_i2cBus->endTransmission(false));
@@ -218,7 +231,7 @@ int8_t SFEBusArduinoI2C::readBytes(const SFEBusDevSettingsI2C *devSettings, uint
     uint8_t readLength = (bytesLeftToRead > _i2cBufferSize) ? _i2cBufferSize : bytesLeftToRead;
 
     // Request bytes, then read them into the data buffer.
-    uint32_t numRead = _i2cBus->requestFrom(devSettings->devAddr, readLength);
+    uint32_t numRead = _i2cBus->requestFrom(pAddr->devAddr, readLength);
 
     if(numRead < readLength)
       return SFE_BUS_W_UNDER_READ;

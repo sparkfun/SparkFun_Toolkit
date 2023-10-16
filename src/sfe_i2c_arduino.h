@@ -15,10 +15,10 @@ class SFEBusArduinoI2C : public SFEBusI2C
 {
   public:
     /// @brief Empty Constructor.
-    SFEBusArduinoI2C(void) : _i2cBus(nullptr){};
+    SFEBusArduinoI2C(void) : _i2cBus{nullptr}{};
 
     /// @brief Passing in a TwoWire Object.
-    SFEBusArduinoI2C(TwoWire &wirePort) : _i2cBus(wirePort) {};
+    SFEBusArduinoI2C(TwoWire &wirePort) : _i2cBus{&wirePort}{};
 
     /// @brief Begin the I2C object with the default Wire object.
     /// @return 0 for success, negative for failure, positive for warning.
@@ -27,7 +27,7 @@ class SFEBusArduinoI2C : public SFEBusI2C
     /// @brief Begin the I2C object with the inputted Wire object.
     /// @param wirePort I2C object to use for this bus.
     /// @return 0 for success, negative for failure, positive for warning.
-    int8_t begin(TwoWire *wirePort);
+    int8_t begin(TwoWire &wirePort);
 
     /// @brief End the I2C object.
     /// @return 0 for success, negative for failure, positive for warning.
@@ -41,7 +41,7 @@ class SFEBusArduinoI2C : public SFEBusI2C
     /// @brief Pings I2C device and looks for an ACK response.
     /// @param devSettings Settings object containing the address to ping.
     /// @return 0 for success, negative for failure, positive for warning.
-    int8_t ping(const SFEBusDevSettingsI2C *devSettings);
+    int8_t ping(const SFEBusDevSettings *devSettings);
 
     /// @brief Writes a number of bytes starting at the given register address.
     /// @param devSettings I2C Settings object containing the address of the device.
@@ -49,7 +49,7 @@ class SFEBusArduinoI2C : public SFEBusI2C
     /// @param data Data buffer to write to registers.
     /// @param numBytes Number of bytes to write.
     /// @return 0 for success, negative for failure, positive for warning.
-    int8_t writeRegisterBytes(const SFEBusDevSettingsI2C *devSettings, const uint8_t regAddr, const uint8_t *data, const uint32_t numBytes);
+    int8_t writeRegisterBytes(const SFEBusDevSettings *devSettings, const uint8_t regAddr, const uint8_t *data, const uint32_t numBytes);
 
     /// @brief Reads a number of bytes starting at the given register address.
     /// @param devSettings I2C Settings object containing the address of the device.
@@ -57,21 +57,21 @@ class SFEBusArduinoI2C : public SFEBusI2C
     /// @param data Data buffer to read from registers.
     /// @param numBytes Number of bytes to read.
     /// @return 0 for success, negative for failure, positive for warning.
-    int8_t readRegisterBytes(const SFEBusDevSettingsI2C *devSettings, const uint8_t regAddr, uint8_t *data, const uint32_t numBytes);
+    int8_t readRegisterBytes(const SFEBusDevSettings *devSettings, const uint8_t regAddr, uint8_t *data, const uint32_t numBytes);
 
     /// @brief Writes a number of bytes to a device that doesn't use registers for communications.
     /// @param devSettings I2C Settings object containing the address of the device.
     /// @param data Data buffer to write to registers.
     /// @param numBytes Number of bytes to write.
     /// @return 0 for success, negative for failure, positive for warning.
-    int8_t writeBytes(const SFEBusDevSettingsI2C *devSettings, const uint8_t *data, const uint32_t numBytes);
+    int8_t writeBytes(const SFEBusDevSettings *devSettings, const uint8_t *data, const uint32_t numBytes);
 
     /// @brief Reads a number of bytes to a device that doesn't use registers for communications.
     /// @param devSettings I2C Settings object containing the address of the device.
     /// @param data Data buffer to read from registers.
     /// @param numBytes Number of bytes to read.
     /// @return 0 for success, negative for failure, positive for warning.
-    int8_t readBytes(const SFEBusDevSettingsI2C *devSettings, uint8_t *data, const uint32_t numBytes);
+    int8_t readBytes(const SFEBusDevSettings *devSettings, uint8_t *data, const uint32_t numBytes);
 
     /// @brief Changes the I2C buffer size.
     /// @param bufferSize New buffer size.
