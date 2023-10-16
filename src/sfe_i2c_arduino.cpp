@@ -8,6 +8,7 @@
 
 int8_t SFEBusArduinoI2C::begin(void)
 {
+  // Default Wire from Arduino.
   if(!_i2cBus)
     _i2cBus = &Wire;
 
@@ -18,6 +19,7 @@ int8_t SFEBusArduinoI2C::begin(TwoWire &wirePort)
 {
   _i2cBus = wirePort;
 
+  // Null pointer check.
   if(!_i2cBus)
     return SFE_BUS_E_NULL_PTR;
 
@@ -28,6 +30,7 @@ int8_t SFEBusArduinoI2C::begin(TwoWire &wirePort)
 
 int8_t SFEBusArduinoI2C::end(void)
 {
+  // Null pointer check.
   if(!_i2cBus)
     return SFE_BUS_E_NULL_PTR;
 
@@ -38,8 +41,8 @@ int8_t SFEBusArduinoI2C::end(void)
 
 int8_t SFEBusArduinoI2C::ping(const uint8_t *devAddr)
 {
-  // Null pointer check
-  if (!_i2cBus)
+  // Null pointer check.
+  if(!_i2cBus)
     return SFE_BUS_E_NULL_PTR;
 
   // Begin and end transmission to check for ACK response
@@ -50,31 +53,189 @@ int8_t SFEBusArduinoI2C::ping(const uint8_t *devAddr)
 
 int8_t SFEBusArduinoI2C::ping(const SFEBusDevSettingsI2C *devSettings)
 {
+  // Null pointer check.
+  if(!devSettings)
+    return SFE_BUS_E_NULL_DEV_SETTINGS;
+
   return ping(&devSettings->devAddr);
 }
 
 int8_t SFEBusArduinoI2C::writeRegisterBytes(const SFEBusDevSettingsI2C *devSettings, const uint8_t regAddr, const uint8_t *data, const uint32_t numBytes)
 {
-  // TODO: Implement
-  return SFE_BUS_E_UNKNOWN;
+  // Null pointer check.
+  if(!_i2cBus)
+    return SFE_BUS_E_NULL_PTR;
+
+  // Null pointer check.
+  if(!devSettings)
+    return SFE_BUS_E_NULL_DEV_SETTINGS;
+
+  uint32_t writeOffset = 0;
+  uint32_t bytesToSend = numBytes;
+  int8_t result = 0;
+
+  // Start transmission and send register address.
+  _i2cBus->beginTransmission(devSettings->devAddr);
+  _i2cBus->write(regAddr);
+
+  while (bytesToSend > 0)
+  {
+    // Limit sendLength to the size of the I2C buffer to send in chunks.
+    uint8_t sendLength = (bytesToSend > _i2cBufferSize) ? _i2cBufferSize : bytesToSend;
+    
+    // Do the write thing.
+    for(uint8_t i = 0; i < sendLength; i++)
+      _i2cBus->write(data[writeOffset+i]);
+
+    // If there's still more to send, send a repeat start.
+    if(bytesToSend > _i2cBufferSize) 
+    {
+      result = _mapError(_i2cBus->endTransmission(false));
+      if(SFE_BUS_OK != result)
+        return result;
+    }
+
+    writeOffset += sendLength;
+    bytesToSend -= sendLength;
+  }
+  
+  return _mapError(_i2cBus->endTransmission());
 }
 
 int8_t SFEBusArduinoI2C::readRegisterBytes(const SFEBusDevSettingsI2C *devSettings, const uint8_t regAddr, uint8_t *data, const uint32_t numBytes)
 {
-  // TODO: Implement
-  return SFE_BUS_E_UNKNOWN;
+  // Null pointer check.
+  if(!_i2cBus)
+    return SFE_BUS_E_NULL_PTR;
+
+  // Null pointer check.
+  if(!devSettings)
+    return SFE_BUS_E_NULL_DEV_SETTINGS;
+  
+  // Start transmission and send register address.
+  _i2cBus->beginTransmission(devSettings->devAddr);
+  _i2cBus->write(regAddr);
+
+  // Repeat start condition, return if there's an error.
+  int8_t result = _mapError(_i2cBus->endTransmission(false));
+  if(SFE_BUS_OK != result)
+    return result;
+
+  uint32_t bytesLeftToRead = numBytes;
+  uint32_t readOffset = 0;
+
+  while(bytesLeftToRead > 0)
+  {
+    // Limit readLength to the size of the I2C buffer to read in chunks.
+    uint8_t readLength = (bytesLeftToRead > _i2cBufferSize) ? _i2cBufferSize : bytesLeftToRead;
+
+    // Request bytes, then read them into the data buffer.
+    uint32_t numRead = _i2cBus->requestFrom(devSettings->devAddr, readLength);
+
+    if(numRead < readLength)
+      return SFE_BUS_W_UNDER_READ;
+
+    if(_i2cBus->available())
+    {
+      for(uint8_t i = 0; i < readLength; i++)
+        data[readOffset + i] = _i2cBus->read();
+    }
+    else
+      return SFE_BUS_E_NO_RESPONSE;
+
+    readOffset += readLength;
+    bytesLeftToRead -= readLength;
+  }
+
+  return SFE_BUS_OK;
 }
 
 int8_t SFEBusArduinoI2C::writeBytes(const SFEBusDevSettingsI2C *devSettings, const uint8_t *data, uint32_t numBytes)
 {
-  // TODO: Implement
-  return SFE_BUS_E_UNKNOWN;
+  // Null pointer check.
+  if(!_i2cBus)
+    return SFE_BUS_E_NULL_PTR;
+
+  // Null pointer check.
+  if(!devSettings)
+    return SFE_BUS_E_NULL_DEV_SETTINGS;
+
+  uint32_t writeOffset = 0;
+  uint32_t bytesToSend = numBytes;
+  int8_t result = 0;
+
+  // Start transmission.
+  _i2cBus->beginTransmission(devSettings->devAddr);
+
+  while (bytesToSend > 0)
+  {
+    // Limit sendLength to the size of the I2C buffer to send in chunks.
+    uint8_t sendLength = (bytesToSend > _i2cBufferSize) ? _i2cBufferSize : bytesToSend;
+    
+    // Do the write thing.
+    for(uint8_t i = 0; i < sendLength; i++)
+      _i2cBus->write(data[writeOffset+i]);
+
+    // If there's still more to send, send a repeat start.
+    if(bytesToSend > _i2cBufferSize) 
+    {
+      result = _mapError(_i2cBus->endTransmission(false));
+      if(SFE_BUS_OK != result)
+        return result;
+    }
+
+    writeOffset += sendLength;
+    bytesToSend -= sendLength;
+  }
+  
+  return _mapError(_i2cBus->endTransmission());
 }
 
 int8_t SFEBusArduinoI2C::readBytes(const SFEBusDevSettingsI2C *devSettings, uint8_t *data, uint32_t numBytes)
 {
-  // TODO: Implement
-  return SFE_BUS_E_UNKNOWN;
+  // Null pointer check.
+  if(!_i2cBus)
+    return SFE_BUS_E_NULL_PTR;
+
+  // Null pointer check.
+  if(!devSettings)
+    return SFE_BUS_E_NULL_DEV_SETTINGS;
+  
+  // Start transmission.
+  _i2cBus->beginTransmission(devSettings->devAddr);
+
+  // Repeat start condition, return if there's an error.
+  int8_t result = _mapError(_i2cBus->endTransmission(false));
+  if(SFE_BUS_OK != result)
+    return result;
+
+  uint32_t bytesLeftToRead = numBytes;
+  uint32_t readOffset = 0;
+
+  while(bytesLeftToRead > 0)
+  {
+    // Limit readLength to the size of the I2C buffer to read in chunks.
+    uint8_t readLength = (bytesLeftToRead > _i2cBufferSize) ? _i2cBufferSize : bytesLeftToRead;
+
+    // Request bytes, then read them into the data buffer.
+    uint32_t numRead = _i2cBus->requestFrom(devSettings->devAddr, readLength);
+
+    if(numRead < readLength)
+      return SFE_BUS_W_UNDER_READ;
+
+    if(_i2cBus->available())
+    {
+      for(uint8_t i = 0; i < readLength; i++)
+        data[readOffset + i] = _i2cBus->read();
+    }
+    else
+      return SFE_BUS_E_NO_RESPONSE;
+
+    readOffset += readLength;
+    bytesLeftToRead -= readLength;
+  }
+
+  return SFE_BUS_OK;
 }
 
 int8_t SFEBusArduinoI2C::setBufferSize(const uint32_t bufferSize)
@@ -122,71 +283,3 @@ int8_t SFEBusArduinoI2C::_mapError(const uint8_t error)
   else
       return SFE_BUS_E_UNKNOWN;
 }
-
-// int8_t SFE_I2C_Arduino::writeRegisters(uint8_t regAddr, const uint8_t *data, uint8_t numBytes)
-// {
-//     // Null pointer check
-//     if (!_i2cPort)
-//         return SFE_BUS_E_NULL_PTR;
-
-//     // Start I2C message
-//     _i2cPort->beginTransmission(_devAddr);
-    
-//     // Write register address
-//     _i2cPort->write(regAddr);
-
-//     // Write data
-//     _i2cPort->write(data, numBytes);
-    
-//     // End I2C message
-//     uint8_t result = _i2cPort->endTransmission();
-
-//     // Check result
-//     if(result == 0)
-//         return SFE_BUS_OK;
-//     else if(result == 1)
-//         return SFE_BUS_E_DATA_TOO_LONG;
-//     else if((result == 2) || (result == 3))
-//         return SFE_BUS_E_NO_RESPONSE;
-//     else if(result == 5)
-//         return SFE_BUS_E_TIMEOUT;
-//     else
-//         return SFE_BUS_E_UNKNOWN;
-// }
-
-// int8_t SFE_I2C_Arduino::readRegisters(uint8_t regAddr, uint8_t *data, uint8_t numBytes)
-// {
-//     // Null pointer check
-//     if (!_i2cPort)
-//         return SFE_BUS_E_NULL_PTR;
-
-//     // Write desired register address
-//     _i2cPort->beginTransmission(_devAddr);
-//     _i2cPort->write(regAddr);
-//     // uint8_t result = _i2cPort->endTransmission();
-//     int8_t result = _mapError(_i2cPort->endTransmission());
-//     // Check result
-//     if(result == 1)
-//         return SFE_BUS_E_DATA_TOO_LONG;
-//     else if((result == 2) || (result == 3))
-//         return SFE_BUS_E_NO_RESPONSE;
-//     else if(result == 5)
-//         return SFE_BUS_E_TIMEOUT;
-//     else if(result != 0)
-//         return SFE_BUS_E_UNKNOWN;
-
-//     // Read data from device
-//     uint8_t numRead = _i2cPort->requestFrom(_devAddr, numBytes);
-
-//     // Read data into buffer one byte at a time
-//     for(uint16_t i = 0; i < numRead; i++)
-//     {
-//         data[i] = _i2cPort->read();
-//     }
-
-//     // Check number of bytes read
-//     if(numRead < numBytes)
-//         return SFE_BUS_W_UNDER_READ;
-//     else
-//         return SFE_BUS_OK;
-// }
