@@ -44,14 +44,17 @@ bool BME280SFEBus::begin(SFEBusArduinoI2C *theBus)
 
   readRegister(BME280_CHIP_ID_REG, &chipID, 1);
 
+  return true;
 }
 
 float BME280SFEBus::readTempC()
 {
-  
+    return 0.0;
 }
 
 bool BME280SFEBus::readRegister(uint8_t regAddr, uint8_t* data, uint32_t numBytes)
 {
   _i2cBus->readRegisterBytes((SFEBusDevSettings*)&_devSettings, regAddr, data, numBytes);
+
+  return true;
 }

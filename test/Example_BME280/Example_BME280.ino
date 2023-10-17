@@ -1,6 +1,7 @@
-#include "secrets.h"
-#include TOOLKIT_PATH
-#include "./BME280_SFEBus.h"
+// #include "secrets.h"
+// #include TOOLKIT_PATH
+#include <SparkFun_Toolkit.h>
+#include "BME280_SFEBus.h"
 
 SFEBusArduinoI2C myBus;
 SFEBusDevSettingsI2C myBusSettings;

@@ -20,7 +20,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
+
 #include "sfe_spi.h"
+#include <Arduino.h>
 #include <SPI.h>
 
 /// @brief An SPI communication bus implementation for Arduino

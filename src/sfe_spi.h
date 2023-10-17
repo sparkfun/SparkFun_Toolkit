@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "sfe_bus.h"
 
 /// @brief An abstract interface for an SPI communication bus
-class SFE_SPI : public SFE_Bus
+class SFE_SPI : public SFEBus
 {
   public:
     /// @brief Initialize SPI parameters.

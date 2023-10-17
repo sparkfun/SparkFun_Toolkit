@@ -1,7 +1,8 @@
 #pragma once
 
-#include "secrets.h"
-#include TOOLKIT_PATH
+//#include "secrets.h"
+//#include TOOLKIT_PATH
+#include <SparkFun_Toolkit.h>
 #include <SparkFunBME280.h>
 
 class BME280SFEBus: public BME280

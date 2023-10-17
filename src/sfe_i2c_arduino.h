@@ -29,6 +29,9 @@ class SFEBusArduinoI2C : public SFEBusI2C
     /// @return 0 for success, negative for failure, positive for warning.
     int8_t begin(TwoWire &wirePort);
 
+
+    int8_t begin(TwoWire *);
+    
     /// @brief End the I2C object.
     /// @return 0 for success, negative for failure, positive for warning.
     int8_t end(void);
