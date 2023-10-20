@@ -19,8 +19,10 @@
 #define SFE_BUS_E_NO_RESPONSE -4
 #define SFE_BUS_E_DATA_TOO_LONG -5
 #define SFE_BUS_E_NULL_DEV_SETTINGS -6
+#define SFE_BUS_E_NULL_DATA_BUFFER -7
 #define SFE_BUS_W_UNKNOWN 1
 #define SFE_BUS_W_UNDER_READ 2
+#define SFE_BUS_W_NOT_ENABLED 3
 
 /// @brief An abstract Bus address class for enabling multiple types of addresses.
 class SFEBusDevSettings{}; // Nothing to see here...
@@ -29,8 +31,6 @@ class SFEBusDevSettings{}; // Nothing to see here...
 class SFEBus
 {
   public:
-    // virtual ~SFEBus() = 0;
-    
     /// @brief Begin bus.
     /// @return 0 for success, negative for failure, positive for warning.
     virtual int8_t begin(void) = 0;
