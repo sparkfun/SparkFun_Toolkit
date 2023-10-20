@@ -14,16 +14,15 @@ int8_t SFEBusArduinoI2C::begin(void)
 int8_t SFEBusArduinoI2C::begin(TwoWire &wirePort)
 {
     return begin(&wirePort);
-
-
 }
+
 int8_t SFEBusArduinoI2C::begin(TwoWire *i2cBus)
 {
-    if (!_i2cBus)
+    if (!i2cBus)
         return SFE_BUS_E_NULL_PTR;
 
     _i2cBus = i2cBus;
-
+    
     _i2cBus->begin();
 
     return SFE_BUS_OK;
@@ -40,14 +39,15 @@ int8_t SFEBusArduinoI2C::end(void)
     return SFE_BUS_OK;
 }
 
-int8_t SFEBusArduinoI2C::ping(const uint8_t *devAddr)
+int8_t SFEBusArduinoI2C::ping(const uint8_t devAddr)
 {
     // Null pointer check.
-    if (!_i2cBus)
+    if (_i2cBus == nullptr)
         return SFE_BUS_E_NULL_PTR;
-
+    if (!devAddr)
+        return SFE_BUS_E_NULL_PTR;
     // Begin and end transmission to check for ACK response
-    _i2cBus->beginTransmission(*devAddr);
+    _i2cBus->beginTransmission(devAddr);
 
     return _mapError(_i2cBus->endTransmission());
 }
@@ -60,7 +60,7 @@ int8_t SFEBusArduinoI2C::ping(const SFEBusDevSettings *devSettings)
 
     SFEBusDevSettingsI2C *pAddr = (SFEBusDevSettingsI2C *)devSettings;
 
-    return ping(&pAddr->devAddr);
+    return ping(pAddr->devAddr);
 }
 
 int8_t SFEBusArduinoI2C::writeRegisterBytes(const SFEBusDevSettings *devSettings, const uint8_t regAddr,
@@ -118,6 +118,10 @@ int8_t SFEBusArduinoI2C::readRegisterBytes(const SFEBusDevSettings *devSettings,
     // Null pointer check.
     if (!devSettings)
         return SFE_BUS_E_NULL_DEV_SETTINGS;
+
+    // Null pointer check.
+    if (!data)
+        return SFE_BUS_E_NULL_DATA_BUFFER;
 
     SFEBusDevSettingsI2C *pAddr = (SFEBusDevSettingsI2C *)devSettings;
 
