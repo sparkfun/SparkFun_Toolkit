@@ -1,5 +1,3 @@
-// #include "secrets.h"
-// #include TOOLKIT_PATH
 #include <SparkFun_Toolkit.h>
 #include "BME280_SFEBus.h"
 
@@ -16,7 +14,8 @@ void setup() {
   int8_t result = myBus.begin();
 
   // Start the sensor.
-  if(!mySensor.begin(&myBus))
+
+  if(!mySensor.beginI2C(&myBus))
   {
     Serial.println("The sensor did not respond. Please check wiring. Spinning...");
     while(1);
