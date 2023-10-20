@@ -24,12 +24,10 @@ class SFEBusDevSettingsI2C : public SFEBusDevSettings
 class SFEBusI2C : public SFEBus
 {
   public:
-    // virtual ~SFEBusI2C() = 0;
-    
     /// @brief Pings I2C device and looks for an ACK response.
     /// @param devAddr Address to ping.
     /// @return 0 for success, negative for failure, positive for warning.
-    virtual int8_t ping(const uint8_t *devAddr) = 0;
+    virtual int8_t ping(const uint8_t devAddr) = 0;
 
     /// @brief Pings I2C device and looks for an ACK response.
     /// @param devSettings Settings of device to ping.
