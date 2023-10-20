@@ -29,8 +29,10 @@ class SFEBusArduinoI2C : public SFEBusI2C
     /// @return 0 for success, negative for failure, positive for warning.
     int8_t begin(TwoWire &wirePort);
 
-
-    int8_t begin(TwoWire *);
+    /// @brief Begin the I2C object with the inputted Wire object pointer.
+    /// @param  i2cBus I2C bus pointer.
+    /// @return 0 for success, negative for failure, positive for warning.
+    int8_t begin(TwoWire *i2cBus);
     
     /// @brief End the I2C object.
     /// @return 0 for success, negative for failure, positive for warning.
@@ -39,7 +41,7 @@ class SFEBusArduinoI2C : public SFEBusI2C
     /// @brief Pings I2C device and looks for an ACK response.
     /// @param devAddr Address to ping.
     /// @return 0 for success, negative for failure, positive for warning.
-    int8_t ping(const uint8_t *devAddr);
+    int8_t ping(const uint8_t devAddr);
 
     /// @brief Pings I2C device and looks for an ACK response.
     /// @param devSettings Settings object containing the address to ping.
