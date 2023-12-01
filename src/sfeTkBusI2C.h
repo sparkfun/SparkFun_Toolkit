@@ -1,5 +1,5 @@
 /*
-sfe_i2c.h
+sfeTkBusI2c.h
 
 The MIT License (MIT)
 
@@ -19,61 +19,86 @@ CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFT
 SOFTWARE.
 
 The following classes specify the behavior for communicating
-over Inter-Integrated Circuit (I2C)
+over Inter-Integrated Circuit (I2C) in Arduino
 
 */
 
 #pragma once
 
-#include "sfe_bus.h"
 #include <Wire.h>
 
-/*
-The SfeI2C device defines behavior for I2C implementation based around the TwoWire class (Wire).
-This is Arduino specific.
-*/
-class SfeI2C : public SfeBus
+// Include our Bus interface definition.
+#include <sfeTk/sfeTkIBus.h>
+
+/// @brief
+/// The sfeTkBusI2C implements an sfeTkIBus interface, defining the Arduino implementation for I2C in the Toolkit
+///
+class sfeTkBusI2C : public sfeTkIBus
 {
   public:
+    ///
     /// @brief Constructor
-    SfeI2C(void) : _i2cPort(nullptr) {};
+    ///
+    sfeTkBusI2C(void) : _i2cPort(nullptr){};
 
-    /// @brief Method sets up the required I2C settings. This function
-    /// provides a default I2C Port.
-    /// @return True on successful execution.
+    /// @brief Method sets up the required I2C settings.
+    /// @note This function provides a default I2C Port.
+    ///
+    /// @retval True on successful execution.
+    ///
     bool init();
 
     /// @brief Method sets up the required I2C settings.
-    /// @param wirePort Port for I2C communcation.
+    ///
+    /// @param wirePort Port for I2C communication.
     /// @param bInit This flag tracks whether the bus has been initialized.
-    /// @return True on successful execution.
+    ///
+    /// @retval True on successful execution.
+    ///
     bool init(TwoWire &wirePort, bool bInit = false);
 
     /// @brief A simple ping of the device at the given address.
+    /// @note sfeTkIBus interface method
+    ///
     /// @param devAddr Address of the device
+    ///
+    /// @retval bool - true on success, false on error
+    ///
     bool ping(uint8_t devAddr);
 
     /// @brief Write a single byte to the given register
+    /// @note sfeTkIBus interface method
+    ///
     /// @param devAddr The device's I2C address.
     /// @param devReg The device's register's address.
     /// @param data Data to write.
-    /// @brief returns true on successful execution.
+    ///
+    /// @retval returns true on successful false on failure.
     bool writeRegisterByte(uint8_t devAddr, uint8_t devReg, uint8_t data);
 
     /// @brief Writes a number of bytes starting at the given register's address.
+    /// @note sfeTkIBus interface method
+    ///
     /// @param devAddr The device's I2C address.
     /// @param devReg The device's register's address.
     /// @param data Data to write.
-    /// @brief returns true on successful execution.
+    ///
+    /// @retval returns number of bytes written, < 0 is an error code
+    ///
     int writeRegisterRegion(uint8_t devAddr, uint8_t devReg, const uint8_t *data, uint16_t length);
 
     /// @brief Reads a block of data from the given register.
+    /// @note sfeTkIBus interface method
+    ///
     /// @param devAddr The device's I2C address.
     /// @param devReg The device's register's address.
     /// @param data Data to write.
-    /// @brief returns true on successful execution.
+    ///
+    /// @retval 0 on success, < 0 on error - see error code
+    ///
     int readRegisterRegion(uint8_t addr, uint8_t reg, uint8_t *data, uint16_t numBytes);
 
   private:
+    // The actual Arduino i2c port
     TwoWire *_i2cPort;
 };

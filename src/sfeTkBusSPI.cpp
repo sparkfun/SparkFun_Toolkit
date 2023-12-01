@@ -1,6 +1,7 @@
-/*
-sfe_spi.h
 
+// sfeTkBusSPI.cpp - Arduino SPI implementation for the toolkit
+
+/*
 The MIT License (MIT)
 
 Copyright (c) 2022 SparkFun Electronics
@@ -23,12 +24,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#include "sfe_spi.h"
-#define SPI_READ 0x80
+#include "sfeTkBusSPI.h "
 
-bool SfeSPI::init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t cs, bool bInit)
+// Note: A leading "1" must be added to transfer with register to indicate a "read"
+// Note to our future selves:
+//   This works / is required on both the ISM330 and MMC5983,
+//   but will cause badness with other SPI devices.
+//   We may need to add an alternate method if we ever add another SPI device.
+#define kSPIReadBit 0x80
+
+//---------------------------------------------------------------------------------
+// init()
+//
+// Arduino version of init. Will take in a defined SPI port/settings
+//
+bool sfeTkBusSPI::init(SPIClass &spiPort, SPISettings &busSPISettings, bool bInit)
 {
-
     // if we don't have a SPI port already
     if (!_spiPort)
     {
@@ -41,32 +52,31 @@ bool SfeSPI::init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t cs, bo
     // SPI settings are needed for every transaction
     _sfeSPISettings = busSPISettings;
 
-    // The chip select pin can vary from platform to platform and project to project
-    // and so it must be given by the user.
-    if (!cs)
-        return false;
-
-    _cs = cs;
-
     return true;
 }
 
-bool SfeSPI::init(uint8_t cs, bool bInit)
+//---------------------------------------------------------------------------------
+// init()
+//
+// Arduino version of init.
+//
+bool sfeTkBusSPI::init(bool bInit)
 {
-
     // If the transaction settings are not provided by the user they are built here.
-    SPISettings spiSettings = SPISettings(3000000, MSB_FIRST, SPI_MODE3);
+    SPISettings spiSettings = SPISettings(3000000, MSBFIRST, SPI_MODE3);
 
     // In addition of the port is not provided by the user, it defaults to SPI here.
-    return init(SPI, spiSettings, cs, bInit);
+    return init(SPI, spiSettings, bInit);
 }
 
-bool SfeSPI::ping(uint8_t devAddr)
-{
-    return true;
-}
-
-bool SfeSPI::writeRegisterByte(uint8_t devAddr, uint8_t devReg, uint8_t dataToWrite)
+//---------------------------------------------------------------------------------
+// writeRegisterByte()
+//
+// Writes a byte to a given register.
+//
+// Returns true on success, false on failure
+//
+bool sfeTkBusSPI::writeRegisterByte(uint8_t cs, uint8_t devReg, uint8_t dataToWrite)
 {
 
     if (!_spiPort)
@@ -75,62 +85,74 @@ bool SfeSPI::writeRegisterByte(uint8_t devAddr, uint8_t devReg, uint8_t dataToWr
     // Apply settings
     _spiPort->beginTransaction(_sfeSPISettings);
     // Signal communication start
-    digitalWrite(_cs, LOW);
+    digitalWrite(cs, LOW);
 
     _spiPort->transfer(devReg);
     _spiPort->transfer(dataToWrite);
 
-    // End communcation
-    digitalWrite(_cs, HIGH);
+    // End communication
+    digitalWrite(cs, HIGH);
     _spiPort->endTransaction();
 
     return true;
 }
 
-int SfeSPI::writeRegisterRegion(uint8_t devAddr, uint8_t devReg, const uint8_t *data, uint16_t length)
-{
-
-    int i;
-
-    // Apply settings
-    _spiPort->beginTransaction(_sfeSPISettings);
-    // Signal communication start
-    digitalWrite(_cs, LOW);
-    _spiPort->transfer(devReg);
-
-    for (i = 0; i < length; i++)
-    {
-        _spiPort->transfer(*data++);
-    }
-
-    // End communication
-    digitalWrite(_cs, HIGH);
-    _spiPort->endTransaction();
-    return 0;
-}
-
-int SfeSPI::readRegisterRegion(uint8_t devAddr, uint8_t devReg, uint8_t *data, uint16_t numBytes)
+//---------------------------------------------------------------------------------
+// writeRegisterRegion()
+//
+// Writes an array of bytes to a given register on the target address
+//
+// Returns the number of bytes written, < 0 is an error
+//
+int sfeTkBusSPI::writeRegisterRegion(uint8_t cs, uint8_t devReg, const uint8_t *data, uint16_t length)
 {
     if (!_spiPort)
         return -1;
 
-    int i;
+    // Apply settings
+    _spiPort->beginTransaction(_sfeSPISettings);
+
+    // Signal communication start
+    digitalWrite(cs, LOW);
+    _spiPort->transfer(devReg);
+
+    for (int i = 0; i < length; i++)
+        _spiPort->transfer(*data++);
+
+    // End communication
+    digitalWrite(cs, HIGH);
+    _spiPort->endTransaction();
+
+    return length;
+}
+
+//---------------------------------------------------------------------------------
+// readRegisterRegion()
+//
+// Reads an array of bytes to a given register on the target address
+//
+// Returns the number of bytes read, < 0 is an error
+//
+int sfeTkBusSPI::readRegisterRegion(uint8_t cs, uint8_t devReg, uint8_t *data, uint16_t numBytes)
+{
+    if (!_spiPort)
+        return -1;
 
     // Apply settings
     _spiPort->beginTransaction(_sfeSPISettings);
-    // Signal communication start
-    digitalWrite(_cs, LOW);
-    // A leading "1" must be added to transfer with devRegister to indicate a "read"
-    devReg = (devReg | SPI_READ);
-    _spiPort->transfer(devReg);
 
-    for (i = 0; i < numBytes; i++)
-    {
+    // Signal communication start
+    digitalWrite(cs, LOW);
+
+    // A leading "1" must be added to transfer with devRegister to indicate a "read"
+    _spiPort->transfer(devReg | kSPIReadBit);
+
+    for (int i = 0; i < numBytes; i++)
         *data++ = _spiPort->transfer(0x00);
-    }
 
     // End transaction
-    digitalWrite(_cs, HIGH);
+    digitalWrite(cs, HIGH);
     _spiPort->endTransaction();
-    return 0;
+
+    return numByte;
 }

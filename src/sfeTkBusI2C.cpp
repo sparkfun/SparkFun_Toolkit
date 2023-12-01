@@ -20,18 +20,21 @@ ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "sfe_i2c.h"
+#include "sfeTkBusI2C.h"
 
-#define maxI2CBufferLength 32
-// What we use for transfer chunk size
-#define buffSize maxI2CBufferLength;
+#define kMaxI2CBufferLength 32
 
-bool SfeI2C::init(TwoWire &wirePort, bool bInit)
+//---------------------------------------------------------------------------------
+// init()
+//
+// Arduino version of init - pass in already setup wire port ...
+//
+bool sfeTkBusI2C::init(TwoWire &wirePort, bool bInit)
 {
-
     // if we don't have a wire port already
     if (!_i2cPort)
     {
+        // use the pass in port
         _i2cPort = &wirePort;
 
         if (bInit)
@@ -41,17 +44,29 @@ bool SfeI2C::init(TwoWire &wirePort, bool bInit)
     return true;
 }
 
-bool SfeI2C::init()
+//---------------------------------------------------------------------------------
+// init()
+//
+// no parameters version of init. Setups a a wire port if needed.
+//
+bool sfeTkBusI2C::init()
 {
+    // no port yet, do the default version of it
     if (!_i2cPort)
         return init(Wire);
-    else
-        return false;
+
+    // We have a port, so arcady init'd - right?
+    return true;
 }
 
-bool SfeI2C::ping(uint8_t devAddr)
+//---------------------------------------------------------------------------------
+// ping()
+//
+// Ping an I2C address to see if something is there.
+//
+bool sfeTkBusI2C::ping(uint8_t devAddr)
 {
-
+    // no port, no
     if (!_i2cPort)
         return false;
 
@@ -59,20 +74,36 @@ bool SfeI2C::ping(uint8_t devAddr)
     return _i2cPort->endTransmission() == 0;
 }
 
-bool SfeI2C::writeRegisterByte(uint8_t devAddr, uint8_t devReg, uint8_t dataToWrite)
+//---------------------------------------------------------------------------------
+// writeRegisterByte()
+//
+// Writes a byte to a given register.
+//
+// Returns true on success, false on failure
+//
+bool sfeTkBusI2C::writeRegisterByte(uint8_t devAddr, uint8_t devReg, uint8_t dataToWrite)
 {
-
     if (!_i2cPort)
         return false;
 
+    // do the Arduino I2C work
     _i2cPort->beginTransmission(devAddr);
     _i2cPort->write(devReg);
     _i2cPort->write(dataToWrite);
     return _i2cPort->endTransmission() == 0;
 }
 
-int SfeI2C::writeRegisterRegion(uint8_t devAddr, uint8_t devReg, const uint8_t *data, uint16_t length)
+//---------------------------------------------------------------------------------
+// writeRegisterRegion()
+//
+// Writes an array of bytes to a given register on the target address
+//
+// Returns the number of bytes written, < 0 is an error
+//
+int sfeTkBusI2C::writeRegisterRegion(uint8_t devAddr, uint8_t devReg, const uint8_t *data, uint16_t length)
 {
+    if (!_i2cPort)
+        return -1;
 
     _i2cPort->beginTransmission(devAddr);
     _i2cPort->write(devReg);
@@ -81,14 +112,22 @@ int SfeI2C::writeRegisterRegion(uint8_t devAddr, uint8_t devReg, const uint8_t *
     return _i2cPort->endTransmission() ? -1 : 0; // -1 = error, 0 = success
 }
 
-int SfeI2C::readRegisterRegion(uint8_t devAddr, uint8_t devReg, uint8_t *data, uint16_t numBytes)
+//---------------------------------------------------------------------------------
+// readRegisterRegion()
+//
+// Reads an array of bytes to a given register on the target address
+//
+// Returns the number of bytes read, < 0 is an error
+//
+int sfeTkBusI2C::readRegisterRegion(uint8_t devAddr, uint8_t devReg, uint8_t *data, uint16_t numBytes)
 {
-    uint8_t nChunk;
-    uint16_t nReturned;
-
+    // got port
     if (!_i2cPort)
         return -1;
 
+    uint16_t nOrig = numBytes; // original number of bytes.
+    uint8_t nChunk;
+    uint16_t nReturned;
     int i;                   // counter in loop
     bool bFirstInter = true; // Flag for first iteration - used to send devRegister
 
@@ -106,7 +145,7 @@ int SfeI2C::readRegisterRegion(uint8_t devAddr, uint8_t devReg, uint8_t *data, u
             return -1; // error with the end transmission
 
         // We're chunking in data - keeping the max chunk to kMaxI2CBufferLength
-        nChunk = numBytes > buffSize ? buffSize : numBytes;
+        nChunk = numBytes > kMaxI2CBufferLength ? kMaxI2CBufferLength : numBytes;
 
         nReturned = _i2cPort->requestFrom((int)devAddr, (int)nChunk, (int)true);
 
@@ -116,14 +155,12 @@ int SfeI2C::readRegisterRegion(uint8_t devAddr, uint8_t devReg, uint8_t *data, u
 
         // Copy the retrieved data chunk to the current index in the data segment
         for (i = 0; i < nReturned; i++)
-        {
             *data++ = _i2cPort->read();
-        }
 
-        // Decrement the amount of data recieved from the overall data request amount
+        // Decrement the amount of data received from the overall data request amount
         numBytes = numBytes - nReturned;
 
     } // end while
 
-    return 0; // Success
+    return nOrig - numBytes; // Success
 }
