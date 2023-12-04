@@ -1,7 +1,9 @@
 name: Cross-compilation
 
 on:
-  # - push 
+  push:
+    branches:
+      - main
   #- pull_request
 
 
