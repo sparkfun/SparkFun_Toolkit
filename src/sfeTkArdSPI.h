@@ -39,6 +39,18 @@ class sfeTkBusSPI : public sfeTkIBus
     ///
     sfeTkBusSPI(void) : _spiPort(nullptr){};
 
+    // copy constructor
+    sfeTkArdSPI(sfeTkArdSPI const &rhs) : _spiPort{rhs._spiPort}, _sfeSPISettings{rhs._sfeSPISettings}
+    {
+    }
+
+    // Copy assignment
+    sfeTkArdSPI &operator=(const sfeTkArdSPI &rhs)
+    {
+        _spiPort = rhs._spiPort;
+        _sfeSPISettings = rhs._sfeSPISettings;
+        return *this;
+    }
     /// @brief Method sets up the required SPI settings.
     /// @note This function provides a default SPI Port.
     ///

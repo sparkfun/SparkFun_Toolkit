@@ -47,6 +47,18 @@ class sfeTkArdI2C : public sfeTkII2C
     {
     }
 
+    // copy constructor
+    sfeTkArdI2C(sfeTkArdI2C const &rhs) : _i2cPort{rhs._i2cPort}
+    {
+    }
+
+    // Copy assignment
+    sfeTkArdI2C &operator=(const sfeTkArdI2C &rhs)
+    {
+        _i2cPort = rhs._i2cPort;
+        return *this;
+    }
+
     /// @brief Method sets up the required I2C settings.
     /// @note This function provides a default I2C Port.
     ///
