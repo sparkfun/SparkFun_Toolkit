@@ -56,7 +56,7 @@ class sfeTkIBus
     ///
     /// @retval int returns the number of bytes written, < 0 on error
     ///
-    virtual int writeRegisterRegion(uint8_t devReg, const uint8_t *data, uint16_t length) = 0;
+    virtual int writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length) = 0;
 
     /// @brief Read a single byte from the given register
     ///
@@ -84,7 +84,7 @@ class sfeTkIBus
     ///
     /// @retval int returns 0 on success, or error code
     ///
-    virtual int readRegisterRegion(uint8_t reg, uint8_t *data, uint16_t numBytes) = 0;
+    virtual int readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes) = 0;
 };
 
 //};

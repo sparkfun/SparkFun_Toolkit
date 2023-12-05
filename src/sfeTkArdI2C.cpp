@@ -115,7 +115,7 @@ bool sfeTkArdI2C::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite)
     if (!_i2cPort)
         return false;
 
-    return writeRegisterRegion(devReg, &dataToWrite, sizeof(u_int16_t)) == 0;
+    return writeRegisterRegion(devReg, (uint8_t *)&dataToWrite, sizeof(u_int16_t)) == 0;
 }
 
 //---------------------------------------------------------------------------------
@@ -125,7 +125,7 @@ bool sfeTkArdI2C::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite)
 //
 // Returns the number of bytes written, < 0 is an error
 //
-virtual int sfeTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *data, uint16_t length)
+int sfeTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
 {
     if (!_i2cPort)
         return -1;
@@ -155,7 +155,7 @@ bool sfeTkArdI2C::readRegisterByte(uint8_t devReg, uint8_t &dataToRead)
     int nData = 0;
 
     _i2cPort->beginTransmission(address());
-    _i2cPort->write(offset);
+    _i2cPort->write(devReg);
     _i2cPort->endTransmission();
     _i2cPort->requestFrom(address(), (uint8_t)1);
 
@@ -182,7 +182,7 @@ bool sfeTkArdI2C::readRegisterWord(uint8_t devReg, uint16_t &dataToRead)
     if (!_i2cPort)
         return false;
 
-    return readRegisterRegion(devReg, &dataToRead, sizeof(u_int16_t)) == 2;
+    return readRegisterRegion(devReg, (uint8_t *)&dataToRead, sizeof(uint16_t)) == 2;
 }
 
 //---------------------------------------------------------------------------------
@@ -192,7 +192,7 @@ bool sfeTkArdI2C::readRegisterWord(uint8_t devReg, uint16_t &dataToRead)
 //
 // Returns the number of bytes read, < 0 is an error
 //
-virtual int sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, uint16_t numBytes)
+int sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes)
 {
     // got port
     if (!_i2cPort)

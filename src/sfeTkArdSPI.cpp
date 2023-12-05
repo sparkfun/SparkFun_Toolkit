@@ -1,5 +1,5 @@
 
-// sfeTkBusSPI.cpp - Arduino SPI implementation for the toolkit
+// sfeTkArdSPI.cpp - Arduino SPI implementation for the toolkit
 
 /*
 The MIT License (MIT)
@@ -22,9 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#pragma once
-
-#include "sfeTkArdSPI.h "
+#include "sfeTkArdSPI.h"
+#include <Arduino.h>
 
 // Note: A leading "1" must be added to transfer with register to indicate a "read"
 // Note to our future selves:
@@ -38,7 +37,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 // Arduino version of init. Will take in a defined SPI port/settings
 //
-bool sfeTkBusSPI::init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t csPin, bool bInit)
+bool sfeTkArdSPI::init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t csPin, bool bInit)
 {
     // if we don't have a SPI port already
     if (!_spiPort)
@@ -62,10 +61,10 @@ bool sfeTkBusSPI::init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t c
 //
 // Arduino version of init.
 //
-bool sfeTkBusSPI::init(uint8_t csPin, bool bInit)
+bool sfeTkArdSPI::init(uint8_t csPin, bool bInit)
 {
     // If the transaction settings are not provided by the user they are built here.
-    SPISettings spiSettings = SPISettings(3000000, MSBFIRST, SPI_MODE3);
+    SPISettings spiSettings = SPISettings(3000000, SPI_MSBFIRST, SPI_MODE3);
 
     // In addition of the port is not provided by the user, it defaults to SPI here.
     return init(SPI, spiSettings, csPin, bInit);
@@ -76,7 +75,7 @@ bool sfeTkBusSPI::init(uint8_t csPin, bool bInit)
 //
 // Arduino version of init.
 //
-bool sfeTkBusSPI::init(bool bInit)
+bool sfeTkArdSPI::init(bool bInit)
 {
     return init(cs(), bInit);
 }
@@ -88,7 +87,7 @@ bool sfeTkBusSPI::init(bool bInit)
 //
 // Returns true on success, false on failure
 //
-bool sfeTkBusSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
+bool sfeTkArdSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
 {
 
     if (!_spiPort)
@@ -115,11 +114,9 @@ bool sfeTkBusSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
 //
 // Returns true on success, false on failure
 //
-bool sfeTkBusSPI::writeRegisterWord(uint8_t devReg, uint8_t dataToWrite)
+bool sfeTkArdSPI::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite)
 {
-
-    return writeRegisterRegion(defReg, &dataToWrite, sizeof(uint8_t)) > 0;
-    ;
+    return writeRegisterRegion(devReg, (uint8_t *)&dataToWrite, sizeof(uint8_t)) > 0;
 }
 //---------------------------------------------------------------------------------
 // writeRegisterRegion()
@@ -128,7 +125,7 @@ bool sfeTkBusSPI::writeRegisterWord(uint8_t devReg, uint8_t dataToWrite)
 //
 // Returns the number of bytes written, < 0 is an error
 //
-virtual int sfeTkBusSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, uint16_t length)
+int sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
 {
     if (!_spiPort)
         return -1;
@@ -150,14 +147,14 @@ virtual int sfeTkBusSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data
     return length;
 }
 
-bool sfeTkBusSPI::readRegisterByte(uint8_t devReg, uint8_t &data)
+bool sfeTkArdSPI::readRegisterByte(uint8_t devReg, uint8_t &data)
 {
-    return readRegisterRegion(devReg, &data) == 1;
+    return readRegisterRegion(devReg, &data, sizeof(data)) == 1;
 }
 
-bool sfeTkBusSPI::readRegisterWord(uint8_t devReg, uint16_t &data)
+bool sfeTkArdSPI::readRegisterWord(uint8_t devReg, uint16_t &data)
 {
-    return readRegisterRegion(devReg, &data) == 2;
+    return readRegisterRegion(devReg, (uint8_t *)&data, sizeof(data)) == 2;
 }
 //---------------------------------------------------------------------------------
 // readRegisterRegion()
@@ -166,7 +163,7 @@ bool sfeTkBusSPI::readRegisterWord(uint8_t devReg, uint16_t &data)
 //
 // Returns the number of bytes read, < 0 is an error
 //
-virtual int sfeTkBusSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, uint16_t numBytes)
+int sfeTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes)
 {
     if (!_spiPort)
         return -1;
@@ -187,5 +184,5 @@ virtual int sfeTkBusSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, uint1
     digitalWrite(cs(), HIGH);
     _spiPort->endTransaction();
 
-    return numByte;
+    return numBytes;
 }

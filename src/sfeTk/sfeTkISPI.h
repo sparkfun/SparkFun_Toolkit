@@ -27,14 +27,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "sfeTkIBus.h"
 
-class sfeTkSPI : public sfeTkIBus
+class sfeTkISPI : public sfeTkIBus
 {
   public:
-    sfeTkSPI() : _cs{kNoCSPin}
+    sfeTkISPI() : _cs{kNoCSPin}
     {
     }
 
-    sfeTkSPI(uint8_t csPin) : _cs{csPin}
+    sfeTkISPI(uint8_t csPin) : _cs{csPin}
     {
     }
     /// @brief setter for the CS Pin

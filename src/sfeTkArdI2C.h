@@ -48,7 +48,7 @@ class sfeTkArdI2C : public sfeTkII2C
     }
 
     // copy constructor
-    sfeTkArdI2C(sfeTkArdI2C const &rhs) : _i2cPort{rhs._i2cPort}
+    sfeTkArdI2C(sfeTkArdI2C const &rhs) : sfeTkII2C(), _i2cPort{rhs._i2cPort}
     {
     }
 
@@ -76,7 +76,7 @@ class sfeTkArdI2C : public sfeTkII2C
     ///
     /// @retval True on successful execution.
     ///
-    bool init(TwoWire &wirePort, uint8_t addr, bInit = false);
+    bool init(TwoWire &wirePort, uint8_t addr, bool bInit = false);
 
     /// @brief A simple ping of the device at the given address.
     /// @note sfeTkIBus interface method
@@ -105,7 +105,7 @@ class sfeTkArdI2C : public sfeTkII2C
     ///
     /// @retval returns number of bytes written, < 0 is an error code
     ///
-    virtual int writeRegisterRegion(uint8_t devReg, const uint8_t *data, uint16_t length);
+    virtual int writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
 
     /// @brief Reads a byte of data from the given register.
     /// @note sfeTkIBus interface method
@@ -136,7 +136,7 @@ class sfeTkArdI2C : public sfeTkII2C
     ///
     /// @retval 0 on success, < 0 on error - see error code
     ///
-    virtual int readRegisterRegion(uint8_t devReg, uint8_t *data, uint16_t numBytes);
+    virtual int readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes);
 
   private:
     // The actual Arduino i2c port

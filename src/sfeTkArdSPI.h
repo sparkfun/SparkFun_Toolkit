@@ -27,20 +27,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include <SPI.h>
-#include <sfeTk/sfeTkIBus.h>
+#include <sfeTk/sfeTkISPI.h>
 
 /// @brief This class implements the IBus interface for an SPI Implementation on Arduino
 ///
-class sfeTkBusSPI : public sfeTkIBus
+class sfeTkArdSPI : public sfeTkISPI
 {
   public:
     ///
     /// @brief Constructor
     ///
-    sfeTkBusSPI(void) : _spiPort(nullptr){};
+    sfeTkArdSPI(void) : _spiPort(nullptr){};
 
     // copy constructor
-    sfeTkArdSPI(sfeTkArdSPI const &rhs) : _spiPort{rhs._spiPort}, _sfeSPISettings{rhs._sfeSPISettings}
+    sfeTkArdSPI(sfeTkArdSPI const &rhs) : sfeTkISPI(), _spiPort{rhs._spiPort}, _sfeSPISettings{rhs._sfeSPISettings}
     {
     }
 
@@ -60,7 +60,7 @@ class sfeTkBusSPI : public sfeTkIBus
     ///
     bool init(bool bInit = false);
 
-    bool init(uint8_t csPin, bInit = false);
+    bool init(uint8_t csPin, bool bInit = false);
 
     /// @brief Method sets up the required SPI settings.
     ///
@@ -98,7 +98,7 @@ class sfeTkBusSPI : public sfeTkIBus
     ///
     /// @retval int - number of bytes written, < 0 = error value
     ///
-    virtual int writeRegisterRegion(uint8_t devReg, const uint8_t *data, uint16_t length);
+    virtual int writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
 
     /// @brief Read a single byte from the given register
     ///
@@ -126,7 +126,7 @@ class sfeTkBusSPI : public sfeTkIBus
     ///
     /// @retval int returns the number of bytes read, < 0 on error
     ///
-    virtual int readRegisterRegion(uint8_t reg, uint8_t *data, uint16_t numBytes);
+    virtual int readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes);
 
   private:
     SPIClass *_spiPort;

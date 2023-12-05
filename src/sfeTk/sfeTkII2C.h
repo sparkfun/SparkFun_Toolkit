@@ -27,13 +27,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "sfeTkIBus.h"
 
-class sfeTkI2C : public sfeTkIBus
+class sfeTkII2C : public sfeTkIBus
 {
   public:
-    sfeTkI2C() : _address{kNoAddress}
+    sfeTkII2C() : _address{kNoAddress}
     {
     }
-    sfeTkI2C(uint8_t addr) : _address{addr}
+    sfeTkII2C(uint8_t addr) : _address{addr}
     {
     }
 
