@@ -52,7 +52,7 @@ This class sub-classes from the ```sfeTkIBus``` interface adding additional func
 **address** | Returns the address used by this I2C object |
 
 > [!NOTE]
-> The ```sfeTkII2C``` class manages the device address for the I2C bus. As such, each I2C device instantiates/uses a instance of the ```sfeTkII2C``` class.
+> The ```sfeTkII2C``` class manages the device address for the I2C bus. As such, each I2C device instantiates/uses an instance of the ```sfeTkII2C``` class.
 
 ### The sfeTkISPI Implementation
 
@@ -64,7 +64,7 @@ This class sub-classes from the ```sfeTkIBus``` interface adding additional func
 **cs** | Returns the CS Pin used by this SPI object |
 
 > [!NOTE]
-> The ```sfeTkISPI``` class manages CS Pin for the SPI bus. As such, each SPI device instantiates/uses a instance of the ```sfeTkISPI``` class.
+> The ```sfeTkISPI``` class manages CS Pin for the SPI bus. As such, each SPI device instantiates/uses an instance of the ```sfeTkISPI``` class.
 
 The class diagram of these base class interfaces/implementation:
 
@@ -111,9 +111,7 @@ This driver has the following unique functionality:
 1) A method to set the object that implements the ```sfeTkIBus``` interface object should use. Since
 1) If the device supports identification capabilities, the driver provides this functionality.
 
-### Platform Independent/Bus Independent Driver
-
-Develop a platform independent version of a device driver that commutates using the sfeTkIBus interface. This driver should include a method to set the bus object, accepting a pointer to a sfeTkIBus interface/object. Actual bus setup is provided outside of the driver.
+#### SImple Example of an Independent Driver Implementation
 
 This implementation would take the following form:
 
@@ -160,7 +158,17 @@ private:
 
 This driver sub-classes from the general/core driver class, builds and configures the desired bus object and passes this into the core driver.
 
-Basic concept - creating an I2C class in Arduino
+The key concepts for these Platform specific drivers include:
+
+1) Perform any platform specific bus setup during the instantiation of the device. This might just be setting the target (pin, address) for the device on the bus.
+1) Implement any bus specific device identification use at this level. For example, on I2C, a ping call might be made on the bus before a more detailed identification method is used.
+
+#### Basic concept - creating an I2C class in Arduino
+
+The following is an example of an I2C class in Arduino based on the previous platform independent driver.
+
+> [!NOTE]
+> This class implements a ```isConnected()``` method that calls the ```ping()``` method of the I2C bus class being used, and if this passes, then calls the ```checkDeviceID()``` method of the superclass.
 
 ```c++
 
@@ -179,7 +187,7 @@ class myArduinoDriverI2C : public myDriverClass
         return myDriverClass::begin();
     }
 
-    bool ping()
+    bool isConnected()
     {
         if (!_theI2CBus.ping())
             return false;
@@ -192,7 +200,12 @@ private:
 };
 ```
 
-Basic concept - creating an SPI class in Arduino
+#### Basic concept - creating an SPI class in Arduino
+
+The following is a SPI version of the driver implemented in Arduino. While similar to the I2C implementation, it focuses on the specific needs of the SPI bus, specifically the ```SPISettings``` this particular device requires when using the SPI bus.
+
+> [!NOTE]
+> This class implements a ```isConnected()``` method that just calls the superclasses  ```checkDeviceID()``` method to determine if the device is available on the bus.
 
 ```c++
 
@@ -213,7 +226,7 @@ class myArduinoDriveSPI : public myDriverClass
         return myDriverClass::begin();
     }
 
-    bool ping()
+    bool isConnected()
     {
         return checkDeviceID();
     }
