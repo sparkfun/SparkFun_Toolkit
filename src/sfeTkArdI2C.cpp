@@ -125,7 +125,7 @@ bool sfeTkArdI2C::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite)
 //
 // Returns the number of bytes written, < 0 is an error
 //
-int sfeTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *data, uint16_t length)
+virtual int sfeTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *data, uint16_t length)
 {
     if (!_i2cPort)
         return -1;
@@ -192,7 +192,7 @@ bool sfeTkArdI2C::readRegisterWord(uint8_t devReg, uint16_t &dataToRead)
 //
 // Returns the number of bytes read, < 0 is an error
 //
-int sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, uint16_t numBytes)
+virtual int sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, uint16_t numBytes)
 {
     // got port
     if (!_i2cPort)

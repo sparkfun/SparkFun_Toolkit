@@ -30,10 +30,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class sfeTkSPI : public sfeTkIBus
 {
   public:
-    sfeTkI2C() : _csPin{kNoCSPin}
+    sfeTkSPI() : _cs{kNoCSPin}
     {
     }
 
+    sfeTkSPI(uint8_t csPin) : _cs{csPin}
+    {
+    }
     /// @brief setter for the CS Pin
     ///
     /// @param devCS The device's CS Pin

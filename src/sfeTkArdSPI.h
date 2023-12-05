@@ -79,13 +79,14 @@ class sfeTkBusSPI : public sfeTkIBus
     bool writeRegisterWord(uint8_t devReg, uint16_t data);
 
     /// @brief Writes a number of bytes starting at the given register's address.
-    ///
+    /// @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
+    //
     /// @param devReg The device's register's address.
     /// @param data Data to write.
     ///
     /// @retval int - number of bytes written, < 0 = error value
     ///
-    int writeRegisterRegion(uint8_t devReg, const uint8_t *data, uint16_t length);
+    virtual int writeRegisterRegion(uint8_t devReg, const uint8_t *data, uint16_t length);
 
     /// @brief Read a single byte from the given register
     ///
@@ -106,13 +107,14 @@ class sfeTkBusSPI : public sfeTkIBus
     bool readRegisterWord(uint8_t devReg, uint16_t &data);
 
     /// @brief Reads a block of data from the given register.
+    /// @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
     ///
     /// @param devReg The device's register's address.
     /// @param data Data to write.
     ///
     /// @retval int returns the number of bytes read, < 0 on error
     ///
-    int readRegisterRegion(uint8_t reg, uint8_t *data, uint16_t numBytes);
+    virtual int readRegisterRegion(uint8_t reg, uint8_t *data, uint16_t numBytes);
 
   private:
     SPIClass *_spiPort;
