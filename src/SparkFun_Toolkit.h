@@ -29,5 +29,5 @@ SOFTWARE.
 
 // Just include the toolkit headers
 
-#include "sfeTkBusI2C.h"
-#include "sfeTkBusSPI.h"
+#include "sfeTkArdI2C.h"
+#include "sfeTkArdSPI.h"

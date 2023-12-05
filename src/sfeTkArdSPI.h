@@ -48,6 +48,8 @@ class sfeTkBusSPI : public sfeTkIBus
     ///
     bool init(bool bInit = false);
 
+    bool init(uint8_t csPin, bInit = false);
+
     /// @brief Method sets up the required SPI settings.
     ///
     /// @param spiPort Port for SPI communication.
@@ -56,50 +58,61 @@ class sfeTkBusSPI : public sfeTkIBus
     ///
     /// @retval bool - True on successful, false on error
     ///
-    bool init(SPIClass &spiPort, SPISettings &busSPISettings, bool bInit = false);
-
-    /// @brief Is a device connected? j
-    /// @note The SPI ping is not relevant but is defined here to keep consistency with I2C class i.e. provided for the
-    /// abstract interface.
-    ///
-    /// @param devAddr Address of the device (unused)
-    ///
-    /// @retval - returns true on success, false on error
-    ///
-    bool ping(uint8_t devAddr = 0)
-    {
-        return true; // always true
-    }
+    bool init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t csPin, bool bInit = false);
 
     /// @brief Write a single byte to the given register
     ///
-    /// @param cs The device chip select pin
     /// @param devReg The device's register's address.
     /// @param data Data to write.
     ///
     /// @retval bool - true on success, false on error
     ///
-    bool writeRegisterByte(uint8_t cs, uint8_t devReg, uint8_t data);
+    bool writeRegisterByte(uint8_t devReg, uint8_t data);
+
+    /// @brief Write a single word to the given register
+    ///
+    /// @param devReg The device's register's address.
+    /// @param data Data to write.
+    ///
+    /// @retval bool - true on success, false on error
+    ///
+    bool writeRegisterWord(uint8_t devReg, uint16_t data);
 
     /// @brief Writes a number of bytes starting at the given register's address.
     ///
-    /// @param cs The chip select pin for the device
     /// @param devReg The device's register's address.
     /// @param data Data to write.
     ///
     /// @retval int - number of bytes written, < 0 = error value
     ///
-    int writeRegisterRegion(uint8_t cs, uint8_t devReg, const uint8_t *data, uint16_t length);
+    int writeRegisterRegion(uint8_t devReg, const uint8_t *data, uint16_t length);
+
+    /// @brief Read a single byte from the given register
+    ///
+    /// @param devReg The device's register's address.
+    /// @param data Data to read.
+    ///
+    /// @retval bool - true on success, false on error
+    ///
+    bool readRegisterByte(uint8_t devReg, uint8_t &data);
+
+    /// @brief read a single word to the given register
+    ///
+    /// @param devReg The device's register's address.
+    /// @param data Data to write.
+    ///
+    /// @retval bool - true on success, false on error
+    ///
+    bool readRegisterWord(uint8_t devReg, uint16_t &data);
 
     /// @brief Reads a block of data from the given register.
     ///
-    /// @param cs The chip select pin for the device
     /// @param devReg The device's register's address.
     /// @param data Data to write.
     ///
     /// @retval int returns the number of bytes read, < 0 on error
     ///
-    int readRegisterRegion(uint8_t cs, uint8_t reg, uint8_t *data, uint16_t numBytes);
+    int readRegisterRegion(uint8_t reg, uint8_t *data, uint16_t numBytes);
 
   private:
     SPIClass *_spiPort;

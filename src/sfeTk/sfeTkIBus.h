@@ -27,26 +27,26 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdint>
 
-class sfeTkBus
+class sfeTkIBus
 {
   public:
-    ///
-    /// @brief A simple ping of the device at the given address.
-    /// @param devAddr Address/Pin of the device
-    ///
-    /// @retval bool - true on success, false on failure
-    ///
-    virtual bool ping(uint8_t devAddr) = 0;
-
     /// @brief Write a single byte to the given register
     ///
-    /// @param devAddr The device's address/pin -- depending on implementation
     /// @param devReg The device's register's address.
     /// @param data Data to write.
     ///
     /// @retval bool -  true on successful execution.
     ///
-    virtual bool writeRegisterByte(uint8_t devAddr, uint8_t devReg, uint8_t data) = 0;
+    virtual bool writeRegisterByte(uint8_t devReg, uint8_t data) = 0;
+
+    /// @brief Write a single word (16 bit) to the given register
+    ///
+    /// @param devReg The device's register's address.
+    /// @param data Data to write.
+    ///
+    /// @retval bool -  true on successful execution.
+    ///
+    virtual bool writeRegisterWord(uint8_t devReg, uint16_t data) = 0;
 
     /// @brief Writes a number of bytes starting at the given register's address.
     ///
@@ -56,7 +56,25 @@ class sfeTkBus
     ///
     /// @retval int returns the number of bytes written, < 0 on error
     ///
-    virtual int writeRegisterRegion(uint8_t devAddr, uint8_t devReg, const uint8_t *data, uint16_t length) = 0;
+    virtual int writeRegisterRegion(uint8_t devReg, const uint8_t *data, uint16_t length) = 0;
+
+    /// @brief Read a single byte from the given register
+    ///
+    /// @param devReg The device's register's address.
+    /// @param data Data to read.
+    ///
+    /// @retval bool -  true on successful execution.
+    ///
+    virtual bool readRegisterByte(uint8_t devReg, uint8_t &data) = 0;
+
+    /// @brief Read a single word (16 bit) from the given register
+    ///
+    /// @param devReg The device's register's address.
+    /// @param data Data to read.
+    ///
+    /// @retval bool -  true on successful execution.
+    ///
+    virtual bool readRegisterWord(uint8_t devReg, uint16_t &data) = 0;
 
     /// @brief Reads a block of data from the given register.
     ///
@@ -66,7 +84,7 @@ class sfeTkBus
     ///
     /// @retval int returns 0 on success, or error code
     ///
-    virtual int readRegisterRegion(uint8_t addr, uint8_t reg, uint8_t *data, uint16_t numBytes) = 0;
+    virtual int readRegisterRegion(uint8_t reg, uint8_t *data, uint16_t numBytes) = 0;
 };
 
 //};
