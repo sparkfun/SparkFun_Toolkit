@@ -61,6 +61,10 @@ This class sub-classes from the ```sfeTkIBus``` interface adding additional func
 
 > Note: The ```sfeTkISPI``` class manages the CS Pin
 
+The class diagram of these base class interfaces/implementation:
+
+![IBus diagram](images/tk_IBUS.png)
+
 ## sfeTkIBus Use
 
 The general steps when using the sfeTkIBus in device development are outlined in the following steps
