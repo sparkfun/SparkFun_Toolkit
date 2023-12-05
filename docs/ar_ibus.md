@@ -38,7 +38,8 @@ The interface methods:
 **readRegisterWord** | Read a word of data from a particular register of a device |
 **readRegisterRegion** | Read an array of data from a particular register of a device |
 
-> Note: This interface only defines the methods to read and write data on the given bus. Any address, or bus specific settings is provided/implemented by the implementation/specialization of this interface.
+> [!NOTE]
+> This interface only defines the methods to read and write data on the given bus. Any address, or bus specific settings is provided/implemented by the implementation/specialization of this interface.
 
 ### The sfeTkII2C Implementation
 
@@ -50,7 +51,8 @@ This class sub-classes from the ```sfeTkIBus``` interface adding additional func
 **setAddress** | Set the I2C address to use for this I2C object |
 **address** | Returns the address used by this I2C object |
 
-> Note: The ```sfeTkII2C``` class manages the device address for the I2C bus. As such, each I2C device instantiates/uses a instance of the ```sfeTkII2C``` class.
+> [!NOTE]
+> The ```sfeTkII2C``` class manages the device address for the I2C bus. As such, each I2C device instantiates/uses a instance of the ```sfeTkII2C``` class.
 
 ### The sfeTkISPI Implementation
 
@@ -61,7 +63,8 @@ This class sub-classes from the ```sfeTkIBus``` interface adding additional func
 **setCS** | Set the CS Pin to use for this SPI object |
 **cs** | Returns the CS Pin used by this SPI object |
 
-> Note: The ```sfeTkISPI``` class manages CS Pin for the SPI bus. As such, each SPI device instantiates/uses a instance of the ```sfeTkISPI``` class.
+> [!NOTE]
+> The ```sfeTkISPI``` class manages CS Pin for the SPI bus. As such, each SPI device instantiates/uses a instance of the ```sfeTkISPI``` class.
 
 The class diagram of these base class interfaces/implementation:
 
@@ -73,7 +76,8 @@ The initial implementation of the toolkit IBus interface is for the Arduino envi
 
 These driver implementations provide the platform specific implementation for the toolkit bus interfaces, supporting the methods defined by the interfaces, as well as contain and manage the platform specific settings and attributes for each bus type.
 
-> Note: The intent is that each user of an particular bus - a device in most cases - contains an instance of the specific bus object.
+> [!IMPORTANT]
+> The intent is that each user of an particular bus - a device in most cases - contains an instance of the specific bus object.
 
 The class diagram for the Arduino implementation is as follows:
 
