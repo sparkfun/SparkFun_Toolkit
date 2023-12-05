@@ -20,8 +20,8 @@ The key class to support this pattern are:
 | | |
 |------|-------|
 **sfeTkIBus** | A virtual C++ class that device the bus ```sfeTkIBus``` interface |
-**sfeTkBusI2C** | Provides an Arduino I2C implementation for the toolkit |
-**sfeTkBusSPI** | Provides an Arduino SPI implementation for the toolkit |
+**sfeTkII2C** | Sub-class of the ```sfeTkIIBus``` interface, it provides an interface for I2C devices|
+**sfeTkISPI** | Sub-class of the ```sfeTkIIBus``` interface, it provides an interface for SPI devices |
 
 ### The sfeTkIBus Interface
 
@@ -31,18 +31,35 @@ The interface methods:
 
 | Method| Definition |
 |------|-------|
-**ping** | A method used to determine if a device is connected to the bus |
 **writeRegisterByte** | Write a byte of data to a particular register of a device |
+**writeRegisterWord** | Write a word of data to a particular register of a device |
 **writeRegisterRegion** | Write an array of data to a particular register of a device|
+**readRegisterByte** | Read a byte of data from a particular register of a device |
+**readRegisterWord** | Read a word of data from a particular register of a device |
 **readRegisterRegion** | Read an array of data from a particular register of a device |
 
-### Arduino Implementation
+### The sfeTkII2C Implementation
 
-The first implementation of the IBus interface is for the Arduino development environment, as noted above. The implementation consists of two classes, ```sfeTkBusI2C``` and ```sfeTkBusSPI```, each implementing the sfeTkIBus interface using the Arduino SDK.
+This class sub-classes from the ```sfeTkIBus``` interface adding additional functionally focused on supporting an I2C implementation. This interface provides the additional functionality.
 
-The results is outlined in the following class diagram:
+| Method| Definition |
+|------|-------|
+**ping** | Determine if a devices is connected to the I2C device at the address set on this bus object. This is an interface method |
+**setAddress** | Set the I2C address to use for this I2C object |
+**address** | Returns the address used by this I2C object |
 
-![Device Class](images/sfetk_ibus_class.png)
+> Note: The ```sfeTkII2C``` class manages the I2C address
+
+### The sfeTkISPI Implementation
+
+This class sub-classes from the ```sfeTkIBus``` interface adding additional functionally focused on supporting an SPI implementation. This interface provides the additional functionality.
+
+| Method| Definition |
+|------|-------|
+**setCS** | Set the CS Pin to use for this SPI object |
+**cs** | Returns the CS Pin used by this SPI object |
+
+> Note: The ```sfeTkISPI``` class manages the CS Pin
 
 ## sfeTkIBus Use
 
@@ -78,13 +95,18 @@ public:
         if (!_theBus || !data || len == 0)
             return false;
 
-        int status = _theBus->writeRegisterRegion(_addr, THE_REG, data, len);
+        int status = _theBus->writeRegisterRegion(THE_REG, data, len);
 
         return (status == 0);
     }
+
+    bool checkDeviceID()
+    {
+        // do some device ID checks in registers ...etc
+        return true;
+    }
 private:
-    sfeTkIBus *_theBus
-    uint8_t _addr;
+    sfeTkIBus *_theBus;
 };
 ```
 
@@ -96,23 +118,31 @@ Basic concept - creating an I2C class in Arduino
 
 ```c++
 
-class myArduinoDriveI2C : public myDriverClass
+class myArduinoDriverI2C : public myDriverClass
 {
   public:
-    myArduinoDriverI2C() : myDriverClass(MY_DEFAULT_ADDRESS)
+    myArduinoDriverI2C()
     {}
-
+   
     bool begin()
     {
-        if (!_theI2CBus.init())
+        if (!_theI2CBus.init(MY_DEVICE_ADDRESS))
             return false;
         setCommunicationBus(&_theI2CBus);
 
         return myDriverClass::begin();
     }
 
+    bool ping()
+    {
+        if (!_theI2CBus.ping())
+            return false;
+
+        return checkDeviceID();
+    }
+
 private:
-   sfeTkBusI2C _theI2CBus;
+   sfeTkArdI2C _theI2CBus;
 };
 ```
 
@@ -123,21 +153,26 @@ Basic concept - creating an SPI class in Arduino
 class myArduinoDriveSPI : public myDriverClass
 {
   public:
-    myArduinoDriverSPI() : myDriverClass(MY_DEFAULT_CS)
+    myArduinoDriverSPI()
     {}
 
     bool begin()
     {
         SPISettings spiSettings = SPISettings(4000000, MSBFIRST, SPI_MODE3);
 
-        if (!_theSPIBus.init(SPI, spiSettings, true))
+        if (!_theSPIBus.init(SPI, spiSettings, MY_DEFAULT_CS, true))
             return false;
         setCommunicationBus(&_theSPIBus);
 
         return myDriverClass::begin();
     }
 
+    bool ping()
+    {
+        return checkDeviceID();
+    }
+
 private:
-   sfeTkBusSPI _theSPIBus;
+   sfeTkArdSPI _theSPIBus;
 };
 ```
