@@ -128,7 +128,11 @@ class sfeTkArdSPI : public sfeTkISPI
     ///
     virtual int readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes);
 
-  private:
+  protected:
+    // note: The instance data is protected, allowing access if a sub-class is
+    //      created to implement a special read/write routine
+    //
+
     SPIClass *_spiPort;
 
     // Settings are used for every transaction.
