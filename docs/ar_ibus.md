@@ -38,6 +38,8 @@ The interface methods:
 **readRegisterWord** | Read a word of data from a particular register of a device |
 **readRegisterRegion** | Read an array of data from a particular register of a device |
 
+> Note: This interface only defines the methods to read and write data on the given bus. Any address, or bus specific settings is provided/implemented by the implementation/specialization of this interface.
+
 ### The sfeTkII2C Implementation
 
 This class sub-classes from the ```sfeTkIBus``` interface adding additional functionally focused on supporting an I2C implementation. This interface provides the additional functionality.
@@ -48,7 +50,7 @@ This class sub-classes from the ```sfeTkIBus``` interface adding additional func
 **setAddress** | Set the I2C address to use for this I2C object |
 **address** | Returns the address used by this I2C object |
 
-> Note: The ```sfeTkII2C``` class manages the I2C address
+> Note: The ```sfeTkII2C``` class manages the device address for the I2C bus. As such, each I2C device instantiates/uses a instance of the ```sfeTkII2C``` class.
 
 ### The sfeTkISPI Implementation
 
@@ -59,15 +61,51 @@ This class sub-classes from the ```sfeTkIBus``` interface adding additional func
 **setCS** | Set the CS Pin to use for this SPI object |
 **cs** | Returns the CS Pin used by this SPI object |
 
-> Note: The ```sfeTkISPI``` class manages the CS Pin
+> Note: The ```sfeTkISPI``` class manages CS Pin for the SPI bus. As such, each SPI device instantiates/uses a instance of the ```sfeTkISPI``` class.
 
 The class diagram of these base class interfaces/implementation:
 
 ![IBus diagram](images/tk_IBUS.png)
 
+## sfeTkIIBus - Arduino Implementation
+
+The initial implementation of the toolkit IBus interface is for the Arduino environment. This implementation consists of two classes, ```sfeTkArdI2C``` and ```sfeTkArdSPI```, each of which sub-class from their respective bus type interfaces within the core toolkit.
+
+These driver implementations provide the platform specific implementation for the toolkit bus interfaces, supporting the methods defined by the interfaces, as well as contain and manage the platform specific settings and attributes for each bus type.
+
+> Note: The intent is that each user of an particular bus - a device in most cases - contains an instance of the specific bus object.
+
+The class diagram for the Arduino implementation is as follows:
+
+![Arduino IBus Implementation](images/tk_ibus_ard.png)
+
+### The sfeTkArdI2C Class
+
+This class provides the Arduino implementation of I2C in the SparkFun Toolkit. It implements the methods of the ```sfeTkIIBus``` and ```sfeTkII2C``` interfaces, as well as manages any Arduino specific state.
+
+### The sfeTkArdSPI Class
+
+This class provides the Arduino implementation of SPI in the SparkFun Toolkit. It implements the methods of the ```sfeTkIIBus``` and ```sfeTkISPI``` interfaces, as well as manages any Arduino specific state for the SPI bus - namely the SPISettings class.
+
+Before each use of the SPI bus, the methods of the ```sfeTkArdSPI``` uses an internal SPISettings class to ensure the SPI bus is operating in the desired mode for the device.
+
 ## sfeTkIBus Use
 
-The general steps when using the sfeTkIBus in device development are outlined in the following steps
+The general steps when using the sfeTkIBus in device development are outlined in the following steps. This example uses the Arduino implementation of the bus.
+
+The general pattern for a device driver implementation that uses the SparkFun Toolkit is the following:
+
+### Implement a Platform Independent Driver
+
+The first step is to implement a core, platform independent version of the driver that communicates to the target device using the methods of a ```sfeTkIIBus``` interface.
+
+>[!IMPORTANT]
+> At this level, the driver is only using a ```sfeTkIBus``` interface, not any specific bus implementation.
+
+This driver has the following unique functionality:
+
+1) A method to set the object that implements the ```sfeTkIBus``` interface object should use. Since
+1) If the device supports identification capabilities, the driver provides this functionality.
 
 ### Platform Independent/Bus Independent Driver
 
