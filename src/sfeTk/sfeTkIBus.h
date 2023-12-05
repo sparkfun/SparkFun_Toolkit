@@ -1,5 +1,8 @@
+
+// sfeTkIBus.h
+//
+// Defines the communication bus interface for the SparkFun Electronics Toolkit -> sfeTk
 /*
-sfe_bus.h
 
 The MIT License (MIT)
 
@@ -18,46 +21,70 @@ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
 ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-The following virtual class provides an abstract communication interface.
-
 */
 
 #pragma once
 
 #include <cstdint>
 
-// To repeatedly use this toolkit, you may need to wrap this class in a namespace.
-// namespace sfe_XXX {
-
-// The following abstract class is used an interface for upstream implementation.
-class SfeBus
+class sfeTkIBus
 {
   public:
-    /// @brief A simple ping of the device at the given address.
-    /// @param devAddr Address of the device
-    virtual bool ping(uint8_t devAddr) = 0;
-
     /// @brief Write a single byte to the given register
-    /// @param devAddr The device's I2C address.
+    ///
     /// @param devReg The device's register's address.
     /// @param data Data to write.
-    /// @brief returns true on successful execution.
-    virtual bool writeRegisterByte(uint8_t devAddr, uint8_t devReg, uint8_t data) = 0;
+    ///
+    /// @retval bool -  true on successful execution.
+    ///
+    virtual bool writeRegisterByte(uint8_t devReg, uint8_t data) = 0;
+
+    /// @brief Write a single word (16 bit) to the given register
+    ///
+    /// @param devReg The device's register's address.
+    /// @param data Data to write.
+    ///
+    /// @retval bool -  true on successful execution.
+    ///
+    virtual bool writeRegisterWord(uint8_t devReg, uint16_t data) = 0;
 
     /// @brief Writes a number of bytes starting at the given register's address.
-    /// @param devAddr The device's I2C address.
+    ///
+    /// @param devAddr The device's address/pin
     /// @param devReg The device's register's address.
     /// @param data Data to write.
-    /// @brief returns true on successful execution.
-    virtual int writeRegisterRegion(uint8_t devAddr, uint8_t devReg, const uint8_t *data, uint16_t length) = 0;
+    ///
+    /// @retval int returns the number of bytes written, < 0 on error
+    ///
+    virtual int writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length) = 0;
+
+    /// @brief Read a single byte from the given register
+    ///
+    /// @param devReg The device's register's address.
+    /// @param data Data to read.
+    ///
+    /// @retval bool -  true on successful execution.
+    ///
+    virtual bool readRegisterByte(uint8_t devReg, uint8_t &data) = 0;
+
+    /// @brief Read a single word (16 bit) from the given register
+    ///
+    /// @param devReg The device's register's address.
+    /// @param data Data to read.
+    ///
+    /// @retval bool -  true on successful execution.
+    ///
+    virtual bool readRegisterWord(uint8_t devReg, uint16_t &data) = 0;
 
     /// @brief Reads a block of data from the given register.
+    ///
     /// @param devAddr The device's I2C address.
     /// @param devReg The device's register's address.
     /// @param data Data to write.
-    /// @brief returns true on successful execution.
-    virtual int readRegisterRegion(uint8_t addr, uint8_t reg, uint8_t *data, uint16_t numBytes) = 0;
+    ///
+    /// @retval int returns 0 on success, or error code
+    ///
+    virtual int readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes) = 0;
 };
 
 //};
