@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "sfeTkArdI2C.h"
 
-#define kMaxI2CBufferLength 32
+
 
 //---------------------------------------------------------------------------------
 // init()
@@ -221,7 +221,7 @@ int32_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t nu
             return kSTkErrFail; // error with the end transmission
 
         // We're chunking in data - keeping the max chunk to kMaxI2CBufferLength
-        nChunk = numBytes > kMaxI2CBufferLength ? kMaxI2CBufferLength : numBytes;
+        nChunk = numBytes > _bufferChunkSize ? _bufferChunkSize : numBytes;
 
         nReturned = _i2cPort->requestFrom((int)address(), (int)nChunk, (int)true);
 

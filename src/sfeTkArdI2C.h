@@ -40,7 +40,7 @@ class sfeTkArdI2C : public sfeTkII2C
     /*
         @brief Constructor
     */
-    sfeTkArdI2C(void) : _i2cPort(nullptr)
+    sfeTkArdI2C(void) : _i2cPort(nullptr), _bufferChunkSize{kDefaultBufferChunk}
     {
     }
 
@@ -163,10 +163,43 @@ class sfeTkArdI2C : public sfeTkII2C
     */
     sfeTkError_t readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes);
 
+    // Buffer size chunk getter/setter
+    /*--------------------------------------------------------------------------
+        @brief set the buffer chunk size
+
+        @note default size is 32
+
+        @param theChunk the new size  - must be > 0
+
+    */
+    void setBufferChunkSize(size_t theChunk)
+    {
+        if (theChunk > 0)
+            _bufferChunkSize = theChunk;
+    }
+
+    /*--------------------------------------------------------------------------
+        @brief set the buffer chunk size
+
+        @retval The current chunk size
+
+    */
+    size_t bufferChunkSize(void)
+    {
+        return _bufferChunkSize;
+    }
+
   protected:
     // note: The wire port is protected, allowing access if a sub-class is
     //      created to implement a special read/write routine
     //
     // The actual Arduino i2c port
     TwoWire *_i2cPort;
+
+  private:
+    static constexpr size_t kDefaultBufferChunk = 32;
+
+    // the I2C buffer chunker size
+
+    size_t _bufferChunkSize;
 };
