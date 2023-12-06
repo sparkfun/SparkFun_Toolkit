@@ -3,10 +3,10 @@
 //
 // Defines the I2C communication bus interface for the SparkFun Electronics Toolkit
 /*
-
 The MIT License (MIT)
 
-Copyright (c) 2022 SparkFun Electronics
+Copyright (c) 2023 SparkFun Electronics
+
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
 to deal in the Software without restriction, including without limitation
@@ -21,6 +21,7 @@ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
 ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 */
 
 #pragma once
@@ -37,26 +38,31 @@ class sfeTkII2C : public sfeTkIBus
     {
     }
 
-    ///
-    /// @brief A simple ping of the device at the set address
-    ///
-    /// @retval bool - true on success, false on failure
-    ///
-    virtual bool ping() = 0;
+    /*--------------------------------------------------------------------------
+        @brief A simple ping of the device at the set address
 
-    /// @brief setter for the I2C address
-    ///
-    /// @param devAddr The device's address
-    ///
+        @retval sfeTkError_t - ok on success
+
+    */
+    virtual sfeTkError_t ping() = 0;
+
+    /*--------------------------------------------------------------------------
+        @brief setter for the I2C address
+
+        @param devAddr The device's address
+
+    */
     virtual void setAddress(uint8_t devAddr)
     {
         _address = devAddr;
     }
 
-    /// @brief getter for the I2C address
-    ///
-    /// @retval uint8_t returns the address for the device
-    ///
+    /*--------------------------------------------------------------------------
+        @brief getter for the I2C address
+
+        @retval uint8_t returns the address for the device
+
+    */
     virtual uint8_t address(void)
     {
         return _address;

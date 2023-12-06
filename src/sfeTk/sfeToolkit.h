@@ -1,7 +1,7 @@
 
-// sfeTkISPI.h
+// sfeToolkit.h
 //
-// Defines the SPI communication bus interface for the SparkFun Electronics Toolkit
+// General header file for the SparkFun Toolkit
 /*
 
 The MIT License (MIT)
@@ -22,50 +22,10 @@ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
 ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 */
 
 #pragma once
 
-#include "sfeTkIBus.h"
+// Include key things that are core to the toolkit
 
-class sfeTkISPI : public sfeTkIBus
-{
-  public:
-    sfeTkISPI() : _cs{kNoCSPin}
-    {
-    }
-
-    sfeTkISPI(uint8_t csPin) : _cs{csPin}
-    {
-    }
-
-    /*--------------------------------------------------------------------------
-        @brief setter for the CS Pin
-
-        @param devCS The device's CS Pin
-
-    */
-    virtual void setCS(uint8_t devCS)
-    {
-        _cs = devCS;
-    }
-
-    /*--------------------------------------------------------------------------
-        @brief getter for the cs pin
-    
-        @retval uint8_t returns the CS pin for the device
-    
-    */
-    virtual uint8_t cs(void)
-    {
-        return _cs;
-    }
-
-    static constexpr uint8_t kNoCSPin = 0;
-
-  private:
-    uint8_t _cs;
-};
-
-//};
+#include "sfeTkError.h"
