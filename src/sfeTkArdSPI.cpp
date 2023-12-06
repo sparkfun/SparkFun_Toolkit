@@ -65,7 +65,7 @@ sfeTkError_t sfeTkArdSPI::init(SPIClass &spiPort, SPISettings &busSPISettings, u
 sfeTkError_t sfeTkArdSPI::init(uint8_t csPin, bool bInit)
 {
     // If the transaction settings are not provided by the user they are built here.
-    SPISettings spiSettings = SPISettings(3000000, SPI_MSBFIRST, SPI_MODE3);
+    SPISettings spiSettings = SPISettings(3000000, MSBFIRST, SPI_MODE3);
 
     // In addition of the port is not provided by the user, it defaults to SPI here.
     return init(SPI, spiSettings, csPin, bInit);
@@ -126,7 +126,7 @@ sfeTkError_t sfeTkArdSPI::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite
 //
 // Returns the number of bytes written, < 0 is an error
 //
-int sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
+int32_t sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
 {
     if (!_spiPort)
         return kSTkErrBusNullPtr;
@@ -178,7 +178,7 @@ sfeTkError_t sfeTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size
     // A leading "1" must be added to transfer with devRegister to indicate a "read"
     _spiPort->transfer(devReg | kSPIReadBit);
 
-    for (int i = 0; i < numBytes; i++)
+    for (size_t i = 0; i < numBytes; i++)
         *data++ = _spiPort->transfer(0x00);
 
     // End transaction
