@@ -6,7 +6,8 @@
 
 The MIT License (MIT)
 
-Copyright (c) 2022 SparkFun Electronics
+Copyright (c) 2023 SparkFun Electronics
+
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
 to deal in the Software without restriction, including without limitation
@@ -29,14 +30,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <SPI.h>
 #include <sfeTk/sfeTkISPI.h>
 
-/// @brief This class implements the IBus interface for an SPI Implementation on Arduino
-///
+/*
+  @brief This class implements the IBus interface for an SPI Implementation on Arduino
+ */
 class sfeTkArdSPI : public sfeTkISPI
 {
   public:
-    ///
-    /// @brief Constructor
-    ///
+    /*
+        @brief Constructor
+    */
     sfeTkArdSPI(void) : _spiPort(nullptr){};
 
     // copy constructor
@@ -51,82 +53,91 @@ class sfeTkArdSPI : public sfeTkISPI
         _sfeSPISettings = rhs._sfeSPISettings;
         return *this;
     }
-    /// @brief Method sets up the required SPI settings.
-    /// @note This function provides a default SPI Port.
-    ///
-    /// @param bInit This flag tracks whether the bus has been initialized.
-    ///
-    /// @retval bool -  True on successful, false on error
-    ///
-    bool init(bool bInit = false);
 
-    bool init(uint8_t csPin, bool bInit = false);
+    /*--------------------------------------------------------------------------
+        @brief Method sets up the required SPI settings.
+        @note This function provides a default SPI Port.
 
-    /// @brief Method sets up the required SPI settings.
-    ///
-    /// @param spiPort Port for SPI communication.
-    /// @param busSPISettings Settings for speed, endianness, and spi mode of the SPI bus.
-    /// @param bInit This flag tracks whether the bus has been initialized.
-    ///
-    /// @retval bool - True on successful, false on error
-    ///
-    bool init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t csPin, bool bInit = false);
+        @param bInit This flag tracks whether the bus has been initialized.
 
-    /// @brief Write a single byte to the given register
-    ///
-    /// @param devReg The device's register's address.
-    /// @param data Data to write.
-    ///
-    /// @retval bool - true on success, false on error
-    ///
-    bool writeRegisterByte(uint8_t devReg, uint8_t data);
+        @retval sfeTkError_t -  kSTkErrOk on success
+    */
+    sfeTkError_t init(bool bInit = false);
 
-    /// @brief Write a single word to the given register
-    ///
-    /// @param devReg The device's register's address.
-    /// @param data Data to write.
-    ///
-    /// @retval bool - true on success, false on error
-    ///
-    bool writeRegisterWord(uint8_t devReg, uint16_t data);
+    sfeTkError_t init(uint8_t csPin, bool bInit = false);
 
-    /// @brief Writes a number of bytes starting at the given register's address.
-    /// @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
-    //
-    /// @param devReg The device's register's address.
-    /// @param data Data to write.
-    ///
-    /// @retval int - number of bytes written, < 0 = error value
-    ///
-    virtual int writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
+    /*--------------------------------------------------------------------------
+        @brief Method sets up the required SPI settings.
 
-    /// @brief Read a single byte from the given register
-    ///
-    /// @param devReg The device's register's address.
-    /// @param data Data to read.
-    ///
-    /// @retval bool - true on success, false on error
-    ///
-    bool readRegisterByte(uint8_t devReg, uint8_t &data);
+        @param spiPort Port for SPI communication.
+        @param busSPISettings Settings for speed, endianness, and spi mode of the SPI bus.
+        @param bInit This flag tracks whether the bus has been initialized.
 
-    /// @brief read a single word to the given register
-    ///
-    /// @param devReg The device's register's address.
-    /// @param data Data to write.
-    ///
-    /// @retval bool - true on success, false on error
-    ///
-    bool readRegisterWord(uint8_t devReg, uint16_t &data);
+        @retval sfeTkError_t - kSTkErrOk on success
+    */
+    sfeTkError_t init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t csPin, bool bInit = false);
 
-    /// @brief Reads a block of data from the given register.
-    /// @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
-    ///
-    /// @param devReg The device's register's address.
-    /// @param data Data to write.
-    ///
-    /// @retval int returns the number of bytes read, < 0 on error
-    ///
-    virtual int readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes);
+    /*--------------------------------------------------------------------------
+        @brief Write a single byte to the given register
+
+        @param devReg The device's register's address.
+        @param data Data to write.
+
+        @retval sfeTkError_t - kSTkErrOk on success
+    */
+    sfeTkError_t writeRegisterByte(uint8_t devReg, uint8_t data);
+
+    /*--------------------------------------------------------------------------
+        @brief Write a single word to the given register
+
+        @param devReg The device's register's address.
+        @param data Data to write.
+
+        @retval sfeTkError_t - kSTkErrOk on success
+    */
+    sfeTkError_t writeRegisterWord(uint8_t devReg, uint16_t data);
+
+    /*--------------------------------------------------------------------------
+        @brief Writes a number of bytes starting at the given register's address.
+        @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
+
+        @param devReg The device's register's address.
+        @param data Data to write.
+
+        @retval int32_t - number of bytes written, < 0 = error value
+    */
+    virtual int32_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
+
+    /*--------------------------------------------------------------------------
+        @brief Read a single byte from the given register
+
+        @param devReg The device's register's address.
+        @param data Data to read.
+
+        @retval sfeTkError_t - kSTkErrOk on success
+    */
+    sfeTkError_t readRegisterByte(uint8_t devReg, uint8_t &data);
+
+    /*--------------------------------------------------------------------------
+        @brief read a single word to the given register
+
+        @param devReg The device's register's address.
+        @param data Data to write.
+
+        @retval sfeTkError_t - true on success
+    */
+    sfeTkError_t readRegisterWord(uint8_t devReg, uint16_t &data);
+
+    /*--------------------------------------------------------------------------
+        @brief Reads a block of data from the given register.
+        @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
+
+        @param devReg The device's register's address.
+        @param data Data to write.
+
+        @retval sfeTkError_t - true on success
+    */
+    virtual sfeTkError_t readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes);
 
   protected:
     // note: The instance data is protected, allowing access if a sub-class is

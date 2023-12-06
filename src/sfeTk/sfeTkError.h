@@ -1,9 +1,8 @@
 
-// sfeTkISPI.h
+// sfeTkError.h
 //
-// Defines the SPI communication bus interface for the SparkFun Electronics Toolkit
+// General header file for the SparkFun Toolkit
 /*
-
 The MIT License (MIT)
 
 Copyright (c) 2023 SparkFun Electronics
@@ -27,45 +26,32 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#include "sfeTkIBus.h"
 
-class sfeTkISPI : public sfeTkIBus
-{
-  public:
-    sfeTkISPI() : _cs{kNoCSPin}
-    {
-    }
+#include <cstdint>
 
-    sfeTkISPI(uint8_t csPin) : _cs{csPin}
-    {
-    }
+//
+// General Concept
+//    A SparkFun Toolkit error system. The goal is to keep this simple.
+//
+//    This mimics a vareity of systems, using an int type for error codes,
+//    where:
+//   		0   = okay
+//         -1   = general failure
+//         >0   = an informative error
+//
+//    Since *subsystems* in the toolkit can have their own errors,
+//    A start range for these errors are defined. Values > than this value
+//    define the errors for the set subsystem. These start ranges are set
+//    in this file, with actual error values defined in the the respective
+//    subsystem header files.
+//
+// Define our error codes/type
+typedef int32_t sfeTkError_t;
 
-    /*--------------------------------------------------------------------------
-        @brief setter for the CS Pin
+// General errors
 
-        @param devCS The device's CS Pin
+const sfeTkError_t kSTkErrFail = -1; // general fail
+const sfeTkError_t kSTkErrOk = 0;    // success
 
-    */
-    virtual void setCS(uint8_t devCS)
-    {
-        _cs = devCS;
-    }
-
-    /*--------------------------------------------------------------------------
-        @brief getter for the cs pin
-    
-        @retval uint8_t returns the CS pin for the device
-    
-    */
-    virtual uint8_t cs(void)
-    {
-        return _cs;
-    }
-
-    static constexpr uint8_t kNoCSPin = 0;
-
-  private:
-    uint8_t _cs;
-};
-
-//};
+// Base error number for IBus/Bus operations Bus errors are not less than this.
+const sfeTkError_t kSTkErrBaseBus = 0x1000;

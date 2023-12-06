@@ -4,7 +4,8 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2022 SparkFun Electronics
+Copyright (c) 2023 SparkFun Electronics
+
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
 to deal in the Software without restriction, including without limitation
@@ -37,7 +38,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 // Arduino version of init. Will take in a defined SPI port/settings
 //
-bool sfeTkArdSPI::init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t csPin, bool bInit)
+sfeTkError_t sfeTkArdSPI::init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t csPin, bool bInit)
 {
     // if we don't have a SPI port already
     if (!_spiPort)
@@ -53,7 +54,7 @@ bool sfeTkArdSPI::init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t c
     // SPI settings are needed for every transaction
     _sfeSPISettings = busSPISettings;
 
-    return true;
+    return kSTkErrOk;
 }
 
 //---------------------------------------------------------------------------------
@@ -61,7 +62,7 @@ bool sfeTkArdSPI::init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t c
 //
 // Arduino version of init.
 //
-bool sfeTkArdSPI::init(uint8_t csPin, bool bInit)
+sfeTkError_t sfeTkArdSPI::init(uint8_t csPin, bool bInit)
 {
     // If the transaction settings are not provided by the user they are built here.
     SPISettings spiSettings = SPISettings(3000000, SPI_MSBFIRST, SPI_MODE3);
@@ -75,7 +76,7 @@ bool sfeTkArdSPI::init(uint8_t csPin, bool bInit)
 //
 // Arduino version of init.
 //
-bool sfeTkArdSPI::init(bool bInit)
+sfeTkError_t sfeTkArdSPI::init(bool bInit)
 {
     return init(cs(), bInit);
 }
@@ -87,11 +88,11 @@ bool sfeTkArdSPI::init(bool bInit)
 //
 // Returns true on success, false on failure
 //
-bool sfeTkArdSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
+sfeTkError_t sfeTkArdSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
 {
 
     if (!_spiPort)
-        return false;
+        return kSTkErrBusNullPtr;
 
     // Apply settings
     _spiPort->beginTransaction(_sfeSPISettings);
@@ -105,7 +106,7 @@ bool sfeTkArdSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
     digitalWrite(cs(), HIGH);
     _spiPort->endTransaction();
 
-    return true;
+    return kSTkErrOk;
 }
 //---------------------------------------------------------------------------------
 // writeRegisterWord()
@@ -114,7 +115,7 @@ bool sfeTkArdSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
 //
 // Returns true on success, false on failure
 //
-bool sfeTkArdSPI::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite)
+sfeTkError_t sfeTkArdSPI::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite)
 {
     return writeRegisterRegion(devReg, (uint8_t *)&dataToWrite, sizeof(uint8_t)) > 0;
 }
@@ -128,7 +129,7 @@ bool sfeTkArdSPI::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite)
 int sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
 {
     if (!_spiPort)
-        return -1;
+        return kSTkErrBusNullPtr;
 
     // Apply settings
     _spiPort->beginTransaction(_sfeSPISettings);
@@ -147,12 +148,12 @@ int sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t
     return length;
 }
 
-bool sfeTkArdSPI::readRegisterByte(uint8_t devReg, uint8_t &data)
+sfeTkError_t sfeTkArdSPI::readRegisterByte(uint8_t devReg, uint8_t &data)
 {
     return readRegisterRegion(devReg, &data, sizeof(data)) == 1;
 }
 
-bool sfeTkArdSPI::readRegisterWord(uint8_t devReg, uint16_t &data)
+sfeTkError_t sfeTkArdSPI::readRegisterWord(uint8_t devReg, uint16_t &data)
 {
     return readRegisterRegion(devReg, (uint8_t *)&data, sizeof(data)) == 2;
 }
@@ -163,10 +164,10 @@ bool sfeTkArdSPI::readRegisterWord(uint8_t devReg, uint16_t &data)
 //
 // Returns the number of bytes read, < 0 is an error
 //
-int sfeTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes)
+sfeTkError_t sfeTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes)
 {
     if (!_spiPort)
-        return -1;
+        return kSTkErrBusNullPtr;
 
     // Apply settings
     _spiPort->beginTransaction(_sfeSPISettings);
@@ -184,5 +185,5 @@ int sfeTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numByt
     digitalWrite(cs(), HIGH);
     _spiPort->endTransaction();
 
-    return numBytes;
+    return kSTkErrOk;
 }
