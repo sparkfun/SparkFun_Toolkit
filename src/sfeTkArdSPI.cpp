@@ -126,7 +126,7 @@ sfeTkError_t sfeTkArdSPI::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite
 //
 // Returns the number of bytes written, < 0 is an error
 //
-int sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
+int32_t sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
 {
     if (!_spiPort)
         return kSTkErrBusNullPtr;

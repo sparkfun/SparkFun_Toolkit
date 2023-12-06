@@ -124,7 +124,7 @@ class sfeTkArdI2C : public sfeTkII2C
 
         @retval returns number of bytes written, < 0 is an error code
     */
-    virtual int writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
+    virtual int32_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
 
     /*--------------------------------------------------------------------------
         @brief Reads a byte of data from the given register.

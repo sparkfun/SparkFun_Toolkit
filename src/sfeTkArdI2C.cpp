@@ -126,7 +126,7 @@ sfeTkError_t sfeTkArdI2C::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite
 //
 // Returns the number of bytes written, < 0 is an error
 //
-sfeTkError_t sfeTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
+int32_t sfeTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
 {
     if (!_i2cPort)
         return kSTkErrBusNullPtr;
@@ -135,7 +135,7 @@ sfeTkError_t sfeTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *dat
     _i2cPort->write(devReg);
     _i2cPort->write(data, (int)length);
 
-    return _i2cPort->endTransmission() ? kSTkErrFail : kSTkErrOk; 
+    return _i2cPort->endTransmission() ? length : kSTkErrOk; 
 }
 
 //---------------------------------------------------------------------------------
