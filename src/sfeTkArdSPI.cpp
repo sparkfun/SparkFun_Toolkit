@@ -131,7 +131,7 @@ int32_t sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, si
     if (!_spiPort)
         return kSTkErrBusNullPtr;
 
-    // Apply settings
+    // Apply settings before work
     _spiPort->beginTransaction(_sfeSPISettings);
 
     // Signal communication start
