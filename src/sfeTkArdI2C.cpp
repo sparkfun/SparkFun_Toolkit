@@ -116,7 +116,7 @@ sfeTkError_t sfeTkArdI2C::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite
     if (!_i2cPort)
         return kSTkErrBusNullPtr;
 
-    return writeRegisterRegion(devReg, (uint8_t *)&dataToWrite, sizeof(u_int16_t));
+    return writeRegisterRegion(devReg, (uint8_t *)&dataToWrite, sizeof(uint16_t));
 }
 
 //---------------------------------------------------------------------------------
@@ -204,7 +204,7 @@ int32_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t nu
     uint16_t nOrig = numBytes; // original number of bytes.
     uint8_t nChunk;
     uint16_t nReturned;
-    int i;                   // counter in loop
+    uint16_t i;                   // counter in loop
     bool bFirstInter = true; // Flag for first iteration - used to send devRegister
 
     while (numBytes > 0)
