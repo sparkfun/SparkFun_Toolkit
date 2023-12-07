@@ -104,9 +104,9 @@ class sfeTkArdSPI : public sfeTkISPI
         @param devReg The device's register's address.
         @param data Data to write.
 
-        @retval int32_t - number of bytes written, < 0 = error value
+        @retval sfeTkError_t - kSTkErrOk on success
     */
-    virtual int32_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
+    virtual sfeTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
 
     /*--------------------------------------------------------------------------
         @brief Read a single byte from the given register

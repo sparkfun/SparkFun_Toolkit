@@ -76,10 +76,10 @@ class sfeTkIBus
         param devReg The device's register's address.
         @param data Data to write.
 
-        @retval int returns the number of bytes written, or kSTkErrFail on error
+        @retval sfeTkError_t kSTkErrOk on successful execution
 
     */
-    virtual int32_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length) = 0;
+    virtual sfeTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length) = 0;
 
     /*--------------------------------------------------------------------------
         @brief Read a single byte from the given register

@@ -99,7 +99,7 @@ class sfeTkArdI2C : public sfeTkII2C
         @param devReg The device's register's address.
         @param data Data to write.
 
-        @retval returns  on  error on success
+        @retval returns  kStkErrOk on success
     */
     sfeTkError_t writeRegisterByte(uint8_t devReg, uint8_t data);
 
@@ -110,7 +110,7 @@ class sfeTkArdI2C : public sfeTkII2C
         @param devReg The device's register's address.
         @param data Data to write.
 
-        @retval returns  on  error on success
+        @retval returns  kStkErrOk on success
     */
     sfeTkError_t writeRegisterWord(uint8_t devReg, uint16_t data);
 
@@ -123,9 +123,9 @@ class sfeTkArdI2C : public sfeTkII2C
         @param devReg The device's register's address.
         @param data Data to write.
 
-        @retval returns number of bytes written, < 0 is an error code
+        @retval kStkErrOk on success
     */
-    virtual int32_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
+    virtual sfeTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
 
     /*--------------------------------------------------------------------------
         @brief Reads a byte of data from the given register.
@@ -135,7 +135,7 @@ class sfeTkArdI2C : public sfeTkII2C
         @param devReg The device's register's address.
         @param data Data to read.
 
-        @retval  on  error on success
+        @retval  kStkErrOk on success
     */
     sfeTkError_t readRegisterByte(uint8_t devReg, uint8_t &data);
 
@@ -160,7 +160,7 @@ class sfeTkArdI2C : public sfeTkII2C
         @param devReg The device's register's address.
         @param data Data to write.
 
-        @retval 0 on success, < 0 on error - see error code
+        @retval kStkErrOk on success
     */
     sfeTkError_t readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes);
 

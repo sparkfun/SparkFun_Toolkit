@@ -86,7 +86,7 @@ sfeTkError_t sfeTkArdSPI::init(bool bInit)
 //
 // Writes a byte to a given register.
 //
-// Returns true on success, false on failure
+// Returns kSTkErrOk on success
 //
 sfeTkError_t sfeTkArdSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
 {
@@ -113,7 +113,7 @@ sfeTkError_t sfeTkArdSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
 //
 // Writes a world to a given register.
 //
-// Returns true on success, false on failure
+// Returns kSTkErrOk on success
 //
 sfeTkError_t sfeTkArdSPI::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite)
 {
@@ -124,9 +124,9 @@ sfeTkError_t sfeTkArdSPI::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite
 //
 // Writes an array of bytes to a given register on the target address
 //
-// Returns the number of bytes written, < 0 is an error
+// Returns kSTkErrOk on success
 //
-int32_t sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
+sfeTkError_t sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
 {
     if (!_spiPort)
         return kSTkErrBusNullPtr;
@@ -145,7 +145,7 @@ int32_t sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, si
     digitalWrite(cs(), HIGH);
     _spiPort->endTransaction();
 
-    return length;
+    return kSTkErrOk;
 }
 
 sfeTkError_t sfeTkArdSPI::readRegisterByte(uint8_t devReg, uint8_t &data)
@@ -162,7 +162,7 @@ sfeTkError_t sfeTkArdSPI::readRegisterWord(uint8_t devReg, uint16_t &data)
 //
 // Reads an array of bytes to a given register on the target address
 //
-// Returns the number of bytes read, < 0 is an error
+// Returns kSTkErrOk on success
 //
 sfeTkError_t sfeTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes)
 {
