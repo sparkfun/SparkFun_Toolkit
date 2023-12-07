@@ -1,4 +1,4 @@
-# Overview - Device Bus interface - sfeTkIBus
+# Overview - Device Bus Interface - sfeTkIBus
 
 One of the foundational capabilities of the SparkFun Toolkit is bus communication with devices. This is a common task almost all libraries implement using their own implementation for I2C, SPI or UART bus communication.
 
