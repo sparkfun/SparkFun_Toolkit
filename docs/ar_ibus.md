@@ -4,7 +4,23 @@ One of the foundational capabilities of the SparkFun Toolkit is bus communicatio
 
 For bus communication, the SparkFun Toolkit is designed to provide a common implementation for use across all SparkFun libraries. Additionally, the bus architecture is modeled on a *driver* pattern, separating  the individual bus setup/configuration from data communication, enabling a single device implementation to easily support a variety of device bus types.
 
-The key goals set for the Bus implementation in the Toolkit include:
+### The Bus Interface Design Pattern
+
+This pattern allows an application to develop against the common bus interface without regard to the underlying bus type or implementation. This *plug-in* nature of this model enables core application reuse across a range of bus devices. What to use a different bus type? Just use a different driver.
+
+This pattern is show in the following diagram:
+
+![Driver Pattern](images/tk_ibus_p1.png)
+
+This pattern extends across different platforms, allowing a common platform independent application core to utilize platform specific bus drivers.
+
+![Platform Independence](images/tk_ibus_p2.png)
+
+The platform dependant drivers implement the core Bus Interface (IBus) for communication, with platform specific setup and management left to the underlying implementation. Since the application core only works with the Bus Interface, if implemented correctly, the same core works across different bus types and across different development environments.
+
+## Goals
+
+For the initial implementation the key goals set for the Bus implementation in the Toolkit include:
 
 * Separate device setup from device communication
 * Define a common bus interface for use across a variety of common device bus types
@@ -13,7 +29,7 @@ The key goals set for the Bus implementation in the Toolkit include:
 
 ## Architecture Overview
 
-To meet the goals for this subsystem, the Flux framework follows a ***Driver Pattern***, defining a common interface for bus communication. Device drivers are designed around this interface, leaving bus configuration and implementation to platform specific implementation.
+As outlined above, the SparkFun Toolkit follows a ***Driver Pattern***, defining a common interface for bus communication. Device drivers are designed around this interface, leaving bus configuration and implementation to platform specific implementation.
 
 The key class to support this pattern are:
 
