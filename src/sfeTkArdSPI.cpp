@@ -131,14 +131,14 @@ int32_t sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, si
     if (!_spiPort)
         return kSTkErrBusNullPtr;
 
-    // Apply settings
+    // Apply settings before work
     _spiPort->beginTransaction(_sfeSPISettings);
 
     // Signal communication start
     digitalWrite(cs(), LOW);
     _spiPort->transfer(devReg);
 
-    for (int i = 0; i < length; i++)
+    for (size_t i = 0; i < length; i++)
         _spiPort->transfer(*data++);
 
     // End communication

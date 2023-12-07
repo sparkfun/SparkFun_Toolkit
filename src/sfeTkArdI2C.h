@@ -27,6 +27,7 @@ over Inter-Integrated Circuit (I2C) in Arduino
 
 #pragma once
 
+#include <Arduino.h>
 #include <Wire.h>
 
 // Include our platform I2C interface definition.
