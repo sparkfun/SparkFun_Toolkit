@@ -92,7 +92,7 @@ sfeTkError_t sfeTkArdSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
 {
 
     if (!_spiPort)
-        return kSTkErrBusNullPtr;
+        return kSTkErrBusNotInit;
 
     // Apply settings
     _spiPort->beginTransaction(_sfeSPISettings);
@@ -129,7 +129,7 @@ sfeTkError_t sfeTkArdSPI::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite
 sfeTkError_t sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
 {
     if (!_spiPort)
-        return kSTkErrBusNullPtr;
+        return kSTkErrBusNotInit;
 
     // Apply settings before work
     _spiPort->beginTransaction(_sfeSPISettings);
@@ -167,7 +167,7 @@ sfeTkError_t sfeTkArdSPI::readRegisterWord(uint8_t devReg, uint16_t &data)
 sfeTkError_t sfeTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes)
 {
     if (!_spiPort)
-        return kSTkErrBusNullPtr;
+        return kSTkErrBusNotInit;
 
     // Apply settings
     _spiPort->beginTransaction(_sfeSPISettings);

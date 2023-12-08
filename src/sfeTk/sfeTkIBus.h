@@ -29,11 +29,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "sfeTkError.h"
 
-
 // Define our error codes for the bus. Note Errors are negative, warnings/info postive
 // BUT keep the same increment on the base
 
-const sfeTkError_t kSTkErrBusNullPtr = kSTkErrFail * (kSTkErrBaseBus + 1);
+const sfeTkError_t kSTkErrBusNotInit = kSTkErrFail * (kSTkErrBaseBus + 1);
 const sfeTkError_t kSTkErrBusTimeout = kSTkErrFail * (kSTkErrBaseBus + 2);
 const sfeTkError_t kSTkErrBusNoReponse = kSTkErrFail * (kSTkErrBaseBus + 3);
 const sfeTkError_t kSTkErrBusDataTooLong = kSTkErrFail * (kSTkErrBaseBus + 4);
