@@ -94,28 +94,32 @@ The class diagram of these base class interfaces/implementation:
 
 ![ISPI Class Diagram](images/tk_uml_ispi.png)
 
-## sfeTkIIBus - Arduino Implementation
+## sfeTkIBus - Arduino Implementation
 
 The initial implementation of the toolkit IBus interface is for the Arduino environment. This implementation consists of two classes, ```sfeTkArdI2C``` and ```sfeTkArdSPI```, each of which sub-class from their respective bus type interfaces within the core toolkit.
 
 These driver implementations provide the platform specific implementation for the toolkit bus interfaces, supporting the methods defined by the interfaces, as well as contain and manage the platform specific settings and attributes for each bus type.
 
 > [!IMPORTANT]
-> The intent is that each user of an particular bus - a device in most cases - contains an instance of the specific bus object.
-
-The class diagram for the Arduino implementation is as follows:
-
-![Arduino IBus Implementation](images/tk_ibus_ard.png)
+> The intent is that each user of an particular - a device in most cases - contains an instance of the specific bus class.
 
 ### The sfeTkArdI2C Class
 
-This class provides the Arduino implementation of I2C in the SparkFun Toolkit. It implements the methods of the ```sfeTkIIBus``` and ```sfeTkII2C``` interfaces, as well as manages any Arduino specific state.
+This class provides the Arduino implementation of I2C in the SparkFun Toolkit. It implements the methods of the ```sfeTkIBus``` and ```sfeTkII2C``` interfaces, as well as manages any Arduino specific state.
+
+The class diagram for the sfeTkArdI2C class:
+
+![Arduino I2C Class Diagram](images/tk_uml_ardi2c.png)
 
 ### The sfeTkArdSPI Class
 
-This class provides the Arduino implementation of SPI in the SparkFun Toolkit. It implements the methods of the ```sfeTkIIBus``` and ```sfeTkISPI``` interfaces, as well as manages any Arduino specific state for the SPI bus - namely the SPISettings class.
+This class provides the Arduino implementation of SPI in the SparkFun Toolkit. It implements the methods of the ```sfeTkIBus``` and ```sfeTkISPI``` interfaces, as well as manages any Arduino specific state for the SPI bus - namely the SPISettings class.
 
 Before each use of the SPI bus, the methods of the ```sfeTkArdSPI``` uses an internal SPISettings class to ensure the SPI bus is operating in the desired mode for the device.
+
+The class diagram for the sfeTkArdSPI class:
+
+![Arduino SPI Class Diagram](images/tk_uml_ardspi.png)
 
 ## sfeTkIBus Use
 
@@ -125,7 +129,7 @@ The general pattern for a device driver implementation that uses the SparkFun To
 
 ### Implement a Platform Independent Driver
 
-The first step is to implement a core, platform independent version of the driver that communicates to the target device using the methods of a ```sfeTkIIBus``` interface.
+The first step is to implement a core, platform independent version of the driver that communicates to the target device using the methods of a ```sfeTkIBus``` interface. By limiting use to the IBus interface, the core implementation can use any bus type or platform that implements the sfeTkIBus interface.
 
 >[!IMPORTANT]
 > At this level, the driver is only using a ```sfeTkIBus``` interface, not any specific bus implementation.
@@ -135,7 +139,10 @@ This driver has the following unique functionality:
 1) A method to set the object that implements the ```sfeTkIBus``` interface object should use. Since
 1) If the device supports identification capabilities, the driver provides this functionality.
 
-#### SImple Example of an Independent Driver Implementation
+#### Simple Example of an Independent Driver Implementation
+
+>[!NOTE]
+> This code is **pseudo-code**, used to demonstrate the key concepts of the implementation pattern.
 
 This implementation would take the following form:
 
@@ -145,7 +152,7 @@ class myDriverClass
 {
 public:
 
-    myDriverClass(uint8_t address) : _addr{address}{}
+    myDriverClass(uint8_t address) : _addr{address}, _theBus{nullptr}{}
 
     bool begin()
     {
@@ -163,9 +170,9 @@ public:
         if (!_theBus || !data || len == 0)
             return false;
 
-        int status = _theBus->writeRegisterRegion(THE_REG, data, len);
+        sfeTkError_t status = _theBus->writeRegisterRegion(THE_REG, data, len);
 
-        return (status == 0);
+        return (status == kSTkErrOk);
     }
 
     bool checkDeviceID()
@@ -174,6 +181,7 @@ public:
         return true;
     }
 private:
+    uint8_t _addr;
     sfeTkIBus *_theBus;
 };
 ```
@@ -204,7 +212,7 @@ class myArduinoDriverI2C : public myDriverClass
    
     bool begin()
     {
-        if (!_theI2CBus.init(MY_DEVICE_ADDRESS))
+        if (_theI2CBus.init(MY_DEVICE_ADDRESS) != kSTkErrOk)
             return false;
         setCommunicationBus(&_theI2CBus);
 
@@ -213,7 +221,7 @@ class myArduinoDriverI2C : public myDriverClass
 
     bool isConnected()
     {
-        if (!_theI2CBus.ping())
+        if (_theI2CBus.ping() != kSTkErrOk)
             return false;
 
         return checkDeviceID();
@@ -243,7 +251,7 @@ class myArduinoDriveSPI : public myDriverClass
     {
         SPISettings spiSettings = SPISettings(4000000, MSBFIRST, SPI_MODE3);
 
-        if (!_theSPIBus.init(SPI, spiSettings, MY_DEFAULT_CS, true))
+        if (_theSPIBus.init(SPI, spiSettings, MY_DEFAULT_CS, true) != kSTkErrOk)
             return false;
         setCommunicationBus(&_theSPIBus);
 
@@ -259,3 +267,12 @@ private:
    sfeTkArdSPI _theSPIBus;
 };
 ```
+
+## Summary
+
+In summary, the SparkFun Toolkit Bus Interface sets a standard that device drivers can implement against without concern for platform or bus type. Using common interface implementation patterns, the implementation delivers on the goals for this subsystem - namely:
+
+* Separate device setup from device communication
+* Define a common bus interface for use across a variety of common device bus types
+* Deliver support for both SPI and I2C bus types initially, focusing on Arduino
+* Structure the bus/toolkit implementation such that it's platform independent
