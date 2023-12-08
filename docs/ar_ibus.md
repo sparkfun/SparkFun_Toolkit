@@ -57,9 +57,13 @@ The interface methods:
 > [!NOTE]
 > This interface only defines the methods to read and write data on the given bus. Any address, or bus specific settings is provided/implemented by the implementation/specialization of this interface.
 
+The Inteface diagram for the ```sfeTkIBus``` is:
+
+![IIBus Interface](images/tk_uml_ibus.png)
+
 ### The sfeTkII2C Implementation
 
-This class sub-classes from the ```sfeTkIBus``` interface adding additional functionally focused on supporting an I2C implementation. This interface provides the additional functionality.
+This class sub-classes from the ```sfeTkIBus``` interface adding additional functionally focused on supporting an I2C implementation. This class does not implement the IIBus interface, so it's abstract, but the class adds the additional functionality.
 
 | Method| Definition |
 |------|-------|
@@ -69,6 +73,10 @@ This class sub-classes from the ```sfeTkIBus``` interface adding additional func
 
 > [!NOTE]
 > The ```sfeTkII2C``` class manages the device address for the I2C bus. As such, each I2C device instantiates/uses an instance of the ```sfeTkII2C``` class.
+
+The class diagram for the ```sfeTkII2C``` interface is the following:
+
+![II2C Class Diagram](images/tk_uml_ii2c.png)
 
 ### The sfeTkISPI Implementation
 
@@ -84,7 +92,7 @@ This class sub-classes from the ```sfeTkIBus``` interface adding additional func
 
 The class diagram of these base class interfaces/implementation:
 
-![IBus diagram](images/tk_IBUS.png)
+![ISPI Class Diagram](images/tk_uml_ispi.png)
 
 ## sfeTkIIBus - Arduino Implementation
 
