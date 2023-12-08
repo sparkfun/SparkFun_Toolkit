@@ -39,8 +39,13 @@ class sfeTkArdSPI : public sfeTkISPI
     /*
         @brief Constructor
     */
-    sfeTkArdSPI(void) : _spiPort(nullptr){};
+    sfeTkArdSPI(void) : _spiPort(nullptr)
+    {
+    }
 
+    sfeTkArdSPI(uint8_t csPin) : sfeTkISPI(csPin)
+    {
+    }
     // copy constructor
     sfeTkArdSPI(sfeTkArdSPI const &rhs) : sfeTkISPI(), _spiPort{rhs._spiPort}, _sfeSPISettings{rhs._sfeSPISettings}
     {
