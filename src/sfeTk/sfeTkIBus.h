@@ -29,7 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "sfeTkError.h"
 
-// Define our error codes for the bus. Note Errors are negative, warnings/info postive
+// Define our error codes for the bus. Note Errors are negative, warnings/info positive
 // BUT keep the same increment on the base
 
 const sfeTkError_t kSTkErrBusNotInit = kSTkErrFail * (kSTkErrBaseBus + 1);
