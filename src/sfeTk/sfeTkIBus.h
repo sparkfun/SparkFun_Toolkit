@@ -34,7 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 const sfeTkError_t kSTkErrBusNotInit = kSTkErrFail * (kSTkErrBaseBus + 1);
 const sfeTkError_t kSTkErrBusTimeout = kSTkErrFail * (kSTkErrBaseBus + 2);
-const sfeTkError_t kSTkErrBusNoReponse = kSTkErrFail * (kSTkErrBaseBus + 3);
+const sfeTkError_t kSTkErrBusNoResponse = kSTkErrFail * (kSTkErrBaseBus + 3);
 const sfeTkError_t kSTkErrBusDataTooLong = kSTkErrFail * (kSTkErrBaseBus + 4);
 const sfeTkError_t kSTkErrBusNullSettings = kSTkErrFail * (kSTkErrBaseBus + 5);
 const sfeTkError_t kSTkErrBusNullBuffer = kSTkErrFail * (kSTkErrBaseBus + 6);
