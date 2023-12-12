@@ -174,7 +174,7 @@ sfeTkError_t sfeTkArdI2C::readRegisterByte(uint8_t devReg, uint8_t &dataToRead)
 
     _i2cPort->beginTransmission(address());
     _i2cPort->write(devReg);
-    _i2cPort->endTransmission((int)getStop());
+    _i2cPort->endTransmission(stop());
     _i2cPort->requestFrom(address(), (uint8_t)1);
 
     while (_i2cPort->available()) // slave may send less than requested
@@ -200,9 +200,10 @@ sfeTkError_t sfeTkArdI2C::readRegisterWord(uint8_t devReg, uint16_t &dataToRead)
     if (!_i2cPort)
         return kSTkErrBusNotInit;
 
-    uint32_t nRead = readRegisterRegion(devReg, (uint8_t *)&dataToRead, sizeof(uint16_t));
+    size_t nRead;
+    sfeTkError_t retval = readRegisterRegion(devReg, (uint8_t *)&dataToRead, sizeof(uint16_t), nRead);
 
-    return (nRead == 2 ? kSTkErrOk : kSTkErrFail);
+    return (retval == kSTkErrOk && nRead == 2 ? kSTkErrOk : retval);
 }
 
 //---------------------------------------------------------------------------------
@@ -212,11 +213,14 @@ sfeTkError_t sfeTkArdI2C::readRegisterWord(uint8_t devReg, uint16_t &dataToRead)
 //
 // Returns the number of bytes read, < 0 is an error
 //
-int32_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes)
+sfeTkError_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
 {
+
     // got port
     if (!_i2cPort)
         return kSTkErrBusNotInit;
+
+    readBytes = 0;
 
     uint16_t nOrig = numBytes; // original number of bytes.
     uint8_t nChunk;
@@ -232,7 +236,7 @@ int32_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t nu
 
             _i2cPort->write(devReg);
 
-            if (_i2cPort->endTransmission(getStop()) != 0)
+            if (_i2cPort->endTransmission(stop()))
                 return kSTkErrFail; // error with the end transmission
 
             bFirstInter = false;
@@ -242,11 +246,11 @@ int32_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t nu
         nChunk = numBytes > _bufferChunkSize ? _bufferChunkSize : numBytes;
 
         // Request the bytes. If this is the last chunk, always send a stop
-        nReturned = _i2cPort->requestFrom((int)address(), (int)nChunk, (int)(nChunk == numBytes ? true : getStop()));
+        nReturned = _i2cPort->requestFrom((int)address(), (int)nChunk, (int)(nChunk == numBytes ? true : stop()));
 
         // No data returned, no dice
         if (nReturned == 0)
-            return -1; // error
+            return kSTkErrBusUnderRead; // error
 
         // Copy the retrieved data chunk to the current index in the data segment
         for (i = 0; i < nReturned; i++)
@@ -257,5 +261,7 @@ int32_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t nu
 
     } // end while
 
-    return nOrig - numBytes; // Success
+    readBytes = nOrig - numBytes;
+
+    return kSTkErrOk;
 }

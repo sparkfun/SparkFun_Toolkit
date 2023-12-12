@@ -169,10 +169,12 @@ class sfeTkArdI2C : public sfeTkII2C
 
         @param devReg The device's register's address.
         @param data Data to write.
+        @param numBytes - length of data
+        @param[out] readBytes - Number of bytes read
 
         @retval kStkErrOk on success
     */
-    sfeTkError_t readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes);
+    sfeTkError_t readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes);
 
     // Buffer size chunk getter/setter
     /*--------------------------------------------------------------------------
