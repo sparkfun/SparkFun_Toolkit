@@ -93,6 +93,16 @@ class sfeTkArdI2C : public sfeTkII2C
     sfeTkError_t ping();
 
     /*--------------------------------------------------------------------------
+        @brief Write a single byte to the device
+        @note sfeTkIBus interface method
+
+        @param data Data to write.
+
+        @retval returns  kStkErrOk on success
+    */
+    sfeTkError_t writeByte(uint8_t data);
+
+    /*--------------------------------------------------------------------------
         @brief Write a single byte to the given register
         @note sfeTkIBus interface method
 
