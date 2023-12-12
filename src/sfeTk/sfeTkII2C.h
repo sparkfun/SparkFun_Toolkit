@@ -31,10 +31,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class sfeTkII2C : public sfeTkIBus
 {
   public:
-    sfeTkII2C() : _address{kNoAddress}
+    // set the address to No address and stop bit to the default value of 1
+    sfeTkII2C() : _address{kNoAddress}, _stop{kDefaultStopBit}
     {
     }
-    sfeTkII2C(uint8_t addr) : _address{addr}, _stop{true}
+    sfeTkII2C(uint8_t addr) : _address{addr}
     {
     }
 
@@ -89,6 +90,7 @@ class sfeTkII2C : public sfeTkIBus
     }
 
     static constexpr uint8_t kNoAddress = 0;
+    static constexpr uint8_t kDefaultStopBit = 1;
 
   private:
     uint8_t _address;
