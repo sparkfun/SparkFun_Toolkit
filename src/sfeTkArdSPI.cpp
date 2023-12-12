@@ -84,6 +84,33 @@ sfeTkError_t sfeTkArdSPI::init(bool bInit)
 //---------------------------------------------------------------------------------
 // writeRegisterByte()
 //
+// Writes a single byte to the device.
+//
+// Returns kSTkErrOk on success
+//
+sfeTkError_t sfeTkArdSPI::writeByte(uint8_t dataToWrite)
+{
+
+    if (!_spiPort)
+        return kSTkErrBusNotInit;
+
+    // Apply settings
+    _spiPort->beginTransaction(_sfeSPISettings);
+    // Signal communication start
+    digitalWrite(cs(), LOW);
+
+    _spiPort->transfer(dataToWrite);
+
+    // End communication
+    digitalWrite(cs(), HIGH);
+    _spiPort->endTransaction();
+
+    return kSTkErrOk;
+}
+
+//---------------------------------------------------------------------------------
+// writeRegisterByte()
+//
 // Writes a byte to a given register.
 //
 // Returns kSTkErrOk on success
@@ -92,7 +119,7 @@ sfeTkError_t sfeTkArdSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
 {
 
     if (!_spiPort)
-        return kSTkErrBusNullPtr;
+        return kSTkErrBusNotInit;
 
     // Apply settings
     _spiPort->beginTransaction(_sfeSPISettings);
@@ -108,6 +135,7 @@ sfeTkError_t sfeTkArdSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
 
     return kSTkErrOk;
 }
+
 //---------------------------------------------------------------------------------
 // writeRegisterWord()
 //
@@ -129,7 +157,7 @@ sfeTkError_t sfeTkArdSPI::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite
 sfeTkError_t sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
 {
     if (!_spiPort)
-        return kSTkErrBusNullPtr;
+        return kSTkErrBusNotInit;
 
     // Apply settings before work
     _spiPort->beginTransaction(_sfeSPISettings);
@@ -167,7 +195,7 @@ sfeTkError_t sfeTkArdSPI::readRegisterWord(uint8_t devReg, uint16_t &data)
 sfeTkError_t sfeTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes)
 {
     if (!_spiPort)
-        return kSTkErrBusNullPtr;
+        return kSTkErrBusNotInit;
 
     // Apply settings
     _spiPort->beginTransaction(_sfeSPISettings);

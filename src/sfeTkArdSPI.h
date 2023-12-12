@@ -39,8 +39,13 @@ class sfeTkArdSPI : public sfeTkISPI
     /*
         @brief Constructor
     */
-    sfeTkArdSPI(void) : _spiPort(nullptr){};
+    sfeTkArdSPI(void) : _spiPort(nullptr)
+    {
+    }
 
+    sfeTkArdSPI(uint8_t csPin) : sfeTkISPI(csPin)
+    {
+    }
     // copy constructor
     sfeTkArdSPI(sfeTkArdSPI const &rhs) : sfeTkISPI(), _spiPort{rhs._spiPort}, _sfeSPISettings{rhs._sfeSPISettings}
     {
@@ -76,6 +81,15 @@ class sfeTkArdSPI : public sfeTkISPI
         @retval sfeTkError_t - kSTkErrOk on success
     */
     sfeTkError_t init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t csPin, bool bInit = false);
+
+    /*--------------------------------------------------------------------------
+        @brief Write a single byte to the device
+
+        @param data Data to write.
+
+        @retval sfeTkError_t - kSTkErrOk on success
+    */
+    sfeTkError_t writeByte(uint8_t data);
 
     /*--------------------------------------------------------------------------
         @brief Write a single byte to the given register

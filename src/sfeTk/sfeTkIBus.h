@@ -29,13 +29,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "sfeTkError.h"
 
-
-// Define our error codes for the bus. Note Errors are negative, warnings/info postive
+// Define our error codes for the bus. Note Errors are negative, warnings/info positive
 // BUT keep the same increment on the base
 
-const sfeTkError_t kSTkErrBusNullPtr = kSTkErrFail * (kSTkErrBaseBus + 1);
+const sfeTkError_t kSTkErrBusNotInit = kSTkErrFail * (kSTkErrBaseBus + 1);
 const sfeTkError_t kSTkErrBusTimeout = kSTkErrFail * (kSTkErrBaseBus + 2);
-const sfeTkError_t kSTkErrBusNoReponse = kSTkErrFail * (kSTkErrBaseBus + 3);
+const sfeTkError_t kSTkErrBusNoResponse = kSTkErrFail * (kSTkErrBaseBus + 3);
 const sfeTkError_t kSTkErrBusDataTooLong = kSTkErrFail * (kSTkErrBaseBus + 4);
 const sfeTkError_t kSTkErrBusNullSettings = kSTkErrFail * (kSTkErrBaseBus + 5);
 const sfeTkError_t kSTkErrBusNullBuffer = kSTkErrFail * (kSTkErrBaseBus + 6);
@@ -47,6 +46,16 @@ const sfeTkError_t kSTkErrBusNotEnabled = kSTkErrBaseBus + 8;
 class sfeTkIBus
 {
   public:
+    /*--------------------------------------------------------------------------
+        @brief Write a single byte to the device
+
+        @param data Data to write.
+
+        @retval sfeTkError_t -  kSTkErrOk on successful execution.
+
+    */
+    virtual sfeTkError_t writeByte(uint8_t data) = 0;
+
     /*--------------------------------------------------------------------------
         @brief Write a single byte to the given register
 

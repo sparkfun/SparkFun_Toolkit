@@ -31,7 +31,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class sfeTkII2C : public sfeTkIBus
 {
   public:
-    sfeTkII2C() : _address{kNoAddress}
+    // set the address to No address and stop bit to the default value of 1
+    sfeTkII2C() : _address{kNoAddress}, _stop{kDefaultStopBit}
     {
     }
     sfeTkII2C(uint8_t addr) : _address{addr}
@@ -68,10 +69,32 @@ class sfeTkII2C : public sfeTkIBus
         return _address;
     }
 
+    /*--------------------------------------------------------------------------
+        @brief setter for I2C stops (vs restarts)
+
+    */
+    virtual void setStop(uint8_t stop)
+    {
+        _stop = stop;
+    }
+
+    /*--------------------------------------------------------------------------
+        @brief getter for I2C stops (vs restarts)
+
+        @retval uint8_t returns the value of "send stop"
+
+    */
+    virtual uint8_t getStop(void)
+    {
+        return _stop;
+    }
+
     static constexpr uint8_t kNoAddress = 0;
+    static constexpr uint8_t kDefaultStopBit = 1;
 
   private:
     uint8_t _address;
+    uint8_t _stop;
 };
 
 //};

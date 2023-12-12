@@ -23,8 +23,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "sfeTkArdI2C.h"
 
-
-
 //---------------------------------------------------------------------------------
 // init()
 //
@@ -80,9 +78,27 @@ sfeTkError_t sfeTkArdI2C::ping()
 {
     // no port, no
     if (!_i2cPort)
-        return kSTkErrBusNullPtr;
+        return kSTkErrBusNotInit;
 
     _i2cPort->beginTransmission(address());
+    return _i2cPort->endTransmission() == 0 ? kSTkErrOk : kSTkErrFail;
+}
+
+//---------------------------------------------------------------------------------
+// writeByte()
+//
+// Writes a single byte to the device.
+//
+// Returns true on success, false on failure
+//
+sfeTkError_t sfeTkArdI2C::writeByte(uint8_t dataToWrite)
+{
+    if (!_i2cPort)
+        return kSTkErrBusNotInit;
+
+    // do the Arduino I2C work
+    _i2cPort->beginTransmission(address());
+    _i2cPort->write(dataToWrite);
     return _i2cPort->endTransmission() == 0 ? kSTkErrOk : kSTkErrFail;
 }
 
@@ -96,7 +112,7 @@ sfeTkError_t sfeTkArdI2C::ping()
 sfeTkError_t sfeTkArdI2C::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
 {
     if (!_i2cPort)
-        return kSTkErrBusNullPtr;
+        return kSTkErrBusNotInit;
 
     // do the Arduino I2C work
     _i2cPort->beginTransmission(address());
@@ -104,6 +120,7 @@ sfeTkError_t sfeTkArdI2C::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
     _i2cPort->write(dataToWrite);
     return _i2cPort->endTransmission() == 0 ? kSTkErrOk : kSTkErrFail;
 }
+
 //---------------------------------------------------------------------------------
 // writeRegisterWord()
 //
@@ -114,7 +131,7 @@ sfeTkError_t sfeTkArdI2C::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
 sfeTkError_t sfeTkArdI2C::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite)
 {
     if (!_i2cPort)
-        return kSTkErrBusNullPtr;
+        return kSTkErrBusNotInit;
 
     return writeRegisterRegion(devReg, (uint8_t *)&dataToWrite, sizeof(uint16_t));
 }
@@ -129,13 +146,13 @@ sfeTkError_t sfeTkArdI2C::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite
 sfeTkError_t sfeTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
 {
     if (!_i2cPort)
-        return kSTkErrBusNullPtr;
+        return kSTkErrBusNotInit;
 
     _i2cPort->beginTransmission(address());
     _i2cPort->write(devReg);
     _i2cPort->write(data, (int)length);
 
-    return _i2cPort->endTransmission() ? kSTkErrFail : kSTkErrOk; 
+    return _i2cPort->endTransmission() ? kSTkErrFail : kSTkErrOk;
 }
 
 //---------------------------------------------------------------------------------
@@ -148,7 +165,7 @@ sfeTkError_t sfeTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *dat
 sfeTkError_t sfeTkArdI2C::readRegisterByte(uint8_t devReg, uint8_t &dataToRead)
 {
     if (!_i2cPort)
-        return kSTkErrBusNullPtr;
+        return kSTkErrBusNotInit;
 
     // Return value
     uint8_t result = 0;
@@ -157,7 +174,7 @@ sfeTkError_t sfeTkArdI2C::readRegisterByte(uint8_t devReg, uint8_t &dataToRead)
 
     _i2cPort->beginTransmission(address());
     _i2cPort->write(devReg);
-    _i2cPort->endTransmission();
+    _i2cPort->endTransmission((int)getStop());
     _i2cPort->requestFrom(address(), (uint8_t)1);
 
     while (_i2cPort->available()) // slave may send less than requested
@@ -181,7 +198,7 @@ sfeTkError_t sfeTkArdI2C::readRegisterByte(uint8_t devReg, uint8_t &dataToRead)
 sfeTkError_t sfeTkArdI2C::readRegisterWord(uint8_t devReg, uint16_t &dataToRead)
 {
     if (!_i2cPort)
-        return kSTkErrBusNullPtr;
+        return kSTkErrBusNotInit;
 
     uint32_t nRead = readRegisterRegion(devReg, (uint8_t *)&dataToRead, sizeof(uint16_t));
 
@@ -199,31 +216,33 @@ int32_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t nu
 {
     // got port
     if (!_i2cPort)
-        return kSTkErrBusNullPtr;
+        return kSTkErrBusNotInit;
 
     uint16_t nOrig = numBytes; // original number of bytes.
     uint8_t nChunk;
     uint16_t nReturned;
-    uint16_t i;                   // counter in loop
+    uint16_t i;              // counter in loop
     bool bFirstInter = true; // Flag for first iteration - used to send devRegister
 
     while (numBytes > 0)
     {
-        _i2cPort->beginTransmission(address());
-
         if (bFirstInter)
         {
+            _i2cPort->beginTransmission(address());
+
             _i2cPort->write(devReg);
+
+            if (_i2cPort->endTransmission(getStop()) != 0)
+                return kSTkErrFail; // error with the end transmission
+
             bFirstInter = false;
         }
-
-        if (_i2cPort->endTransmission() != 0)
-            return kSTkErrFail; // error with the end transmission
 
         // We're chunking in data - keeping the max chunk to kMaxI2CBufferLength
         nChunk = numBytes > _bufferChunkSize ? _bufferChunkSize : numBytes;
 
-        nReturned = _i2cPort->requestFrom((int)address(), (int)nChunk, (int)true);
+        // Request the bytes. If this is the last chunk, always send a stop
+        nReturned = _i2cPort->requestFrom((int)address(), (int)nChunk, (int)(nChunk == numBytes ? true : getStop()));
 
         // No data returned, no dice
         if (nReturned == 0)
