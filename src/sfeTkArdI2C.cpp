@@ -200,9 +200,11 @@ sfeTkError_t sfeTkArdI2C::readRegisterWord(uint8_t devReg, uint16_t &dataToRead)
     if (!_i2cPort)
         return kSTkErrBusNotInit;
 
-    uint32_t nRead = readRegisterRegion(devReg, (uint8_t *)&dataToRead, sizeof(uint16_t));
+    uint16_t nRead = 0;
 
-    return (nRead == 2 ? kSTkErrOk : kSTkErrFail);
+    sfeTkError_t result = readRegisterRegion(devReg, (uint8_t *)&dataToRead, sizeof(uint16_t), &nRead);
+
+    return nRead == 2 ? kSTkErrOk : result;
 }
 
 //---------------------------------------------------------------------------------
@@ -212,11 +214,15 @@ sfeTkError_t sfeTkArdI2C::readRegisterWord(uint8_t devReg, uint16_t &dataToRead)
 //
 // Returns the number of bytes read, < 0 is an error
 //
-int32_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes)
+int32_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t *readBytes)
 {
     // got port
     if (!_i2cPort)
         return kSTkErrBusNotInit;
+
+    // Are buffers valid?
+    if (!data || !readBytes)
+        return kSTkErrBusNullBuffer;
 
     uint16_t nOrig = numBytes; // original number of bytes.
     uint8_t nChunk;
@@ -257,5 +263,7 @@ int32_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t nu
 
     } // end while
 
-    return nOrig - numBytes; // Success
+    *readBytes = nOrig - numBytes; // Bytes read.
+
+    return (*readBytes == nOrig) ? kSTkErrOk : kSTkErrBusUnderRead; // Success
 }
