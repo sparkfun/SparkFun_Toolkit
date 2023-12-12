@@ -148,10 +148,12 @@ class sfeTkArdSPI : public sfeTkISPI
 
         @param devReg The device's register's address.
         @param data Data to write.
+        @param numBytes - length of data
+        @param[out] readBytes - Number of bytes read
 
         @retval sfeTkError_t - true on success
     */
-    virtual sfeTkError_t readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes);
+    virtual sfeTkError_t readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes, size_t &readBytes);
 
   protected:
     // note: The instance data is protected, allowing access if a sub-class is

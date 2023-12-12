@@ -170,7 +170,8 @@ class sfeTkArdI2C : public sfeTkII2C
         @param devReg The device's register's address.
         @param data Data being read.
         @param numBytes Number of bytes to read.
-        @param readBytes Number of bytes read.
+        @param[out] readBytes - Number of bytes read
+
 
         @retval kSTkErrOk on success
     */

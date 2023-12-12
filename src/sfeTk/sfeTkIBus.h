@@ -117,6 +117,8 @@ class sfeTkIBus
         @param devAddr The device's I2C address.
         @param devReg The device's register's address.
         @param data Data to write.
+        @param numBytes - length of data
+        @param[out] readBytes - number of bytes read
 
         @retval int returns kSTkErrOk on success, or kSTkErrFail code
 

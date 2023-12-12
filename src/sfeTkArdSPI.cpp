@@ -178,12 +178,18 @@ sfeTkError_t sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *dat
 
 sfeTkError_t sfeTkArdSPI::readRegisterByte(uint8_t devReg, uint8_t &data)
 {
-    return readRegisterRegion(devReg, &data, sizeof(data)) == 1;
+    size_t nRead;
+    sfeTkError_t retval = readRegisterRegion(devReg, (uint8_t *)&data, sizeof(data), nRead);
+
+    return (retval == kSTkErrOk && nRead == sizeof(data) ? kSTkErrOk : retval);
 }
 
 sfeTkError_t sfeTkArdSPI::readRegisterWord(uint8_t devReg, uint16_t &data)
 {
-    return readRegisterRegion(devReg, (uint8_t *)&data, sizeof(data)) == 2;
+    size_t nRead;
+    sfeTkError_t retval = readRegisterRegion(devReg, (uint8_t *)&data, sizeof(data), nRead);
+
+    return (retval == kSTkErrOk && nRead == sizeof(data) ? kSTkErrOk : retval);
 }
 //---------------------------------------------------------------------------------
 // readRegisterRegion()
@@ -192,7 +198,7 @@ sfeTkError_t sfeTkArdSPI::readRegisterWord(uint8_t devReg, uint16_t &data)
 //
 // Returns kSTkErrOk on success
 //
-sfeTkError_t sfeTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes)
+sfeTkError_t sfeTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
 {
     if (!_spiPort)
         return kSTkErrBusNotInit;
@@ -212,6 +218,8 @@ sfeTkError_t sfeTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size
     // End transaction
     digitalWrite(cs(), HIGH);
     _spiPort->endTransaction();
+
+    readBytes = numBytes;
 
     return kSTkErrOk;
 }
