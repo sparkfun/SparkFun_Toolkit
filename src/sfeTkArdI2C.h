@@ -174,7 +174,7 @@ class sfeTkArdI2C : public sfeTkII2C
 
         @retval kSTkErrOk on success
     */
-    sfeTkError_t readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t *readBytes);
+    sfeTkError_t readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes);
 
     // Buffer size chunk getter/setter
     /*--------------------------------------------------------------------------
