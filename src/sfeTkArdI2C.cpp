@@ -214,7 +214,7 @@ sfeTkError_t sfeTkArdI2C::readRegisterWord(uint8_t devReg, uint16_t &dataToRead)
 //
 // Returns the number of bytes read, < 0 is an error
 //
-int32_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
+sfeTkError_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
 {
     // got port
     if (!_i2cPort)
