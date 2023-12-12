@@ -83,6 +83,15 @@ class sfeTkArdSPI : public sfeTkISPI
     sfeTkError_t init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t csPin, bool bInit = false);
 
     /*--------------------------------------------------------------------------
+        @brief Write a single byte to the device
+
+        @param data Data to write.
+
+        @retval sfeTkError_t - kSTkErrOk on success
+    */
+    sfeTkError_t writeByte(uint8_t data);
+
+    /*--------------------------------------------------------------------------
         @brief Write a single byte to the given register
 
         @param devReg The device's register's address.

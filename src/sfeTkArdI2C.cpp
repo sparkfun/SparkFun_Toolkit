@@ -85,6 +85,24 @@ sfeTkError_t sfeTkArdI2C::ping()
 }
 
 //---------------------------------------------------------------------------------
+// writeByte()
+//
+// Writes a single byte to the device.
+//
+// Returns true on success, false on failure
+//
+sfeTkError_t sfeTkArdI2C::writeByte(uint8_t dataToWrite)
+{
+    if (!_i2cPort)
+        return kSTkErrBusNotInit;
+
+    // do the Arduino I2C work
+    _i2cPort->beginTransmission(address());
+    _i2cPort->write(dataToWrite);
+    return _i2cPort->endTransmission() == 0 ? kSTkErrOk : kSTkErrFail;
+}
+
+//---------------------------------------------------------------------------------
 // writeRegisterByte()
 //
 // Writes a byte to a given register.
@@ -102,6 +120,7 @@ sfeTkError_t sfeTkArdI2C::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
     _i2cPort->write(dataToWrite);
     return _i2cPort->endTransmission() == 0 ? kSTkErrOk : kSTkErrFail;
 }
+
 //---------------------------------------------------------------------------------
 // writeRegisterWord()
 //
@@ -155,7 +174,7 @@ sfeTkError_t sfeTkArdI2C::readRegisterByte(uint8_t devReg, uint8_t &dataToRead)
 
     _i2cPort->beginTransmission(address());
     _i2cPort->write(devReg);
-    _i2cPort->endTransmission();
+    _i2cPort->endTransmission((int)getStop());
     _i2cPort->requestFrom(address(), (uint8_t)1);
 
     while (_i2cPort->available()) // slave may send less than requested
@@ -207,21 +226,23 @@ int32_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t nu
 
     while (numBytes > 0)
     {
-        _i2cPort->beginTransmission(address());
-
         if (bFirstInter)
         {
+            _i2cPort->beginTransmission(address());
+
             _i2cPort->write(devReg);
+
+            if (_i2cPort->endTransmission(getStop()) != 0)
+                return kSTkErrFail; // error with the end transmission
+
             bFirstInter = false;
         }
-
-        if (_i2cPort->endTransmission() != 0)
-            return kSTkErrFail; // error with the end transmission
 
         // We're chunking in data - keeping the max chunk to kMaxI2CBufferLength
         nChunk = numBytes > _bufferChunkSize ? _bufferChunkSize : numBytes;
 
-        nReturned = _i2cPort->requestFrom((int)address(), (int)nChunk, (int)true);
+        // Request the bytes. If this is the last chunk, always send a stop
+        nReturned = _i2cPort->requestFrom((int)address(), (int)nChunk, (int)(nChunk == numBytes ? true : getStop()));
 
         // No data returned, no dice
         if (nReturned == 0)

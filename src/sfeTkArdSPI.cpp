@@ -84,6 +84,33 @@ sfeTkError_t sfeTkArdSPI::init(bool bInit)
 //---------------------------------------------------------------------------------
 // writeRegisterByte()
 //
+// Writes a single byte to the device.
+//
+// Returns kSTkErrOk on success
+//
+sfeTkError_t sfeTkArdSPI::writeByte(uint8_t dataToWrite)
+{
+
+    if (!_spiPort)
+        return kSTkErrBusNotInit;
+
+    // Apply settings
+    _spiPort->beginTransaction(_sfeSPISettings);
+    // Signal communication start
+    digitalWrite(cs(), LOW);
+
+    _spiPort->transfer(dataToWrite);
+
+    // End communication
+    digitalWrite(cs(), HIGH);
+    _spiPort->endTransaction();
+
+    return kSTkErrOk;
+}
+
+//---------------------------------------------------------------------------------
+// writeRegisterByte()
+//
 // Writes a byte to a given register.
 //
 // Returns kSTkErrOk on success
@@ -108,6 +135,7 @@ sfeTkError_t sfeTkArdSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
 
     return kSTkErrOk;
 }
+
 //---------------------------------------------------------------------------------
 // writeRegisterWord()
 //
