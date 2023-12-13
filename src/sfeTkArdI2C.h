@@ -168,11 +168,12 @@ class sfeTkArdI2C : public sfeTkII2C
         @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
 
         @param devReg The device's register's address.
-        @param data Data to write.
-        @param numBytes - length of data
+        @param data Data being read.
+        @param numBytes Number of bytes to read.
         @param[out] readBytes - Number of bytes read
 
-        @retval kStkErrOk on success
+
+        @retval kSTkErrOk on success
     */
     sfeTkError_t readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes);
 
