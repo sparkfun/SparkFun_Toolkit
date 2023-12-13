@@ -220,6 +220,10 @@ sfeTkError_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size
     if (!_i2cPort)
         return kSTkErrBusNotInit;
 
+    // Buffer valid?
+    if (!data)
+        return kSTkErrBusNullBuffer;
+  
     readBytes = 0;
 
     uint16_t nOrig = numBytes; // original number of bytes.
@@ -261,7 +265,7 @@ sfeTkError_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size
 
     } // end while
 
-    readBytes = nOrig - numBytes;
+    readBytes = nOrig - numBytes; // Bytes read.
 
-    return kSTkErrOk;
+    return (readBytes == nOrig) ? kSTkErrOk : kSTkErrBusUnderRead; // Success
 }
