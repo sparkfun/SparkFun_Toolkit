@@ -31,7 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class sfeTkII2C : public sfeTkIBus
 {
   public:
-    // set the address to No address and stop flag to true
+    // set the address to No address and stop flag to false
     sfeTkII2C() : _address{kNoAddress}, _stop{false}
     {
     }
