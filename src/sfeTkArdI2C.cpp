@@ -240,7 +240,7 @@ sfeTkError_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size
 
             _i2cPort->write(devReg);
 
-            if (_i2cPort->endTransmission(stop() != 0))
+            if (_i2cPort->endTransmission(stop()) != 0)
                 return kSTkErrFail; // error with the end transmission
 
             bFirstInter = false;
