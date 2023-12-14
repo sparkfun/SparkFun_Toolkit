@@ -183,10 +183,10 @@ sfeTkError_t sfeTkArdI2C::readRegisterByte(uint8_t devReg, uint8_t &dataToRead)
         nData++;
     }
 
-    if (nData == 1) // Only update outputPointer if a single byte was returned
+    if (nData == sizeof(uint8_t)) // Only update outputPointer if a single byte was returned
         dataToRead = result;
 
-    return (nData == 1 ? kSTkErrOk : kSTkErrFail);
+    return (nData == sizeof(uint8_t) ? kSTkErrOk : kSTkErrFail);
 }
 //---------------------------------------------------------------------------------
 // readRegisterWord()
@@ -203,7 +203,7 @@ sfeTkError_t sfeTkArdI2C::readRegisterWord(uint8_t devReg, uint16_t &dataToRead)
     size_t nRead;
     sfeTkError_t retval = readRegisterRegion(devReg, (uint8_t *)&dataToRead, sizeof(uint16_t), nRead);
 
-    return (retval == kSTkErrOk && nRead == 2 ? kSTkErrOk : retval);
+    return (retval == kSTkErrOk && nRead == sizeof(uint16_t) ? kSTkErrOk : retval);
 }
 
 //---------------------------------------------------------------------------------

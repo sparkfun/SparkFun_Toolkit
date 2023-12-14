@@ -202,6 +202,9 @@ The following is an example of an I2C class in Arduino based on the previous pla
 > [!NOTE]
 > This class implements a ```isConnected()``` method that calls the ```ping()``` method of the I2C bus class being used, and if this passes, then calls the ```checkDeviceID()``` method of the superclass.
 
+> [!NOTE]
+> If your device supports repeated starts, make sure to include ```_theI2CBus.setStop(false)``` in your begin function. Otherwise this can cause issues with your device.
+
 ```c++
 
 class myArduinoDriverI2C : public myDriverClass
@@ -214,6 +217,10 @@ class myArduinoDriverI2C : public myDriverClass
     {
         if (_theI2CBus.init(MY_DEVICE_ADDRESS) != kSTkErrOk)
             return false;
+
+        // OPTIONAL: If your device supports repeat starts.
+        _theI2CBus.setStop(false);
+
         setCommunicationBus(&_theI2CBus);
 
         return myDriverClass::begin();

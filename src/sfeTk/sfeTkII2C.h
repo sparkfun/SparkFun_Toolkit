@@ -31,8 +31,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class sfeTkII2C : public sfeTkIBus
 {
   public:
-    // set the address to No address and stop flag to false
-    sfeTkII2C() : _address{kNoAddress}, _stop{false}
+    // set the address to No address and stop flag to true
+    sfeTkII2C() : _address{kNoAddress}, _stop{true}
     {
     }
     sfeTkII2C(uint8_t addr) : _address{addr}

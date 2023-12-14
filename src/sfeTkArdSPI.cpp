@@ -179,17 +179,17 @@ sfeTkError_t sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *dat
 sfeTkError_t sfeTkArdSPI::readRegisterByte(uint8_t devReg, uint8_t &data)
 {
     size_t nRead;
-    sfeTkError_t retval = readRegisterRegion(devReg, (uint8_t *)&data, sizeof(data), nRead);
+    sfeTkError_t retval = readRegisterRegion(devReg, (uint8_t *)&data, sizeof(uint8_t), nRead);
 
-    return (retval == kSTkErrOk && nRead == sizeof(data) ? kSTkErrOk : retval);
+    return (retval == kSTkErrOk && nRead == sizeof(uint8_t) ? kSTkErrOk : retval);
 }
 
 sfeTkError_t sfeTkArdSPI::readRegisterWord(uint8_t devReg, uint16_t &data)
 {
     size_t nRead;
-    sfeTkError_t retval = readRegisterRegion(devReg, (uint8_t *)&data, sizeof(data), nRead);
+    sfeTkError_t retval = readRegisterRegion(devReg, (uint8_t *)&data, sizeof(uint16_t), nRead);
 
-    return (retval == kSTkErrOk && nRead == sizeof(data) ? kSTkErrOk : retval);
+    return (retval == kSTkErrOk && nRead == sizeof(uint16_t) ? kSTkErrOk : retval);
 }
 //---------------------------------------------------------------------------------
 // readRegisterRegion()
