@@ -156,6 +156,27 @@ sfeTkError_t sfeTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *dat
 }
 
 //---------------------------------------------------------------------------------
+// write16BitRegisterRegion()
+//
+// Writes an array of bytes to a given 16-bit register on the target address
+//
+// Returns the number of bytes written, < 0 is an error
+//
+sfeTkError_t sfeTkArdI2C::write16BitRegisterRegion(uint16_t devReg, const uint8_t *data, size_t length)
+{
+    if (!_i2cPort)
+        return kSTkErrBusNotInit;
+
+    _i2cPort->beginTransmission(address());
+    _i2cPort->write((devReg >> 8) & 0xff);
+    _i2cPort->write(devReg & 0xff);
+    _i2cPort->write(data, (int)length);
+
+    return _i2cPort->endTransmission() ? kSTkErrFail : kSTkErrOk;
+}
+
+
+//---------------------------------------------------------------------------------
 // readRegisterByte()
 //
 // Reads a byte to a given register.
@@ -239,6 +260,74 @@ sfeTkError_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size
             _i2cPort->beginTransmission(address());
 
             _i2cPort->write(devReg);
+
+            if (_i2cPort->endTransmission(stop()) != 0)
+                return kSTkErrFail; // error with the end transmission
+
+            bFirstInter = false;
+        }
+
+        // We're chunking in data - keeping the max chunk to kMaxI2CBufferLength
+        nChunk = numBytes > _bufferChunkSize ? _bufferChunkSize : numBytes;
+
+        // Request the bytes. If this is the last chunk, always send a stop
+        nReturned = _i2cPort->requestFrom((int)address(), (int)nChunk, (int)(nChunk == numBytes ? true : stop()));
+
+        // No data returned, no dice
+        if (nReturned == 0)
+            return kSTkErrBusUnderRead; // error
+
+        // Copy the retrieved data chunk to the current index in the data segment
+        for (i = 0; i < nReturned; i++)
+            *data++ = _i2cPort->read();
+
+        // Decrement the amount of data received from the overall data request amount
+        numBytes = numBytes - nReturned;
+
+    } // end while
+
+    readBytes = nOrig - numBytes; // Bytes read.
+
+    return (readBytes == nOrig) ? kSTkErrOk : kSTkErrBusUnderRead; // Success
+}
+
+
+
+
+//---------------------------------------------------------------------------------
+// read16BitRegisterRegion()
+//
+// Reads an array of bytes to a given 16-bit register on the target address
+//
+// Returns the number of bytes read, < 0 is an error
+//
+sfeTkError_t sfeTkArdI2C::read16BitRegisterRegion(uint16_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
+{
+
+    // got port
+    if (!_i2cPort)
+        return kSTkErrBusNotInit;
+
+    // Buffer valid?
+    if (!data)
+        return kSTkErrBusNullBuffer;
+  
+    readBytes = 0;
+
+    uint16_t nOrig = numBytes; // original number of bytes.
+    uint8_t nChunk;
+    uint16_t nReturned;
+    uint16_t i;              // counter in loop
+    bool bFirstInter = true; // Flag for first iteration - used to send devRegister
+
+    while (numBytes > 0)
+    {
+        if (bFirstInter)
+        {
+            _i2cPort->beginTransmission(address());
+
+            _i2cPort->write((devReg >> 8) & 0xff);
+            _i2cPort->write(devReg & 0xff);
 
             if (_i2cPort->endTransmission(stop()) != 0)
                 return kSTkErrFail; // error with the end transmission
