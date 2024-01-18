@@ -301,7 +301,7 @@ sfeTkError_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size
 //
 // Returns the number of bytes read, < 0 is an error
 //
-sfeTkError_t sfeTkArdI2C::read16BitRegisterRegion(uint16_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
+sfeTkError_t sfeTkArdI2C::read16BitRegisterRegion(uint16_t devReg, uint8_t *data, size_t numBytes, size_t *readBytes)
 {
 
     // got port
@@ -312,7 +312,10 @@ sfeTkError_t sfeTkArdI2C::read16BitRegisterRegion(uint16_t devReg, uint8_t *data
     if (!data)
         return kSTkErrBusNullBuffer;
   
-    readBytes = 0;
+    if(readBytes != nullptr)
+    {
+        readBytes = 0;
+    }
 
     uint16_t nOrig = numBytes; // original number of bytes.
     uint8_t nChunk;
@@ -354,7 +357,14 @@ sfeTkError_t sfeTkArdI2C::read16BitRegisterRegion(uint16_t devReg, uint8_t *data
 
     } // end while
 
-    readBytes = nOrig - numBytes; // Bytes read.
+    if(readBytes != nullptr)
+    {
+        *readBytes = nOrig - numBytes; // Bytes read.
 
-    return (readBytes == nOrig) ? kSTkErrOk : kSTkErrBusUnderRead; // Success
+        return (*readBytes == nOrig) ? kSTkErrOk : kSTkErrBusUnderRead; // Success
+    }
+    else
+    {
+        return (numBytes == 0) ? kSTkErrOk : kSTkErrBusUnderRead; // Success
+    }
 }
