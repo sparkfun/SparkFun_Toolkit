@@ -147,7 +147,7 @@ class sfeTkArdI2C : public sfeTkII2C
         @retval sfeTkError_t kSTkErrOk on successful execution
 
     */
-    sfeTkError_t write16BitRegisterRegion(uint16_t devReg, const uint8_t *data, size_t length);
+    sfeTkError_t write16BitRegisterRegion(uint16_t devReg, uint8_t *data, size_t length);
 
 
     /*--------------------------------------------------------------------------
