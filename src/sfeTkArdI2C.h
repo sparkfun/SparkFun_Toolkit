@@ -147,7 +147,7 @@ class sfeTkArdI2C : public sfeTkII2C
         @retval sfeTkError_t kSTkErrOk on successful execution
 
     */
-    sfeTkError_t write16BitRegisterRegion(uint16_t devReg, uint8_t *data, size_t length);
+    sfeTkError_t writeRegister16Region(uint16_t devReg, uint8_t *data, size_t length);
 
 
     /*--------------------------------------------------------------------------
@@ -201,7 +201,7 @@ class sfeTkArdI2C : public sfeTkII2C
         @retval int returns kSTkErrOk on success, or kSTkErrFail code
 
     */
-    sfeTkError_t read16BitRegisterRegion(uint16_t reg, uint8_t *data, size_t numBytes, size_t *readBytes = nullptr);
+    sfeTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes, size_t *readBytes = nullptr);
 
     // Buffer size chunk getter/setter
     /*--------------------------------------------------------------------------
