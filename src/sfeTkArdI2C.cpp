@@ -124,7 +124,7 @@ sfeTkError_t sfeTkArdI2C::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
 //---------------------------------------------------------------------------------
 // writeRegisterWord()
 //
-// Writes a world to a given register.
+// Writes a word to a given register.
 //
 // Returns true on success, false on failure
 //
@@ -136,6 +136,14 @@ sfeTkError_t sfeTkArdI2C::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite
     return writeRegisterRegion(devReg, (uint8_t *)&dataToWrite, sizeof(uint16_t));
 }
 
+//---------------------------------------------------------------------------------
+// writeRegisterRegionAddress()
+//
+// Writes an array of bytes of specified length to a given register on the 
+//  target address
+//
+// Returns the number of bytes written, < 0 is an error
+//
 sfeTkError_t sfeTkArdI2C::writeRegisterRegionAddress(uint8_t *devReg, size_t regLength, const uint8_t *data, size_t length)
 {
     if (!_i2cPort)
@@ -167,26 +175,19 @@ sfeTkError_t sfeTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *dat
 //
 // Returns the number of bytes written, < 0 is an error
 //
-// sfeTkError_t sfeTkArdI2C::writeRegister16Region(uint16_t devReg, uint8_t *data, size_t length)
-// {
-//     if (!_i2cPort)
-//         return kSTkErrBusNotInit;
-//     _i2cPort->beginTransmission(address());
-//     _i2cPort->write((devReg >> 8) & 0xff);
-//     _i2cPort->write(devReg & 0xff);
-//     for(int i = 0; i < length; i++)
-//     {
-//         _i2cPort->write(data[i]);
-//     }
-//     return _i2cPort->endTransmission() ? kSTkErrFail : kSTkErrOk;
-// }
-
 sfeTkError_t sfeTkArdI2C::writeRegister16Region(uint16_t devReg, uint8_t *data, size_t length)
 {
     devReg = ((devReg << 8) & 0xff00) | ((devReg >> 8) & 0x00ff);
     return writeRegisterRegionAddress((uint8_t*)&devReg, 2, data, length);
 }
 
+//---------------------------------------------------------------------------------
+// readRegisterRegionAnyAddress()
+//
+// Reads an array of bytes to a register on the target address
+//
+// Returns the number of bytes written, < 0 is an error
+//
 sfeTkError_t sfeTkArdI2C::readRegisterRegionAnyAddress(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes, size_t &readBytes)
 {
 
@@ -281,10 +282,11 @@ sfeTkError_t sfeTkArdI2C::readRegisterByte(uint8_t devReg, uint8_t &dataToRead)
 
     return (nData == sizeof(uint8_t) ? kSTkErrOk : kSTkErrFail);
 }
+
 //---------------------------------------------------------------------------------
 // readRegisterWord()
 //
-// Reads a world to a given register.
+// Reads a word to a given register.
 //
 // Returns true on success, false on failure
 //
@@ -321,8 +323,6 @@ sfeTkError_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size
 sfeTkError_t sfeTkArdI2C::readRegister16Region(uint16_t devReg, uint8_t *data, size_t numBytes)
 {
     size_t readBytes = 0;
-    devReg = ((devReg << 8) & 0xff00) | ((devReg >> 8) & 0x00ff);
-//     _i2cPort->write((devReg >> 8) & 0xff);
-//     _i2cPort->write(devReg & 0xff);
+    devReg = ((devReg << 8) & 0xff00) | ((devReg >> 8) & 0x00ff); 
     return readRegisterRegionAnyAddress((uint8_t*)&devReg, 2, data, numBytes, readBytes);
 }
