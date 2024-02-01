@@ -26,4 +26,4 @@ The SparkFun Toolkit is available as a *Beta* release, with the intent of testin
 
 |||
 |---|---|
-|[Bus Implementation](docs/ar_ibus.md) | The architecture and use of the Tookkit Communication Bus Interface
+|[Bus Implementation](docs/ar_ibus.md) | The architecture and use of the Toolkit Communication Bus Interface
