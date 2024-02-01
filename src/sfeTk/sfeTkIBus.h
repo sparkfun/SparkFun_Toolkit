@@ -150,7 +150,7 @@ class sfeTkIBus
         @retval int returns kSTkErrOk on success, or kSTkErrFail code
 
     */
-    virtual sfeTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes, size_t *readBytes = nullptr) = 0;
+    virtual sfeTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes) = 0;
 
 };
 
