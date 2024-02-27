@@ -162,7 +162,7 @@ sfeTkError_t sfeTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *dat
 //
 // Returns the number of bytes written, < 0 is an error
 //
-sfeTkError_t sfeTkArdI2C::writeRegisterRegion(uint16_t devReg, const uint8_t *data, size_t length)
+sfeTkError_t sfeTkArdI2C::writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length)
 {
     if (!_i2cPort)
         return kSTkErrBusNotInit;
@@ -304,13 +304,13 @@ sfeTkError_t sfeTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size
 }
 
 //---------------------------------------------------------------------------------
-// readRegisterRegion()
+// readRegister16Region()
 //
 // Reads an array of bytes to a given 16 bit register on the target address
 //
 // Returns the number of bytes read, < 0 is an error
 //
-sfeTkError_t sfeTkArdI2C::readRegisterRegion(uint16_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
+sfeTkError_t sfeTkArdI2C::readRegister16Region(uint16_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
 {
 
     // got port

@@ -177,7 +177,7 @@ sfeTkError_t sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *dat
 }
 
 // 16 bit address version ...
-sfeTkError_t sfeTkArdSPI::writeRegisterRegion(uint16_t devReg, const uint8_t *data, size_t length)
+sfeTkError_t sfeTkArdSPI::writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length)
 {
     if (!_spiPort)
         return kSTkErrBusNotInit;
@@ -248,13 +248,13 @@ sfeTkError_t sfeTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size
 }
 
 //---------------------------------------------------------------------------------
-// readRegisterRegion()
+// readRegister16Region()
 //
 // Reads an array of bytes to a given a 16 bit register on the target address
 //
 // Returns kSTkErrOk on success
 //
-sfeTkError_t sfeTkArdSPI::readRegisterRegion(uint16_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
+sfeTkError_t sfeTkArdSPI::readRegister16Region(uint16_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
 {
     if (!_spiPort)
         return kSTkErrBusNotInit;
