@@ -138,6 +138,19 @@ class sfeTkArdI2C : public sfeTkII2C
     virtual sfeTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
 
     /*--------------------------------------------------------------------------
+        @brief Writes a number of bytes starting at the given register's 16 bit address.
+
+        @note sfeTkIBus interface method
+        @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
+
+        @param devReg The device's register's 16 bit address.
+        @param data Data to write.
+
+        @retval kStkErrOk on success
+    */
+    virtual sfeTkError_t writeRegisterRegion(uint16_t devReg, const uint8_t *data, size_t length);
+
+    /*--------------------------------------------------------------------------
         @brief Reads a byte of data from the given register.
 
         @note sfeTkIBus interface method
@@ -177,6 +190,22 @@ class sfeTkArdI2C : public sfeTkII2C
     */
     sfeTkError_t readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes);
 
+    /*--------------------------------------------------------------------------
+        @brief Reads a block of data from the given 16 bit register.
+
+        @note sfeTkIBus interface method
+        @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
+
+        @param devReg The device's register's address.
+        @param data Data being read.
+        @param numBytes Number of bytes to read.
+        @param[out] readBytes - Number of bytes read
+
+
+        @retval kSTkErrOk on success
+    */
+    sfeTkError_t readRegisterRegion(uint16_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes);
+
     // Buffer size chunk getter/setter
     /*--------------------------------------------------------------------------
         @brief set the buffer chunk size
@@ -211,6 +240,9 @@ class sfeTkArdI2C : public sfeTkII2C
     TwoWire *_i2cPort;
 
   private:
+    // helper method to handle multiple addresses
+    sfeTkError_t readRegion(uint8_t *data, size_t numBytes, size_t &readBytes);
+
     static constexpr size_t kDefaultBufferChunk = 32;
 
     // the I2C buffer chunker size
