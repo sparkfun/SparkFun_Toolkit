@@ -237,9 +237,9 @@ class sfeTkArdI2C : public sfeTkII2C
     TwoWire *_i2cPort;
 
   private:
-sfeTkError_t writeRegisterRegionAddress(uint8_t *devReg, size_t regLength, const uint8_t *data, size_t length);
+    sfeTkError_t writeRegisterRegionAddress(uint8_t *devReg, size_t regLength, const uint8_t *data, size_t length);
 
-sfeTkError_t readRegisterRegionAnyAddress(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes, size_t &readBytes);
+    sfeTkError_t readRegisterRegionAnyAddress(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes, size_t &readBytes);
 
     static constexpr size_t kDefaultBufferChunk = 32;
 

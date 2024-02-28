@@ -213,9 +213,6 @@ sfeTkError_t sfeTkArdI2C::readRegisterRegionAnyAddress(uint8_t *devReg, size_t r
         {
             _i2cPort->beginTransmission(address());
 
-            // uint16_t *foo = (uint16_t*)devReg;
-            // _i2cPort->write((*foo >> 8) & 0xff);
-            // _i2cPort->write(*foo & 0xff);
             _i2cPort->write(devReg, regLength);
 
             if (_i2cPort->endTransmission(stop()) != 0)
