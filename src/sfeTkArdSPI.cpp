@@ -176,6 +176,29 @@ sfeTkError_t sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *dat
     return kSTkErrOk;
 }
 
+// 16 bit address version ...
+sfeTkError_t sfeTkArdSPI::writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length)
+{
+    if (!_spiPort)
+        return kSTkErrBusNotInit;
+
+    // Apply settings before work
+    _spiPort->beginTransaction(_sfeSPISettings);
+
+    // Signal communication start
+    digitalWrite(cs(), LOW);
+    _spiPort->transfer16(devReg);
+
+    for (size_t i = 0; i < length; i++)
+        _spiPort->transfer(*data++);
+
+    // End communication
+    digitalWrite(cs(), HIGH);
+    _spiPort->endTransaction();
+
+    return kSTkErrOk;
+}
+
 sfeTkError_t sfeTkArdSPI::readRegisterByte(uint8_t devReg, uint8_t &data)
 {
     size_t nRead;
@@ -211,6 +234,39 @@ sfeTkError_t sfeTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size
 
     // A leading "1" must be added to transfer with devRegister to indicate a "read"
     _spiPort->transfer(devReg | kSPIReadBit);
+
+    for (size_t i = 0; i < numBytes; i++)
+        *data++ = _spiPort->transfer(0x00);
+
+    // End transaction
+    digitalWrite(cs(), HIGH);
+    _spiPort->endTransaction();
+
+    readBytes = numBytes;
+
+    return kSTkErrOk;
+}
+
+//---------------------------------------------------------------------------------
+// readRegister16Region()
+//
+// Reads an array of bytes to a given a 16 bit register on the target address
+//
+// Returns kSTkErrOk on success
+//
+sfeTkError_t sfeTkArdSPI::readRegister16Region(uint16_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
+{
+    if (!_spiPort)
+        return kSTkErrBusNotInit;
+
+    // Apply settings
+    _spiPort->beginTransaction(_sfeSPISettings);
+
+    // Signal communication start
+    digitalWrite(cs(), LOW);
+
+    // A leading "1" must be added to transfer with devRegister to indicate a "read"
+    _spiPort->transfer16(devReg | kSPIReadBit);
 
     for (size_t i = 0; i < numBytes; i++)
         *data++ = _spiPort->transfer(0x00);
