@@ -78,6 +78,7 @@ class sfeTkIBus
     */
     virtual sfeTkError_t writeRegisterWord(uint8_t devReg, uint16_t data) = 0;
 
+
     /*--------------------------------------------------------------------------
         @brief Writes a number of bytes starting at the given register's address.
 
@@ -89,6 +90,19 @@ class sfeTkIBus
 
     */
     virtual sfeTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length) = 0;
+
+    /*--------------------------------------------------------------------------
+        @brief Writes a number of bytes starting at the given register's 16-bit address.
+
+        @param devAddr The device's 16-bit address/pin
+        param devReg The device's register's address.
+        @param data Data to write.
+
+        @retval sfeTkError_t kSTkErrOk on successful execution
+
+    */
+    virtual sfeTkError_t writeRegister16Region(uint16_t devReg, uint8_t *data, size_t length) = 0;
+
 
     /*--------------------------------------------------------------------------
         @brief Read a single byte from the given register
@@ -124,6 +138,20 @@ class sfeTkIBus
 
     */
     virtual sfeTkError_t readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes, size_t &readBytes) = 0;
+
+    /*--------------------------------------------------------------------------
+        @brief Reads a block of data from the given 16-bit register address.
+
+        @param reg The device's 16 bit register's address.
+        @param data Data to write.
+        @param numBytes - length of data
+        @param[out] readBytes - number of bytes read
+
+        @retval int returns kSTkErrOk on success, or kSTkErrFail code
+
+    */
+    virtual sfeTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes) = 0;
+
 };
 
 //};

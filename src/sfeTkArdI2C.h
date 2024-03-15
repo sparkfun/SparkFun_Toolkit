@@ -138,6 +138,19 @@ class sfeTkArdI2C : public sfeTkII2C
     virtual sfeTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
 
     /*--------------------------------------------------------------------------
+        @brief Writes a number of bytes starting at the given register's 16-bit address.
+
+        @param devAddr The device's 16-bit address/pin
+        param devReg The device's register's address.
+        @param data Data to write.
+
+        @retval sfeTkError_t kSTkErrOk on successful execution
+
+    */
+    sfeTkError_t writeRegister16Region(uint16_t devReg, uint8_t *data, size_t length);
+
+
+    /*--------------------------------------------------------------------------
         @brief Reads a byte of data from the given register.
 
         @note sfeTkIBus interface method
@@ -177,6 +190,19 @@ class sfeTkArdI2C : public sfeTkII2C
     */
     sfeTkError_t readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes);
 
+    /*--------------------------------------------------------------------------
+        @brief Reads a block of data from the given 16-bit register address.
+
+        @param reg The device's 16 bit register's address.
+        @param data Data to write.
+        @param numBytes - length of data
+        @param[out] readBytes - number of bytes read
+
+        @retval int returns kSTkErrOk on success, or kSTkErrFail code
+
+    */ 
+    sfeTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes);
+
     // Buffer size chunk getter/setter
     /*--------------------------------------------------------------------------
         @brief set the buffer chunk size
@@ -211,6 +237,10 @@ class sfeTkArdI2C : public sfeTkII2C
     TwoWire *_i2cPort;
 
   private:
+    sfeTkError_t writeRegisterRegionAddress(uint8_t *devReg, size_t regLength, const uint8_t *data, size_t length);
+
+    sfeTkError_t readRegisterRegionAnyAddress(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes, size_t &readBytes);
+
     static constexpr size_t kDefaultBufferChunk = 32;
 
     // the I2C buffer chunker size

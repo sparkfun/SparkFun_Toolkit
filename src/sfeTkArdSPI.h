@@ -123,6 +123,17 @@ class sfeTkArdSPI : public sfeTkISPI
     virtual sfeTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
 
     /*--------------------------------------------------------------------------
+        @brief Writes a number of bytes starting at the given register's address.
+        @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
+
+        @param devReg The device's register's address.
+        @param data Data to write.
+
+        @retval sfeTkError_t - kSTkErrOk on success
+    */
+    virtual sfeTkError_t writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length);
+
+    /*--------------------------------------------------------------------------
         @brief Read a single byte from the given register
 
         @param devReg The device's register's address.
@@ -154,6 +165,20 @@ class sfeTkArdSPI : public sfeTkISPI
         @retval sfeTkError_t - true on success
     */
     virtual sfeTkError_t readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes, size_t &readBytes);
+
+    /*--------------------------------------------------------------------------
+        @brief Reads a block of data from the given register.
+        @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
+
+        @param devReg The device's register's 16 bit address.
+        @param data Data to write.
+        @param numBytes - length of data
+        @param[out] readBytes - Number of bytes read
+
+        @retval sfeTkError_t - true on success
+    */
+    virtual sfeTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes);
+
 
   protected:
     // note: The instance data is protected, allowing access if a sub-class is
