@@ -135,7 +135,7 @@ class sfeTkArdI2C : public sfeTkII2C
 
         @retval kStkErrOk on success
     */
-    virtual sfeTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
+    sfeTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
 
     /*--------------------------------------------------------------------------
         @brief Writes a number of bytes starting at the given register's 16-bit address.
@@ -147,8 +147,7 @@ class sfeTkArdI2C : public sfeTkII2C
         @retval sfeTkError_t kSTkErrOk on successful execution
 
     */
-    sfeTkError_t writeRegister16Region(uint16_t devReg, uint8_t *data, size_t length);
-
+    sfeTkError_t writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length);
 
     /*--------------------------------------------------------------------------
         @brief Reads a byte of data from the given register.
@@ -200,8 +199,8 @@ class sfeTkArdI2C : public sfeTkII2C
 
         @retval int returns kSTkErrOk on success, or kSTkErrFail code
 
-    */ 
-    sfeTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes);
+    */
+    sfeTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes);
 
     // Buffer size chunk getter/setter
     /*--------------------------------------------------------------------------
@@ -239,7 +238,8 @@ class sfeTkArdI2C : public sfeTkII2C
   private:
     sfeTkError_t writeRegisterRegionAddress(uint8_t *devReg, size_t regLength, const uint8_t *data, size_t length);
 
-    sfeTkError_t readRegisterRegionAnyAddress(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes, size_t &readBytes);
+    sfeTkError_t readRegisterRegionAnyAddress(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes,
+                                              size_t &readBytes);
 
     static constexpr size_t kDefaultBufferChunk = 32;
 
