@@ -26,32 +26,39 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-
 #include <stdint.h>
 
-//
-// General Concept
-//    A SparkFun Toolkit error system. The goal is to keep this simple.
-//
-//    This mimics a vareity of systems, using an int type for error codes,
-//    where:
-//   		0   = okay
-//         -1   = general failure
-//         >0   = an informative error
-//
-//    Since *subsystems* in the toolkit can have their own errors,
-//    A start range for these errors are defined. Values > than this value
-//    define the errors for the set subsystem. These start ranges are set
-//    in this file, with actual error values defined in the the respective
-//    subsystem header files.
-//
-// Define our error codes/type
+/**
+ * General Concept
+ *    A SparkFun Toolkit error system. The goal is to keep this simple.
+ *
+ *    This mimics a vareity of systems, using an int type for error codes,
+ *    where:
+ *   		0   = okay
+ *         -1   = general failure
+ *         >0   = an informative error
+ *
+ *    Since *subsystems* in the toolkit can have their own errors,
+ *    A start range for these errors are defined. Values > than this value
+ *    define the errors for the set subsystem. These start ranges are set
+ *    in this file, with actual error values defined in the the respective
+ *    subsystem header files.
+ *
+ */
 typedef int32_t sfeTkError_t;
 
 // General errors
 
+/**
+ * @brief General error code for a failure. Note all errors are negative.
+ */
 const sfeTkError_t kSTkErrFail = -1; // general fail
-const sfeTkError_t kSTkErrOk = 0;    // success
+/**
+ * @brief The error code value for success. This is always 0.
+ */
+const sfeTkError_t kSTkErrOk = 0; // success
 
-// Base error number for IBus/Bus operations Bus errors are not less than this.
+/**
+ * @brief A base value for bus errors. All bus errors are greater than this value, in the 1000 range
+ */
 const sfeTkError_t kSTkErrBaseBus = 0x1000;

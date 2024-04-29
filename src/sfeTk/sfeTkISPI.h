@@ -37,7 +37,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class sfeTkISPI : public sfeTkIBus
 {
   public:
-    /*--------------------------------------------------------------------------
+    /**--------------------------------------------------------------------------
         @brief Constructor for the SPI bus
 
     */
@@ -45,7 +45,7 @@ class sfeTkISPI : public sfeTkIBus
     {
     }
 
-    /*--------------------------------------------------------------------------
+    /**--------------------------------------------------------------------------
         @brief Constructor for the SPI bus
 
         @param csPin The CS Pin for the device
@@ -55,7 +55,7 @@ class sfeTkISPI : public sfeTkIBus
     {
     }
 
-    /*--------------------------------------------------------------------------
+    /**--------------------------------------------------------------------------
         @brief setter for the CS Pin
 
         @param devCS The device's CS Pin
@@ -66,7 +66,7 @@ class sfeTkISPI : public sfeTkIBus
         _cs = devCS;
     }
 
-    /*--------------------------------------------------------------------------
+    /**--------------------------------------------------------------------------
         @brief getter for the cs pin
 
         @retval uint8_t returns the CS pin for the device
@@ -77,12 +77,13 @@ class sfeTkISPI : public sfeTkIBus
         return _cs;
     }
 
-    /*--------------------------------------------------------------------------
+    /**--------------------------------------------------------------------------
         @brief A constant for no CS pin
     */
     static constexpr uint8_t kNoCSPin = 0;
 
   private:
+    /** The internal storage of the _cs value*/
     uint8_t _cs;
 };
 

@@ -35,13 +35,45 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * but keep the same increment on the base.
  *
  */
+
+/**
+ * @brief Error code for when a bus system is not initalized.
+ */
 const sfeTkError_t kSTkErrBusNotInit = kSTkErrFail * (kSTkErrBaseBus + 1);
+
+/**
+ * @brief Returned when a bus system times out.
+ */
 const sfeTkError_t kSTkErrBusTimeout = kSTkErrFail * (kSTkErrBaseBus + 2);
+
+/**
+ * @brief Returned when a bus system does not respond.
+ */
 const sfeTkError_t kSTkErrBusNoResponse = kSTkErrFail * (kSTkErrBaseBus + 3);
+
+/**
+ * @brief Returned when the data to be sent is too long or recieved is too short.
+ */
 const sfeTkError_t kSTkErrBusDataTooLong = kSTkErrFail * (kSTkErrBaseBus + 4);
+
+/**
+ * @brief Returned when the bus settings are null, invalid or on set/initialised
+ */
 const sfeTkError_t kSTkErrBusNullSettings = kSTkErrFail * (kSTkErrBaseBus + 5);
+
+/**
+ * @brief Returned when the buffer is null or invalid.
+ */
 const sfeTkError_t kSTkErrBusNullBuffer = kSTkErrFail * (kSTkErrBaseBus + 6);
+
+/**
+ * @brief Returned when the bus is under read. Warning
+ */
 const sfeTkError_t kSTkErrBusUnderRead = kSTkErrBaseBus + 7;
+
+/**
+ * @brief Returned when the bus is not enabled. Warning
+ */
 const sfeTkError_t kSTkErrBusNotEnabled = kSTkErrBaseBus + 8;
 
 /**
@@ -54,108 +86,107 @@ const sfeTkError_t kSTkErrBusNotEnabled = kSTkErrBaseBus + 8;
 class sfeTkIBus
 {
   public:
-    /*--------------------------------------------------------------------------
-        @brief Write a single byte to the device
-
-        @param data Data to write.
-
-        @retval sfeTkError_t -  kSTkErrOk on successful execution.
-
-    */
+    /**--------------------------------------------------------------------------
+     *  @brief Write a single byte to the device*
+     *  @param data Data to write.*
+     *
+     *  @retval sfeTkError_t -  kSTkErrOk on successful execution.
+     *
+     */
     virtual sfeTkError_t writeByte(uint8_t data) = 0;
 
-    /*--------------------------------------------------------------------------
-        @brief Write a single byte to the given register
-
-        @param devReg The device's register's address.
-        @param data Data to write.
-
-        @retval sfeTkError_t -  kSTkErrOk on successful execution.
-
-    */
+    /**--------------------------------------------------------------------------
+     *  @brief Write a single byte to the given register
+     *
+     *   @param devReg The device's register's address.
+     *   @param data Data to write.
+     *
+     *   @retval sfeTkError_t -  kSTkErrOk on successful execution.
+     *
+     */
     virtual sfeTkError_t writeRegisterByte(uint8_t devReg, uint8_t data) = 0;
 
-    /*--------------------------------------------------------------------------
-        @brief Write a single word (16 bit) to the given register
-
-        @param devReg The device's register's address.
-        @param data Data to write.
-
-        @retval sfeTkError_t -  kSTkErrOk on successful execution.
-
-    */
+    /**--------------------------------------------------------------------------
+     * @brief Write a single word (16 bit) to the given register
+     *
+     *   @param devReg The device's register's address.
+     *   @param data Data to write.
+     *
+     *   @retval sfeTkError_t -  kSTkErrOk on successful execution.
+     *
+     */
     virtual sfeTkError_t writeRegisterWord(uint8_t devReg, uint16_t data) = 0;
 
-    /*--------------------------------------------------------------------------
-        @brief Writes a number of bytes starting at the given register's address.
-
-        @param devAddr The device's address/pin
-        param devReg The device's register's address.
-        @param data Data to write.
-
-        @retval sfeTkError_t kSTkErrOk on successful execution
-
-    */
+    /**--------------------------------------------------------------------------
+     *  @brief Writes a number of bytes starting at the given register's address.
+     *
+     *   @param devAddr The device's address/pin
+     *   param devReg The device's register's address.
+     *   @param data Data to write.
+     *
+     *   @retval sfeTkError_t kSTkErrOk on successful execution
+     *
+     */
     virtual sfeTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length) = 0;
 
-    /*--------------------------------------------------------------------------
-        @brief Writes a number of bytes starting at the given register's 16-bit address.
-
-        @param devAddr The device's 16-bit address/pin
-        param devReg The device's register's address.
-        @param data Data to write.
-
-        @retval sfeTkError_t kSTkErrOk on successful execution
-
-    */
+    /**--------------------------------------------------------------------------
+     *  @brief Writes a number of bytes starting at the given register's 16-bit address.
+     *
+     *   @param devAddr The device's 16-bit address/pin
+     *   param devReg The device's register's address.
+     *   @param data Data to write.
+     *
+     *   @retval sfeTkError_t kSTkErrOk on successful execution
+     *
+     */
     virtual sfeTkError_t writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length) = 0;
 
-    /*--------------------------------------------------------------------------
-        @brief Read a single byte from the given register
-
-        @param devReg The device's register's address.
-        @param data Data to read.
-
-        @retval sfeTkError_t -  kSTkErrOk on successful execution.
-
-    */
+    /**--------------------------------------------------------------------------
+     *  @brief Read a single byte from the given register
+     *
+     *  @param devReg The device's register's address.
+     *   @param data Data to read.
+     *
+     *   @retval sfeTkError_t -  kSTkErrOk on successful execution.
+     *
+     */
     virtual sfeTkError_t readRegisterByte(uint8_t devReg, uint8_t &data) = 0;
 
-    /*--------------------------------------------------------------------------
-        @brief Read a single word (16 bit) from the given register
-
-        @param devReg The device's register's address.
-        @param data Data to read.
-
-        @retval sfeTkError_t -  kSTkErrOk on successful execution.
-    */
+    /**--------------------------------------------------------------------------
+     *  @brief Read a single word (16 bit) from the given register
+     *
+     *   @param devReg The device's register's address.
+     *   @param data Data to read.
+     *
+     *   @retval sfeTkError_t -  kSTkErrOk on successful execution.
+     */
     virtual sfeTkError_t readRegisterWord(uint8_t devReg, uint16_t &data) = 0;
 
-    /*--------------------------------------------------------------------------
-        @brief Reads a block of data from the given register.
-
-        @param devAddr The device's I2C address.
-        @param devReg The device's register's address.
-        @param data Data to write.
-        @param numBytes - length of data
-        @param[out] readBytes - number of bytes read
-
-        @retval int returns kSTkErrOk on success, or kSTkErrFail code
-
-    */
+    /**--------------------------------------------------------------------------
+     *  @brief Reads a block of data from the given register.
+     *
+     *   @param devAddr The device's I2C address.
+     *   @param devReg The device's register's address.
+     *   @param data Data to write.
+     *   @param numBytes - length of data
+     *   @param[out] readBytes - number of bytes read
+     *
+     *   @retval int returns kSTkErrOk on success, or kSTkErrFail code
+     *
+     */
     virtual sfeTkError_t readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes, size_t &readBytes) = 0;
 
-    /*--------------------------------------------------------------------------
-        @brief Reads a block of data from the given 16-bit register address.
-
-        @param reg The device's 16 bit register's address.
-        @param data Data to write.
-        @param numBytes - length of data
-        @param[out] readBytes - number of bytes read
-
-        @retval int returns kSTkErrOk on success, or kSTkErrFail code
-
-    */
+    /**--------------------------------------------------------------------------
+     *  @brief Reads a block of data from the given 16-bit register address.
+     *
+     *   @param reg The device's 16 bit register's address.
+     *   @param data Data to write.
+     *   @param numBytes - length of data
+     *   @param[out] readBytes - number of bytes read
+     *
+     *   @retval int returns kSTkErrOk on success, or kSTkErrFail code
+     *
+     */
     virtual sfeTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes) = 0;
 };
 

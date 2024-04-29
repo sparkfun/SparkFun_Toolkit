@@ -38,14 +38,22 @@ class sfeTkII2C : public sfeTkIBus
 {
   public:
     // set the address to No address and stop flag to true
+    /**
+     * @brief Constructor for the I2C bus
+     */
     sfeTkII2C() : _address{kNoAddress}, _stop{true}
     {
     }
+    /**
+     * @brief Constructor for the I2C bus with an address passed in
+     *
+     * @param addr
+     */
     sfeTkII2C(uint8_t addr) : _address{addr}
     {
     }
 
-    /*--------------------------------------------------------------------------
+    /**--------------------------------------------------------------------------
         @brief A simple ping of the device at the set address
 
         @retval sfeTkError_t - ok on success
@@ -53,7 +61,7 @@ class sfeTkII2C : public sfeTkIBus
     */
     virtual sfeTkError_t ping() = 0;
 
-    /*--------------------------------------------------------------------------
+    /**--------------------------------------------------------------------------
         @brief setter for the I2C address
 
         @param devAddr The device's address
@@ -64,7 +72,7 @@ class sfeTkII2C : public sfeTkIBus
         _address = devAddr;
     }
 
-    /*--------------------------------------------------------------------------
+    /**--------------------------------------------------------------------------
         @brief getter for the I2C address
 
         @retval uint8_t returns the address for the device
@@ -75,7 +83,7 @@ class sfeTkII2C : public sfeTkIBus
         return _address;
     }
 
-    /*--------------------------------------------------------------------------
+    /**--------------------------------------------------------------------------
         @brief setter for I2C stop message (vs restarts)
 
         @param stop The value to set for "send stop"
@@ -85,7 +93,7 @@ class sfeTkII2C : public sfeTkIBus
         _stop = stop;
     }
 
-    /*--------------------------------------------------------------------------
+    /**--------------------------------------------------------------------------
         @brief getter for I2C stops message (vs restarts)
 
         @retval bool returns the value of "send stop"
@@ -96,7 +104,7 @@ class sfeTkII2C : public sfeTkIBus
         return _stop;
     }
 
-    /*
+    /**
      * @brief kNoAddress is a constant to indicate no address has been set
      */
     static constexpr uint8_t kNoAddress = 0;
