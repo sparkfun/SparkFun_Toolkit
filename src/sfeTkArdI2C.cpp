@@ -136,14 +136,15 @@ sfeTkError_t sfeTkArdI2C::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite
     return writeRegisterRegion(devReg, (uint8_t *)&dataToWrite, sizeof(uint16_t));
 }
 
-//---------------------------------------------------------------------------------
-// writeRegisterRegionAddress()
-//
-// Writes an array of bytes of specified length to a given register on the
-//  target address
-//
-// Returns the number of bytes written, < 0 is an error
-//
+/**
+ * @brief Writes an array of bytes to a register on the target address. Supports any address size
+ *
+ * @param devReg The device's register's address - can be any size
+ * @param regLength The length of the register address
+ * @param data The data to write
+ * @param length The length of the data buffer
+ * @return sfeTkError_t Returns kSTkErrOk on success, or kSTkErrFail code
+ */
 sfeTkError_t sfeTkArdI2C::writeRegisterRegionAddress(uint8_t *devReg, size_t regLength, const uint8_t *data,
                                                      size_t length)
 {
@@ -183,12 +184,17 @@ sfeTkError_t sfeTkArdI2C::writeRegister16Region(uint16_t devReg, const uint8_t *
 }
 
 //---------------------------------------------------------------------------------
-// readRegisterRegionAnyAddress()
-//
-// Reads an array of bytes to a register on the target address
-//
-// Returns the number of bytes written, < 0 is an error
-//
+
+/**
+ * @brief Reads an array of bytes to a register on the target address. Supports any address size
+ *
+ * @param devReg The device's register's address - can be any size
+ * @param regLength The length of the register address
+ * @param data The data to buffer to read into
+ * @param numBytes The length of the data buffer
+ * @param readBytes[out] The number of bytes read
+ * @return sfeTkError_t Returns kSTkErrOk on success, or kSTkErrFail code
+ */
 sfeTkError_t sfeTkArdI2C::readRegisterRegionAnyAddress(uint8_t *devReg, size_t regLength, uint8_t *data,
                                                        size_t numBytes, size_t &readBytes)
 {

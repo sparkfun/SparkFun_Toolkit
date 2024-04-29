@@ -30,9 +30,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "sfeTkError.h"
 #include <stddef.h>
 
-// Define our error codes for the bus. Note Errors are negative, warnings/info positive
-// BUT keep the same increment on the base
-
+/**
+ * @brief Define our error codes for the bus. Note Errors are negative, warnings/info positive,
+ * but keep the same increment on the base.
+ *
+ */
 const sfeTkError_t kSTkErrBusNotInit = kSTkErrFail * (kSTkErrBaseBus + 1);
 const sfeTkError_t kSTkErrBusTimeout = kSTkErrFail * (kSTkErrBaseBus + 2);
 const sfeTkError_t kSTkErrBusNoResponse = kSTkErrFail * (kSTkErrBaseBus + 3);
@@ -42,8 +44,13 @@ const sfeTkError_t kSTkErrBusNullBuffer = kSTkErrFail * (kSTkErrBaseBus + 6);
 const sfeTkError_t kSTkErrBusUnderRead = kSTkErrBaseBus + 7;
 const sfeTkError_t kSTkErrBusNotEnabled = kSTkErrBaseBus + 8;
 
-// Define the bus interface.
-
+/**
+ * @brief Interface that defines the communication bus for the SparkFun Electronics Toolkit.
+ *
+ * The bus interface defines the basic methods for reading and writing data to a device. Specific
+ * bus implementations will extend this interface to provide the necessary functionality for the
+ * desired bus type.
+ */
 class sfeTkIBus
 {
   public:
