@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #pragma once
 
 #include "sfeTkError.h"
+#include <stddef.h>
 
 // Define our error codes for the bus. Note Errors are negative, warnings/info positive
 // BUT keep the same increment on the base

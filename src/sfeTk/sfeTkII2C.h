@@ -28,6 +28,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "sfeTkIBus.h"
 
+/**
+ * @brief Interface that defines the I2C communication bus for the SparkFun Electronics Toolkit.
+ *
+ * The I2C bus interface extends the IBus interface and adds the ability to set and get the I2C
+ * address and stop flag.
+ */
 class sfeTkII2C : public sfeTkIBus
 {
   public:
@@ -72,6 +78,7 @@ class sfeTkII2C : public sfeTkIBus
     /*--------------------------------------------------------------------------
         @brief setter for I2C stop message (vs restarts)
 
+        @param stop The value to set for "send stop"
     */
     virtual void setStop(bool stop)
     {
@@ -89,6 +96,9 @@ class sfeTkII2C : public sfeTkIBus
         return _stop;
     }
 
+    /*
+     * @brief kNoAddress is a constant to indicate no address has been set
+     */
     static constexpr uint8_t kNoAddress = 0;
 
   private:
