@@ -23,7 +23,7 @@ jobs:
         with:
           fetch-depth: 0
           submodules: "true"
-          ref:'feature/toolkit-documentation'
+          ref: "feature/toolkit-documentation"
 
       - name: Set Version
         run: echo "PROJECT_NUMBER = `git describe --tags`" >> ./docs/doxygen/doxygen-config
