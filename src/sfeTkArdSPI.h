@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <SPI.h>
 #include <sfeTk/sfeTkISPI.h>
 
-/*
+/**
   @brief This class implements the IBus interface for an SPI Implementation on Arduino
  */
 class sfeTkArdSPI : public sfeTkISPI
