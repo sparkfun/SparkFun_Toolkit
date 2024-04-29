@@ -74,7 +74,7 @@ class sfeTkArdSPI : public sfeTkISPI
         return *this;
     }
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Method sets up the required SPI settings.
         @note This function provides a default SPI Port.
 
@@ -86,7 +86,7 @@ class sfeTkArdSPI : public sfeTkISPI
 
     sfeTkError_t init(uint8_t csPin, bool bInit = false);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Method sets up the required SPI settings.
 
         @param spiPort Port for SPI communication.
@@ -97,7 +97,7 @@ class sfeTkArdSPI : public sfeTkISPI
     */
     sfeTkError_t init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t csPin, bool bInit = false);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Write a single byte to the device
 
         @param data Data to write.
@@ -106,7 +106,7 @@ class sfeTkArdSPI : public sfeTkISPI
     */
     sfeTkError_t writeByte(uint8_t data);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Write a single byte to the given register
 
         @param devReg The device's register's address.
@@ -116,7 +116,7 @@ class sfeTkArdSPI : public sfeTkISPI
     */
     sfeTkError_t writeRegisterByte(uint8_t devReg, uint8_t data);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Write a single word to the given register
 
         @param devReg The device's register's address.
@@ -126,7 +126,7 @@ class sfeTkArdSPI : public sfeTkISPI
     */
     sfeTkError_t writeRegisterWord(uint8_t devReg, uint16_t data);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Writes a number of bytes starting at the given register's address.
         @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
 
@@ -137,7 +137,7 @@ class sfeTkArdSPI : public sfeTkISPI
     */
     sfeTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Writes a number of bytes starting at the given register's address.
         @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
 
@@ -148,7 +148,7 @@ class sfeTkArdSPI : public sfeTkISPI
     */
     sfeTkError_t writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Read a single byte from the given register
 
         @param devReg The device's register's address.
@@ -158,7 +158,7 @@ class sfeTkArdSPI : public sfeTkISPI
     */
     sfeTkError_t readRegisterByte(uint8_t devReg, uint8_t &data);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief read a single word to the given register
 
         @param devReg The device's register's address.
@@ -168,7 +168,7 @@ class sfeTkArdSPI : public sfeTkISPI
     */
     sfeTkError_t readRegisterWord(uint8_t devReg, uint16_t &data);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Reads a block of data from the given register.
         @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
 
@@ -181,7 +181,7 @@ class sfeTkArdSPI : public sfeTkISPI
     */
     virtual sfeTkError_t readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes, size_t &readBytes);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Reads a block of data from the given register.
         @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
 

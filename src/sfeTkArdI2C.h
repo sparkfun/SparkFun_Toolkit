@@ -40,13 +40,13 @@ over Inter-Integrated Circuit (I2C) in Arduino
 class sfeTkArdI2C : public sfeTkII2C
 {
   public:
-    /**--------------------------------------------------------------------------
+    /**
         @brief Constructor
     */
     sfeTkArdI2C(void) : _i2cPort(nullptr), _bufferChunkSize{kDefaultBufferChunk}
     {
     }
-    /**--------------------------------------------------------------------------
+    /**
         @brief Constructor
 
         @param addr The address of the device
@@ -74,7 +74,7 @@ class sfeTkArdI2C : public sfeTkII2C
         return *this;
     }
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Method sets up the required I2C settings.
         @note This function provides a default I2C Port.
 
@@ -82,12 +82,12 @@ class sfeTkArdI2C : public sfeTkII2C
     */
     sfeTkError_t init();
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief - address version of the init method
     */
     sfeTkError_t init(uint8_t addr);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Method sets up the required I2C settings.
 
         @param wirePort Port for I2C communication.
@@ -97,7 +97,7 @@ class sfeTkArdI2C : public sfeTkII2C
     */
     sfeTkError_t init(TwoWire &wirePort, uint8_t addr, bool bInit = false);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief A simple ping of the device at the given address.
         @note sfeTkIBus interface method
 
@@ -105,7 +105,7 @@ class sfeTkArdI2C : public sfeTkII2C
     */
     sfeTkError_t ping();
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Write a single byte to the device
         @note sfeTkIBus interface method
 
@@ -115,7 +115,7 @@ class sfeTkArdI2C : public sfeTkII2C
     */
     sfeTkError_t writeByte(uint8_t data);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Write a single byte to the given register
         @note sfeTkIBus interface method
 
@@ -126,7 +126,7 @@ class sfeTkArdI2C : public sfeTkII2C
     */
     sfeTkError_t writeRegisterByte(uint8_t devReg, uint8_t data);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Write a single word to the given register
         @note sfeTkIBus interface method
 
@@ -137,7 +137,7 @@ class sfeTkArdI2C : public sfeTkII2C
     */
     sfeTkError_t writeRegisterWord(uint8_t devReg, uint16_t data);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Writes a number of bytes starting at the given register's address.
 
         @note sfeTkIBus interface method
@@ -150,7 +150,7 @@ class sfeTkArdI2C : public sfeTkII2C
     */
     sfeTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Writes a number of bytes starting at the given register's 16-bit address.
 
         @param devAddr The device's 16-bit address/pin
@@ -162,7 +162,7 @@ class sfeTkArdI2C : public sfeTkII2C
     */
     sfeTkError_t writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Reads a byte of data from the given register.
 
         @note sfeTkIBus interface method
@@ -174,7 +174,7 @@ class sfeTkArdI2C : public sfeTkII2C
     */
     sfeTkError_t readRegisterByte(uint8_t devReg, uint8_t &data);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Reads a word of data from the given register.
 
         @note sfeTkIBus interface method
@@ -186,7 +186,7 @@ class sfeTkArdI2C : public sfeTkII2C
     */
     sfeTkError_t readRegisterWord(uint8_t devReg, uint16_t &data);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Reads a block of data from the given register.
 
         @note sfeTkIBus interface method
@@ -202,7 +202,7 @@ class sfeTkArdI2C : public sfeTkII2C
     */
     sfeTkError_t readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes);
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief Reads a block of data from the given 16-bit register address.
 
         @param reg The device's 16 bit register's address.
@@ -216,7 +216,7 @@ class sfeTkArdI2C : public sfeTkII2C
     sfeTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes);
 
     // Buffer size chunk getter/setter
-    /**--------------------------------------------------------------------------
+    /**
         @brief set the buffer chunk size
 
         @note default size is 32
@@ -230,7 +230,7 @@ class sfeTkArdI2C : public sfeTkII2C
             _bufferChunkSize = theChunk;
     }
 
-    /**--------------------------------------------------------------------------
+    /**
         @brief set the buffer chunk size
 
         @retval The current chunk size
