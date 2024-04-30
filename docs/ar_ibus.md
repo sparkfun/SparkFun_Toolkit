@@ -1,10 +1,10 @@
-# Overview - Device Bus Interface - sfeTkIBus
+# Device Bus Interface - Overview
 
 One of the foundational capabilities of the SparkFun Toolkit is bus communication with devices. This is a common task almost all libraries implement using their own implementation for I2C, SPI or UART bus communication.
 
 For bus communication, the SparkFun Toolkit is designed to provide a common implementation for use across all SparkFun libraries. Additionally, the bus architecture is modeled on a *driver* pattern, separating  the individual bus setup/configuration from data communication, enabling a single device implementation to easily support a variety of device bus types.
 
-### The Bus Interface Design Pattern
+## The Bus Interface Design Pattern
 
 This pattern allows an application to develop against the common bus interface without regard to the underlying bus type or implementation. This *plug-in* nature of this model enables core application reuse across a range of bus devices. What to use a different bus type? Just use a different driver.
 
@@ -35,9 +35,9 @@ The key class to support this pattern are:
 
 | | |
 |------|-------|
-**sfeTkIBus** | A virtual C++ class that device the bus ```sfeTkIBus``` interface |
-**sfeTkII2C** | Sub-class of the ```sfeTkIIBus``` interface, it provides an interface for I2C devices|
-**sfeTkISPI** | Sub-class of the ```sfeTkIIBus``` interface, it provides an interface for SPI devices |
+|**sfeTkIBus** | A virtual C++ class that device the bus ```sfeTkIBus``` interface |
+|**sfeTkII2C** | Sub-class of the ```sfeTkIIBus``` interface, it provides an interface for I2C devices|
+|**sfeTkISPI** | Sub-class of the ```sfeTkIIBus``` interface, it provides an interface for SPI devices |
 
 ### The sfeTkIBus Interface
 
@@ -47,12 +47,12 @@ The interface methods:
 
 | Method| Definition |
 |------|-------|
-**writeRegisterByte** | Write a byte of data to a particular register of a device |
-**writeRegisterWord** | Write a word of data to a particular register of a device |
-**writeRegisterRegion** | Write an array of data to a particular register of a device|
-**readRegisterByte** | Read a byte of data from a particular register of a device |
-**readRegisterWord** | Read a word of data from a particular register of a device |
-**readRegisterRegion** | Read an array of data from a particular register of a device |
+|**writeRegisterByte** | Write a byte of data to a particular register of a device |
+|**writeRegisterWord** | Write a word of data to a particular register of a device |
+|**writeRegisterRegion** | Write an array of data to a particular register of a device|
+|**readRegisterByte** | Read a byte of data from a particular register of a device |
+|**readRegisterWord** | Read a word of data from a particular register of a device |
+|**readRegisterRegion** | Read an array of data from a particular register of a device |
 
 > [!NOTE]
 > This interface only defines the methods to read and write data on the given bus. Any address, or bus specific settings is provided/implemented by the implementation/specialization of this interface.
@@ -67,9 +67,9 @@ This class sub-classes from the ```sfeTkIBus``` interface adding additional func
 
 | Method| Definition |
 |------|-------|
-**ping** | Determine if a devices is connected to the I2C device at the address set on this bus object. This is an interface method |
-**setAddress** | Set the I2C address to use for this I2C object |
-**address** | Returns the address used by this I2C object |
+|**ping** | Determine if a devices is connected to the I2C device at the address set on this bus object. This is an interface method |
+|**setAddress** | Set the I2C address to use for this I2C object |
+|**address** | Returns the address used by this I2C object |
 
 > [!NOTE]
 > The ```sfeTkII2C``` class manages the device address for the I2C bus. As such, each I2C device instantiates/uses an instance of the ```sfeTkII2C``` class.
@@ -84,8 +84,8 @@ This class sub-classes from the ```sfeTkIBus``` interface adding additional func
 
 | Method| Definition |
 |------|-------|
-**setCS** | Set the CS Pin to use for this SPI object |
-**cs** | Returns the CS Pin used by this SPI object |
+|**setCS** | Set the CS Pin to use for this SPI object |
+|**cs** | Returns the CS Pin used by this SPI object |
 
 > [!NOTE]
 > The ```sfeTkISPI``` class manages CS Pin for the SPI bus. As such, each SPI device instantiates/uses an instance of the ```sfeTkISPI``` class.

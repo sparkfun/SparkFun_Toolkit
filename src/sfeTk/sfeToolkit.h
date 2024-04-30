@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-// Include key things that are core to the toolkit
-
+/**
+    @brief Common include file for the core of the SparkFun Electronics Toolkit
+*/
 #include "sfeTkError.h"
