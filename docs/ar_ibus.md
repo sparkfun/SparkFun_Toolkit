@@ -131,7 +131,7 @@ The general pattern for a device driver implementation that uses the SparkFun To
 
 The first step is to implement a core, platform independent version of the driver that communicates to the target device using the methods of a ```sfeTkIBus``` interface. By limiting use to the IBus interface, the core implementation can use any bus type or platform that implements the sfeTkIBus interface.
 
->[!IMPORTANT]
+> [!IMPORTANT]
 > At this level, the driver is only using a ```sfeTkIBus``` interface, not any specific bus implementation.
 
 This driver has the following unique functionality:
@@ -141,12 +141,12 @@ This driver has the following unique functionality:
 
 #### Simple Example of an Independent Driver Implementation
 
->[!NOTE]
+> [!NOTE]
 > This code is **pseudo-code**, used to demonstrate the key concepts of the implementation pattern.
 
 This implementation would take the following form:
 
-```c++
+```cpp
 
 class myDriverClass
 {
@@ -205,7 +205,7 @@ The following is an example of an I2C class in Arduino based on the previous pla
 > [!NOTE]
 > If your device supports repeated starts, make sure to include ```_theI2CBus.setStop(false)``` in your begin function. Otherwise this can cause issues with your device.
 
-```c++
+```cpp
 
 class myArduinoDriverI2C : public myDriverClass
 {
@@ -246,7 +246,7 @@ The following is a SPI version of the driver implemented in Arduino. While simil
 > [!NOTE]
 > This class implements a ```isConnected()``` method that just calls the superclasses  ```checkDeviceID()``` method to determine if the device is available on the bus.
 
-```c++
+```cpp
 
 class myArduinoDriveSPI : public myDriverClass
 {
