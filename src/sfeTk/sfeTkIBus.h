@@ -88,7 +88,7 @@ class sfeTkIBus
   public:
     /**--------------------------------------------------------------------------
      *  @brief Write a single byte to the device*
-     *  @param data Data to write.*
+     *  @param data Data to write.
      *
      *  @retval sfeTkError_t -  kSTkErrOk on successful execution.
      *
@@ -120,9 +120,9 @@ class sfeTkIBus
     /**--------------------------------------------------------------------------
      *  @brief Writes a number of bytes starting at the given register's address.
      *
-     *   @param devAddr The device's address/pin
-     *   param devReg The device's register's address.
-     *   @param data Data to write.
+     *  @param devReg The device's register's address.
+     *  @param data Data to write.
+     *  @param length - length of data
      *
      *   @retval sfeTkError_t kSTkErrOk on successful execution
      *
@@ -132,9 +132,9 @@ class sfeTkIBus
     /**--------------------------------------------------------------------------
      *  @brief Writes a number of bytes starting at the given register's 16-bit address.
      *
-     *   @param devAddr The device's 16-bit address/pin
-     *   param devReg The device's register's address.
-     *   @param data Data to write.
+     *  @param devReg The device's register's address.
+     *  @param data Data to write.
+     *  @param length - length of data
      *
      *   @retval sfeTkError_t kSTkErrOk on successful execution
      *
@@ -145,7 +145,7 @@ class sfeTkIBus
      *  @brief Read a single byte from the given register
      *
      *  @param devReg The device's register's address.
-     *   @param data Data to read.
+     *  @param data Data to read.
      *
      *   @retval sfeTkError_t -  kSTkErrOk on successful execution.
      *
@@ -165,8 +165,7 @@ class sfeTkIBus
     /**--------------------------------------------------------------------------
      *  @brief Reads a block of data from the given register.
      *
-     *   @param devAddr The device's I2C address.
-     *   @param devReg The device's register's address.
+     *   @param reg The device's register's address.
      *   @param data Data to write.
      *   @param numBytes - length of data
      *   @param[out] readBytes - number of bytes read

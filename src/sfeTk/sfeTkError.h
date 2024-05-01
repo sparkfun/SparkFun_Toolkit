@@ -32,7 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * General Concept
  *    A SparkFun Toolkit error system. The goal is to keep this simple.
  *
- *    This mimics a vareity of systems, using an int type for error codes,
+ *    This mimics a variety of systems, using an int type for error codes,
  *    where:
  *   		0   = okay
  *         -1   = general failure
