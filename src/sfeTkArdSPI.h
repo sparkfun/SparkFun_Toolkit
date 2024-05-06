@@ -63,7 +63,7 @@ class sfeTkArdSPI : public sfeTkISPI
     /**
         @brief Assignment copy operator for Arduino SPI bus object of the toolkit
 
-        @param rsh The right hand side of the assignment.
+        @param rhs The right hand side of the assignment.
         @return sfeTkArdSPI& - The left hand side of the assignment.
     */
     sfeTkArdSPI &operator=(const sfeTkArdSPI &rhs)
