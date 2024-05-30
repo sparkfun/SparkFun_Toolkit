@@ -125,7 +125,7 @@ sfeTkError_t sfeTkArdI2C::writeWord(uint16_t dataToWrite)
 //
 // Returns true on success, false on failure
 //
-sfeTkError_t sfeTkArdI2C::writeBlock(const uint8_t *dataToWrite, size_t length)
+sfeTkError_t sfeTkArdI2C::writeBlock(const uint8_t *data, size_t length)
 {
     int nData = 0; 
     if (!_i2cPort)

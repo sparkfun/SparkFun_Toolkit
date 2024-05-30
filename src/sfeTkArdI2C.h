@@ -136,7 +136,7 @@ class sfeTkArdI2C : public sfeTkII2C
 
         @retval returns  kStkErrOk on success
     */
-    sfeTkError_t writeBlock(const uint8_t *data);
+    sfeTkError_t writeBlock(const uint8_t *data, size_t length);
 
     /**
         @brief Write a single byte to the given register
