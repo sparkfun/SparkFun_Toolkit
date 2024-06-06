@@ -187,6 +187,45 @@ class sfeTkArdI2C : public sfeTkII2C
     sfeTkError_t writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length);
 
     /**
+        @brief Reads a byte of data from the device.
+
+        @note sfeTkIBus interface method
+
+        @param dataToWrite The data to write to the device.
+        @param[out] data Data to read.
+
+        @retval  kStkErrOk on success
+    */
+    sfeTkError_t readByte(uint8_t dataToWrite, uint8_t &data);
+
+    /**
+        @brief Reads a word of data from the device.
+
+        @note sfeTkIBus interface method
+
+        @param dataToWrite The data to write to the device.
+        @param[out] data Data to read.
+
+        @retval kSTkErrOk on success
+    */
+    sfeTkError_t readWord(uint8_t dataToWrite, uint16_t &data);
+
+    /**
+        @brief Reads a block of data from the device.
+
+        @note sfeTkIBus interface method
+
+        @param dataToWrite The data to write to the device.
+        @param[out] data Data buffer to read into
+        @param numBytes Number of bytes to read/length of data buffer
+        @param[out] readBytes - Number of bytes read
+
+
+        @retval kSTkErrOk on success
+    */
+    sfeTkError_t readBlock(uint8_t dataToWrite, uint8_t *data, size_t numBytes, size_t &readBytes);
+
+    /**
         @brief Reads a byte of data from the given register.
 
         @note sfeTkIBus interface method
