@@ -116,6 +116,25 @@ class sfeTkArdSPI : public sfeTkISPI
     sfeTkError_t writeByte(uint8_t data);
 
     /**
+        @brief Write a word to the device without indexing to a register.
+
+        @param data Data to write.
+
+        @retval sfeTkError_t - kSTkErrOk on success
+    */
+    sfeTkError_t writeWord(uint16_t data);
+
+    /**
+        @brief Write an array of data to the device without indexing to a register.
+
+        @param data Data to write
+        @param length Length of Data
+
+        @retval sfeTkError_t - kSTkErrOk on success
+    */
+    sfeTkError_t writeRegion(const uint8_t *data, size_t length);
+
+    /**
         @brief Write a single byte to the given register
 
         @param devReg The device's register's address.
