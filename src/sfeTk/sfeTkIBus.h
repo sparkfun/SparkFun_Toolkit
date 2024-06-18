@@ -111,7 +111,7 @@ class sfeTkIBus
      *  @retval sfeTkError_t -  kSTkErrOk on successful execution.
      *
      */
-    virtual sfeTkError_t writeBlock(const uint8_t *data, size_t length) = 0;
+    virtual sfeTkError_t writeRegion(const uint8_t *data, size_t length) = 0;
 
     /**--------------------------------------------------------------------------
      *  @brief Write a single byte to the given register
@@ -123,45 +123,6 @@ class sfeTkIBus
      *
      */
     virtual sfeTkError_t writeRegisterByte(uint8_t devReg, uint8_t data) = 0;
-
-    /**
-        @brief Reads a byte of data from the device.
-
-        @note sfeTkIBus interface method
-
-        @param dataToWrite The data to write to the device. 
-        @param[out] data Data to read.
-
-        @retval  kStkErrOk on success
-    */
-    virtual sfeTkError_t readByte(uint8_t dataToWrite, uint8_t &data) = 0; 
-
-    /**
-        @brief Reads a word of data from the device.
-
-        @note sfeTkIBus interface method
-
-        @param dataToWrite The data to write to the device.
-        @param[out] data Data to read.
-
-        @retval kSTkErrOk on success
-    */
-    virtual sfeTkError_t readWord(uint8_t dataToWrite, uint16_t &data) = 0;
-
-    /**
-        @brief Reads a block of data from the device.
-
-        @note sfeTkIBus interface method
-
-        @param dataToWrite The data to write to the device.
-        @param[out] data Data buffer to read into
-        @param numBytes Number of bytes to read/length of data buffer
-        @param[out] readBytes - Number of bytes read
-
-
-        @retval kSTkErrOk on success
-    */
-    virtual sfeTkError_t readBlock(uint8_t dataToWrite, uint8_t *data, size_t numBytes, size_t &readBytes) = 0; 
 
     /**--------------------------------------------------------------------------
      * @brief Write a single word (16 bit) to the given register

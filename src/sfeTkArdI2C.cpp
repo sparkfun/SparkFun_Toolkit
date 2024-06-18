@@ -116,26 +116,22 @@ sfeTkError_t sfeTkArdI2C::writeWord(uint16_t dataToWrite)
     if (!_i2cPort)
         return kSTkErrBusNotInit;
 
-    return writeBlock((uint8_t *)&dataToWrite, sizeof(uint16_t));
+    return writeRegion((uint8_t *)&dataToWrite, sizeof(uint16_t));
 }
 
 //---------------------------------------------------------------------------------
-// writeBlock()
+// writeRegion()
 //
 // Writes a word to the device, without indexing to a register.
 //
 // Returns true on success, false on failure
 //
-sfeTkError_t sfeTkArdI2C::writeBlock(const uint8_t *data, size_t length)
+sfeTkError_t sfeTkArdI2C::writeRegion(const uint8_t *data, size_t length)
 {
     if (!_i2cPort)
         return kSTkErrBusNotInit;
-
     // do the Arduino I2C work
-    _i2cPort->beginTransmission(address());
-    _i2cPort->write(data, (int)length);
-
-    return _i2cPort->endTransmission() == 0 ? kSTkErrOk : kSTkErrFail;
+    return writeRegisterRegionAddress(nullptr, 0, data, length) == 0 ? kSTkErrOk : kSTkErrFail;
 }
 
 //---------------------------------------------------------------------------------
@@ -188,7 +184,10 @@ sfeTkError_t sfeTkArdI2C::writeRegisterRegionAddress(uint8_t *devReg, size_t reg
         return kSTkErrBusNotInit;
 
     _i2cPort->beginTransmission(address());
-    _i2cPort->write(devReg, regLength);
+
+    if(devReg != nullptr && regLength > 0)
+        _i2cPort->write(devReg, regLength);
+
     _i2cPort->write(data, (int)length);
 
     return _i2cPort->endTransmission() ? kSTkErrFail : kSTkErrOk;
@@ -219,122 +218,7 @@ sfeTkError_t sfeTkArdI2C::writeRegister16Region(uint16_t devReg, const uint8_t *
     return writeRegisterRegionAddress((uint8_t *)&devReg, 2, data, length);
 }
 
-//---------------------------------------------------------------------------------
-// readByte()
-//
-// Reads a byte from the device, without indexing to a register.
-//
-// Returns true on success, false on failure
-//
-sfeTkError_t sfeTkArdI2C::readByte(uint8_t dataToWrite, uint8_t &dataToRead)
-{
-    if (!_i2cPort)
-        return kSTkErrBusNotInit;
 
-    // Return value
-    uint8_t result = 0;
-
-    int nData = 0;
-
-    _i2cPort->beginTransmission(address());
-    _i2cPort->write(dataToWrite);
-    _i2cPort->endTransmission(stop());
-    _i2cPort->requestFrom(address(), (uint8_t)1);
-
-    while (_i2cPort->available()) // slave may send less than requested
-    {
-        result = _i2cPort->read(); // receive a byte as a proper uint8_t
-        nData++;
-    }
-
-    if (nData == sizeof(uint8_t)) // Only update outputPointer if a single byte was returned
-        dataToRead = result;
-
-    return (nData == sizeof(uint8_t) ? kSTkErrOk : kSTkErrFail);
-}
-
-
-//---------------------------------------------------------------------------------
-// readWord()
-//
-// Reads a word from the device, without indexing to a register.
-//
-// Returns true on success, false on failure
-//
-sfeTkError_t sfeTkArdI2C::readWord(uint8_t dataToWrite, uint16_t &dataToRead)
-{
-    if (!_i2cPort)
-        return kSTkErrBusNotInit;
-
-    size_t nRead;
-    sfeTkError_t retval = readBlock(dataToWrite, (uint8_t *)&dataToRead, sizeof(uint16_t), nRead);
-
-    return (retval == kSTkErrOk && nRead == sizeof(uint16_t) ? kSTkErrOk : retval);
-}
-
-//---------------------------------------------------------------------------------
-// readBlock()
-//
-// Reads a block of data from the device, without indexing to a register.
-//
-// Returns the number of bytes written, < 0 is an error
-//
-sfeTkError_t sfeTkArdI2C::readBlock(uint8_t dataToWrite, uint8_t *data, size_t numBytes, size_t &readBytes)
-{
-
-    // got port
-    if (!_i2cPort)
-        return kSTkErrBusNotInit;
-
-    // Buffer valid?
-    if (!data)
-        return kSTkErrBusNullBuffer;
-
-    readBytes = 0;
-
-    uint16_t nOrig = numBytes; // original number of bytes.
-    uint8_t nChunk;
-    uint16_t nReturned;
-    uint16_t i;              // counter in loop
-    bool bFirstInter = true; // Flag for first iteration - used to send devRegister
-
-    while (numBytes > 0)
-    {
-        if (bFirstInter)
-        {
-            _i2cPort->beginTransmission(address());
-            _i2cPort->write(dataToWrite);
-            if (_i2cPort->endTransmission(stop()) != 0)
-                return kSTkErrFail; // error with the end transmission
-
-            bFirstInter = false;
-        }
-
-        // We're chunking in data - keeping the max chunk to kMaxI2CBufferLength
-        nChunk = numBytes > _bufferChunkSize ? _bufferChunkSize : numBytes;
-
-        // Request the bytes. If this is the last chunk, always send a stop
-        nReturned = _i2cPort->requestFrom((int)address(), (int)nChunk, (int)(nChunk == numBytes ? true : stop()));
-
-        // No data returned, no dice
-        if (nReturned == 0)
-            return kSTkErrBusUnderRead; // error
-
-        // Copy the retrieved data chunk to the current index in the data segment
-        for (i = 0; i < nReturned; i++)
-            *data++ = _i2cPort->read();
-
-        // Decrement the amount of data received from the overall data request amount
-        numBytes = numBytes - nReturned;
-
-    } // end while
-
-    readBytes = nOrig - numBytes; // Bytes read.
-
-    return (readBytes == nOrig) ? kSTkErrOk : kSTkErrBusUnderRead; // Success
-}
-
-//---------------------------------------------------------------------------------
 
 /**
  * @brief Reads an array of bytes to a register on the target address. Supports any address size
