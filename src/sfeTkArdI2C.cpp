@@ -128,9 +128,6 @@ sfeTkError_t sfeTkArdI2C::writeWord(uint16_t dataToWrite)
 //
 sfeTkError_t sfeTkArdI2C::writeRegion(const uint8_t *data, size_t length)
 {
-    if (!_i2cPort)
-        return kSTkErrBusNotInit;
-    // do the Arduino I2C work
     return writeRegisterRegionAddress(nullptr, 0, data, length) == 0 ? kSTkErrOk : kSTkErrFail;
 }
 
