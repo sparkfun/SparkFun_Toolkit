@@ -107,6 +107,7 @@ class sfeTkIBus
     /**--------------------------------------------------------------------------
      *  @brief Send an array of data to the device.
      *  @param data Data to write.
+     *  @param length - length of data.
      *
      *  @retval sfeTkError_t -  kSTkErrOk on successful execution.
      *

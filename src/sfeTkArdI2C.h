@@ -133,6 +133,7 @@ class sfeTkArdI2C : public sfeTkII2C
         @note sfeTkIBus interface method
 
         @param data Data to write.
+        @param length - length of data
 
         @retval returns  kStkErrOk on success
     */
