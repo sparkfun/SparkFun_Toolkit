@@ -188,6 +188,18 @@ class sfeTkArdI2C : public sfeTkII2C
     sfeTkError_t writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length);
 
     /**
+        @brief Writes a number of bytes starting at the given register's 16-bit address.
+
+        @param devReg The device's register's address - 16 bit.
+        @param data Data to write.
+        @param length - length of data
+
+        @retval sfeTkError_t kSTkErrOk on successful execution
+
+    */
+    sfeTkError_t writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length);
+
+    /**
         @brief Reads a byte of data from the given register.
 
         @note sfeTkIBus interface method
@@ -239,6 +251,19 @@ class sfeTkArdI2C : public sfeTkII2C
 
     */
     sfeTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes);
+
+    /**
+        @brief Reads a block of data from the given 16-bit register address.
+
+        @param reg The device's 16 bit register's address.
+        @param data Data buffer to read into
+        @param numBytes - Number of bytes to read/length of data buffer
+        @param[out] readBytes - number of bytes read
+
+        @retval int returns kSTkErrOk on success, or kSTkErrFail code
+
+    */
+    sfeTkError_t readRegister16Region16(uint16_t reg, uint16_t *data, size_t numBytes, size_t &readBytes);
 
     // Buffer size chunk getter/setter
     /**

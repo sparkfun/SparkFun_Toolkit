@@ -120,7 +120,6 @@ sfeTkError_t sfeTkArdSPI::writeWord(uint16_t dataToWrite)
     return writeRegion((uint8_t *)&dataToWrite, sizeof(uint8_t)) > 0;
 }
 
-
 //---------------------------------------------------------------------------------
 // writeRegion()
 //
@@ -240,6 +239,30 @@ sfeTkError_t sfeTkArdSPI::writeRegister16Region(uint16_t devReg, const uint8_t *
     return kSTkErrOk;
 }
 
+//---------------------------------------------------------------------------------
+// 16 bit address and data version ...
+sfeTkError_t sfeTkArdSPI::writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length)
+{
+    if (!_spiPort)
+        return kSTkErrBusNotInit;
+
+    // Apply settings before work
+    _spiPort->beginTransaction(_sfeSPISettings);
+
+    // Signal communication start
+    digitalWrite(cs(), LOW);
+    _spiPort->transfer16(devReg);
+
+    for (size_t i = 0; i < length; i++)
+        _spiPort->transfer16(*data++);
+
+    // End communication
+    digitalWrite(cs(), HIGH);
+    _spiPort->endTransaction();
+
+    return kSTkErrOk;
+}
+//---------------------------------------------------------------------------------
 sfeTkError_t sfeTkArdSPI::readRegisterByte(uint8_t devReg, uint8_t &data)
 {
     size_t nRead;
@@ -311,6 +334,39 @@ sfeTkError_t sfeTkArdSPI::readRegister16Region(uint16_t devReg, uint8_t *data, s
 
     for (size_t i = 0; i < numBytes; i++)
         *data++ = _spiPort->transfer(0x00);
+
+    // End transaction
+    digitalWrite(cs(), HIGH);
+    _spiPort->endTransaction();
+
+    readBytes = numBytes;
+
+    return kSTkErrOk;
+}
+
+//---------------------------------------------------------------------------------
+// readRegister16Region16()
+//
+// Reads an array of uint16 to a given a 16 bit register on the target address
+//
+// Returns kSTkErrOk on success
+//
+sfeTkError_t sfeTkArdSPI::readRegister16Region16(uint16_t devReg, uint16_t *data, size_t numBytes, size_t &readBytes)
+{
+    if (!_spiPort)
+        return kSTkErrBusNotInit;
+
+    // Apply settings
+    _spiPort->beginTransaction(_sfeSPISettings);
+
+    // Signal communication start
+    digitalWrite(cs(), LOW);
+
+    // A leading "1" must be added to transfer with devRegister to indicate a "read"
+    _spiPort->transfer16(devReg | kSPIReadBit);
+
+    for (size_t i = 0; i < numBytes; i++)
+        *data++ = _spiPort->transfer16(0x00);
 
     // End transaction
     digitalWrite(cs(), HIGH);
