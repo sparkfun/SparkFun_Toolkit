@@ -30,3 +30,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     @brief Common include file for the core of the SparkFun Electronics Toolkit
 */
 #include "sfeTkError.h"
+
+/**
+    @brief The byte order of the system
+*/
+typedef enum
+{
+    SFETK_BIG_ENDIAN = 0x01,
+    SFETK_LITTLE_ENDIAN = 0x00
+} sfeTKByteOrder_t;
+
+// Runtime check for system byte order
+constexpr sfeTKByteOrder_t systemByteOrder(void)
+{
+    uint16_t i = 1;
+    return *((uint8_t *)&i) == 0 ? SFETK_BIG_ENDIAN : SFETK_LITTLE_ENDIAN;
+}

@@ -41,9 +41,10 @@ class sfeTkArdI2C : public sfeTkII2C
 {
   public:
     /**
-        @brief Constructor
+    @brief Constructor
     */
-    sfeTkArdI2C(void) : _i2cPort(nullptr), _bufferChunkSize{kDefaultBufferChunk}
+
+    sfeTkArdI2C(void) : _i2cPort(nullptr), _bufferChunkSize{kDefaultBufferChunk}, _byteOrder{SFETK_LITTLE_ENDIAN}
     {
     }
     /**
@@ -291,6 +292,15 @@ class sfeTkArdI2C : public sfeTkII2C
         return _bufferChunkSize;
     }
 
+    /**
+     * @brief Set the byte order for multi-byte data transfers
+     *
+     */
+    void setByteOrder(sfeTKByteOrder_t order)
+    {
+        _byteOrder = order;
+    }
+
   protected:
     // note: The wire port is protected, allowing access if a sub-class is
     //      created to implement a special read/write routine
@@ -309,4 +319,7 @@ class sfeTkArdI2C : public sfeTkII2C
 
     /** The I2C buffer chunker - chunk size*/
     size_t _bufferChunkSize;
+
+    /** flag to manage byte swapping */
+    sfeTKByteOrder_t _byteOrder;
 };

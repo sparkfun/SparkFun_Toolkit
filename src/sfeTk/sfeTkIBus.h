@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#include "sfeTkError.h"
+#include "sfeToolkit.h"
 #include <stddef.h>
 
 /**
