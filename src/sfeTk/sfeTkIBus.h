@@ -230,6 +230,11 @@ class sfeTkIBus
      *
      */
     virtual sfeTkError_t readRegister16Region16(uint16_t reg, uint16_t *data, size_t numBytes, size_t &readBytes) = 0;
+
+    virtual uint8_t type(void)
+    {
+        return 0;
+    }
 };
 
 //};

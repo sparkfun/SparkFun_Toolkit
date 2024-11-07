@@ -34,6 +34,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * The I2C bus interface extends the IBus interface and adds the ability to set and get the I2C
  * address and stop flag.
  */
+const uint8_t kBusTypeI2C = 0x01;
+
 class sfeTkII2C : public sfeTkIBus
 {
   public:
@@ -108,6 +110,11 @@ class sfeTkII2C : public sfeTkIBus
      * @brief kNoAddress is a constant to indicate no address has been set
      */
     static constexpr uint8_t kNoAddress = 0;
+
+    virtual uint8_t type(void)
+    {
+        return kBusTypeI2C;
+    }
 
   private:
     uint8_t _address;

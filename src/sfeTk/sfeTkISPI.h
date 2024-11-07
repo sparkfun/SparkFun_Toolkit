@@ -34,6 +34,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * The SPI bus interface extends the IBus interface and adds the ability to set and get the CS pin.
  */
+
+const uint8_t kBusTypeSPI = 0x02;
 class sfeTkISPI : public sfeTkIBus
 {
   public:
@@ -81,6 +83,11 @@ class sfeTkISPI : public sfeTkIBus
         @brief A constant for no CS pin
     */
     static constexpr uint8_t kNoCSPin = 0;
+
+    virtual uint8_t type(void)
+    {
+        return kBusTypeSPI;
+    }
 
   private:
     /** The internal storage of the _cs value*/
