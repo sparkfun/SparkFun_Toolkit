@@ -351,7 +351,7 @@ sfeTkError_t sfeTkArdSPI::readRegister16Region(uint16_t devReg, uint8_t *data, s
 //
 // Returns kSTkErrOk on success
 //
-sfeTkError_t sfeTkArdSPI::readRegister16Region16(uint16_t devReg, uint16_t *data, size_t numBytes, size_t &readBytes)
+sfeTkError_t sfeTkArdSPI::readRegister16Region16(uint16_t devReg, uint16_t *data, size_t numBytes, size_t &readWords)
 {
     if (!_spiPort)
         return kSTkErrBusNotInit;
@@ -372,7 +372,7 @@ sfeTkError_t sfeTkArdSPI::readRegister16Region16(uint16_t devReg, uint16_t *data
     digitalWrite(cs(), HIGH);
     _spiPort->endTransaction();
 
-    readBytes = numBytes;
+    readWords = numBytes;
 
     return kSTkErrOk;
 }
