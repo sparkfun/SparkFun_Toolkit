@@ -363,7 +363,7 @@ sfeTkError_t sfeTkArdSPI::readRegister16Region16(uint16_t devReg, uint16_t *data
     digitalWrite(cs(), LOW);
 
     // A leading "1" must be added to transfer with devRegister to indicate a "read"
-    _spiPort->transfer16(devReg | kSPIReadBit);
+    _spiPort->transfer16(devReg);
 
     for (size_t i = 0; i < numBytes; i++)
         *data++ = _spiPort->transfer16(0x00);
