@@ -1,7 +1,6 @@
-
-// sfeToolkit.h
+// File: sfeToolkit.cpp
 //
-// General header file for the SparkFun Toolkit
+// General impl file for the SparkFun Toolkit
 /*
 
 The MIT License (MIT)
@@ -23,30 +22,14 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
 ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-
-#pragma once
-
-/**
-    @brief Common include file for the core of the SparkFun Electronics Toolkit
-*/
-#include "sfeTkError.h"
+#include "sfeToolkit.h"
+#include <stdint.h>
 
 /**
-    @brief The byte order of the system
-*/
-typedef enum
+ * @brief C function - Runtime check for system byte order
+ */
+sfeTKByteOrder_t systemByteOrder(void)
 {
-    SFETK_BIG_ENDIAN = 0x01,
-    SFETK_LITTLE_ENDIAN = 0x00
-} sfeTKByteOrder_t;
-
-// Export our byte order function as a C function
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-    // Runtime check for system byte order
-    sfeTKByteOrder_t systemByteOrder(void);
-#ifdef __cplusplus
+    uint16_t i = 1;
+    return *((uint8_t *)&i) == 0 ? SFETK_BIG_ENDIAN : SFETK_LITTLE_ENDIAN;
 }
-#endif
