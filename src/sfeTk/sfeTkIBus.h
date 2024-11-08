@@ -125,6 +125,12 @@ class sfeTkIBus
      */
     virtual sfeTkError_t writeRegisterByte(uint8_t devReg, uint8_t data) = 0;
 
+    // Overload version
+    sfeTkError_t writeRegister(uint8_t devReg, uint8_t data)
+    {
+        return writeRegisterByte(devReg, data);
+    }
+
     /**--------------------------------------------------------------------------
      * @brief Write a single word (16 bit) to the given register
      *
@@ -135,6 +141,12 @@ class sfeTkIBus
      *
      */
     virtual sfeTkError_t writeRegisterWord(uint8_t devReg, uint16_t data) = 0;
+
+    // Overload version
+    sfeTkError_t writeRegister(uint8_t devReg, uint16_t data)
+    {
+        return writeRegisterWord(devReg, data);
+    }
 
     /**--------------------------------------------------------------------------
      *  @brief Writes a number of bytes starting at the given register's address.
@@ -148,6 +160,12 @@ class sfeTkIBus
      */
     virtual sfeTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length) = 0;
 
+    // Overload version
+    sfeTkError_t writeRegister(uint8_t devReg, const uint8_t *data, size_t length)
+    {
+        return writeRegisterRegion(devReg, data, length);
+    }
+
     /**--------------------------------------------------------------------------
      *  @brief Writes a number of bytes starting at the given register's 16-bit address.
      *
@@ -160,6 +178,12 @@ class sfeTkIBus
      */
     virtual sfeTkError_t writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length) = 0;
 
+    // Overload version
+    sfeTkError_t writeRegister(uint16_t devReg, const uint8_t *data, size_t length)
+    {
+        return writeRegister16Region(devReg, data, length);
+    }
+
     /**--------------------------------------------------------------------------
      *  @brief Writes a number of uint16's starting at the given register's 16-bit address.
      *
@@ -171,6 +195,12 @@ class sfeTkIBus
      *
      */
     virtual sfeTkError_t writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length) = 0;
+
+    // Overload version
+    sfeTkError_t writeRegister(uint16_t devReg, const uint16_t *data, size_t length)
+    {
+        return writeRegister16Region16(devReg, data, length);
+    }
     /**--------------------------------------------------------------------------
      *  @brief Read a single byte from the given register
      *
@@ -182,6 +212,12 @@ class sfeTkIBus
      */
     virtual sfeTkError_t readRegisterByte(uint8_t devReg, uint8_t &data) = 0;
 
+    // Overload version
+    sfeTkError_t readRegister(uint8_t devReg, uint8_t &data)
+    {
+        return readRegisterByte(devReg, data);
+    }
+
     /**--------------------------------------------------------------------------
      *  @brief Read a single word (16 bit) from the given register
      *
@@ -191,6 +227,12 @@ class sfeTkIBus
      *   @retval sfeTkError_t -  kSTkErrOk on successful execution.
      */
     virtual sfeTkError_t readRegisterWord(uint8_t devReg, uint16_t &data) = 0;
+
+    // Overload version
+    sfeTkError_t readRegister(uint8_t devReg, uint16_t &data)
+    {
+        return readRegisterWord(devReg, data);
+    }
 
     /**--------------------------------------------------------------------------
      *  @brief Reads a block of data from the given register.
@@ -205,6 +247,12 @@ class sfeTkIBus
      */
     virtual sfeTkError_t readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes, size_t &readBytes) = 0;
 
+    // Overload version
+    sfeTkError_t readRegister(uint8_t reg, uint8_t *data, size_t numBytes, size_t &readBytes)
+    {
+        return readRegisterRegion(reg, data, numBytes, readBytes);
+    }
+
     /**--------------------------------------------------------------------------
      *  @brief Reads a block of data from the given 16-bit register address.
      *
@@ -218,6 +266,11 @@ class sfeTkIBus
      */
     virtual sfeTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes) = 0;
 
+    // Overload version
+    sfeTkError_t readRegister(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes)
+    {
+        return readRegister16Region(reg, data, numBytes, readBytes);
+    }
     /**--------------------------------------------------------------------------
      *  @brief Reads a block of data from the given 16-bit register address.
      *
@@ -230,6 +283,12 @@ class sfeTkIBus
      *
      */
     virtual sfeTkError_t readRegister16Region16(uint16_t reg, uint16_t *data, size_t numBytes, size_t &readBytes) = 0;
+
+    // Overload version
+    sfeTkError_t readRegister(uint16_t reg, uint16_t *data, size_t numBytes, size_t &readBytes)
+    {
+        return readRegister16Region16(reg, data, numBytes, readBytes);
+    }
 
     virtual uint8_t type(void)
     {
