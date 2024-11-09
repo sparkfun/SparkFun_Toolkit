@@ -209,7 +209,8 @@ sfeTkError_t sfeTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *dat
 //
 sfeTkError_t sfeTkArdI2C::writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length)
 {
-    devReg = ((devReg << 8) & 0xff00) | ((devReg >> 8) & 0x00ff);
+    // devReg = ((devReg << 8) & 0xff00) | ((devReg >> 8) & 0x00ff);
+    devReg = sfeToolkit::byte_swap(devReg);
     return writeRegisterRegionAddress((uint8_t *)&devReg, 2, data, length);
 }
 
@@ -227,7 +228,8 @@ sfeTkError_t sfeTkArdI2C::writeRegister16Region16(uint16_t devReg, const uint16_
         return writeRegisterRegionAddress((uint8_t *)&devReg, 2, (uint8_t *)data, length * 2);
 
     // okay, we need to swap
-    devReg = ((devReg << 8) & 0xff00) | ((devReg >> 8) & 0x00ff);
+    devReg = sfeToolkit::byte_swap(devReg);
+    // devReg = ((devReg << 8) & 0xff00) | ((devReg >> 8) & 0x00ff);
     uint16_t data16[length];
     for (size_t i = 0; i < length; i++)
         data16[i] = ((data[i] << 8) & 0xff00) | ((data[i] >> 8) & 0x00ff);

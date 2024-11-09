@@ -26,6 +26,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
+#include <climits>
+#include <cstdint>
+#include <type_traits>
 /**
     @brief Common include file for the core of the SparkFun Electronics Toolkit
 */
@@ -41,8 +44,19 @@ enum class sfeTKByteOrder : uint8_t
 // Use a namespace for the toolkit "utilities and helpers"
 namespace sfeToolkit
 {
-
 // Function to determine the byte order of the system
 sfeTKByteOrder systemByteOrder(void);
+
+// Method to swap the byte order of any unsigned integer - you pick the size. Uses constexpr so it's a compile time
+// operation/inline/optimized
+//
+// from
+// https://stackoverflow.com/questions/36936584/how-to-write-constexpr-swap-function-to-change-endianess-of-an-integer
+//
+template <class T>
+constexpr typename std::enable_if<std::is_unsigned<T>::value, T>::type byte_swap(T i, T j = 0u, std::size_t n = 0u)
+{
+    return n == sizeof(T) ? j : byte_swap<T>(i >> CHAR_BIT, (j << CHAR_BIT) | (i & (T)(unsigned char)(-1)), n + 1);
+}
 
 }; // namespace sfeToolkit
