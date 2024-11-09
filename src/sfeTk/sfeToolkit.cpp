@@ -23,13 +23,13 @@ ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include "sfeToolkit.h"
-#include <stdint.h>
+#include <cstdint>
 
 /**
  * @brief C function - Runtime check for system byte order
  */
-sfeTKByteOrder_t systemByteOrder(void)
+sfeTKByteOrder sfeToolkit::systemByteOrder(void)
 {
     uint16_t i = 1;
-    return *((uint8_t *)&i) == 0 ? SFETK_BIG_ENDIAN : SFETK_LITTLE_ENDIAN;
+    return *((uint8_t *)&i) == 0 ? sfeTKByteOrder::BigEndian : sfeTKByteOrder::LittleEndian;
 }

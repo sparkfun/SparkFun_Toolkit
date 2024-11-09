@@ -31,6 +31,7 @@ over Inter-Integrated Circuit (I2C) in Arduino
 #include <Wire.h>
 
 // Include our platform I2C interface definition.
+#include "sfeTkArduino.h"
 #include <sfeTk/sfeTkII2C.h>
 
 /**
@@ -44,7 +45,7 @@ class sfeTkArdI2C : public sfeTkII2C
     @brief Constructor
     */
 
-    sfeTkArdI2C(void) : _i2cPort(nullptr), _bufferChunkSize{kDefaultBufferChunk}, _byteOrder{SFETK_LITTLE_ENDIAN}
+    sfeTkArdI2C(void) : _i2cPort(nullptr), _bufferChunkSize{kDefaultBufferChunk}, _byteOrder{SFTK_LSBFIRST}
     {
     }
     /**
@@ -295,8 +296,10 @@ class sfeTkArdI2C : public sfeTkII2C
     /**
      * @brief Set the byte order for multi-byte data transfers
      *
+     * @param order The byte order to set - set to either SFTK_MSBFIRST or SFTK_LSBFIRST. The default is SFTK_LSBFIRST
+     *
      */
-    void setByteOrder(sfeTKByteOrder_t order)
+    void setByteOrder(sfeTKByteOrder order)
     {
         _byteOrder = order;
     }
@@ -321,5 +324,5 @@ class sfeTkArdI2C : public sfeTkII2C
     size_t _bufferChunkSize;
 
     /** flag to manage byte swapping */
-    sfeTKByteOrder_t _byteOrder;
+    sfeTKByteOrder _byteOrder;
 };

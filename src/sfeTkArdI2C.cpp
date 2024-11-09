@@ -223,7 +223,7 @@ sfeTkError_t sfeTkArdI2C::writeRegister16Region(uint16_t devReg, const uint8_t *
 sfeTkError_t sfeTkArdI2C::writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length)
 {
     // if the system byte order is the same as the desired order, just send the buffer
-    if (systemByteOrder() == _byteOrder)
+    if (sfeToolkit::systemByteOrder() == _byteOrder)
         return writeRegisterRegionAddress((uint8_t *)&devReg, 2, (uint8_t *)data, length * 2);
 
     // okay, we need to swap
@@ -389,13 +389,13 @@ sfeTkError_t sfeTkArdI2C::readRegister16Region(uint16_t devReg, uint8_t *data, s
 sfeTkError_t sfeTkArdI2C::readRegister16Region16(uint16_t devReg, uint16_t *data, size_t numBytes, size_t &readBytes)
 {
     // if the system byte order is the same as the desired order, flip the address
-    if (systemByteOrder() != _byteOrder)
+    if (sfeToolkit::systemByteOrder() != _byteOrder)
         devReg = ((devReg << 8) & 0xff00) | ((devReg >> 8) & 0x00ff);
 
     sfeTkError_t status = readRegisterRegionAnyAddress((uint8_t *)&devReg, 2, (uint8_t *)data, numBytes * 2, readBytes);
 
     // Do we need to flip the byte order?
-    if (status == kSTkErrOk && systemByteOrder() != _byteOrder)
+    if (status == kSTkErrOk && sfeToolkit::systemByteOrder() != _byteOrder)
     {
         for (size_t i = 0; i < numBytes; i++)
             data[i] = ((data[i] << 8) & 0xff00) | ((data[i] >> 8) & 0x00ff);

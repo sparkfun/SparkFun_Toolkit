@@ -1,6 +1,6 @@
 
 /*
-SparkFun_Toolkit.h
+@brief sfeTkArduino.h
 
 The MIT License (MIT)
 
@@ -27,10 +27,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // Purpose:
 //
-// The SparkFun Toolkit provides a set of common implementations used throughout our (and others)
-// Arduino Libraries.
+// "Arduino-ized" value of toolkit values constants"
 
 // Just include the toolkit headers
-#include "sfeTkArdI2C.h"
-#include "sfeTkArdSPI.h"
-#include "sfeTkArduino.h"
+
+#include <sfeTk/sfeToolkit.h>
+
+// Arduino-ize our byte order types
+
+const sfeTKByteOrder SFTK_MSBFIRST = sfeTKByteOrder::BigEndian;
+const sfeTKByteOrder SFTK_LSBFIRST = sfeTKByteOrder::LittleEndian;

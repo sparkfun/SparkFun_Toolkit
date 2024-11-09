@@ -31,22 +31,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include "sfeTkError.h"
 
-/**
-    @brief The byte order of the system
-*/
-typedef enum
+// byte order types/enum
+enum class sfeTKByteOrder : uint8_t
 {
-    SFETK_BIG_ENDIAN = 0x01,
-    SFETK_LITTLE_ENDIAN = 0x00
-} sfeTKByteOrder_t;
+    BigEndian = 0x01,
+    LittleEndian = 0x02
+};
 
-// Export our byte order function as a C function
-#ifdef __cplusplus
-extern "C"
+// Use a namespace for the toolkit "utilities and helpers"
+namespace sfeToolkit
 {
-#endif
-    // Runtime check for system byte order
-    sfeTKByteOrder_t systemByteOrder(void);
-#ifdef __cplusplus
-}
-#endif
+
+// Function to determine the byte order of the system
+sfeTKByteOrder systemByteOrder(void);
+
+}; // namespace sfeToolkit
