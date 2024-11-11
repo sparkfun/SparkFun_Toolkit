@@ -351,7 +351,7 @@ sfeTkError_t sfeTkArdSPI::readRegister16Region(uint16_t devReg, uint8_t *data, s
 //
 // Returns kSTkErrOk on success
 //
-sfeTkError_t sfeTkArdSPI::readRegister16Region16(uint16_t devReg, uint16_t *data, size_t numBytes, size_t &readWords)
+sfeTkError_t sfeTkArdSPI::readRegister16Region16(uint16_t devReg, uint16_t *data, size_t numWords, size_t &readWords)
 {
     if (!_spiPort)
         return kSTkErrBusNotInit;
@@ -365,14 +365,14 @@ sfeTkError_t sfeTkArdSPI::readRegister16Region16(uint16_t devReg, uint16_t *data
     // A leading "1" must be added to transfer with devRegister to indicate a "read"
     _spiPort->transfer16(devReg);
 
-    for (size_t i = 0; i < numBytes; i++)
+    for (size_t i = 0; i < numWords; i++)
         *data++ = _spiPort->transfer16(0x00);
 
     // End transaction
     digitalWrite(cs(), HIGH);
     _spiPort->endTransaction();
 
-    readWords = numBytes;
+    readWords = numWords;
 
     return kSTkErrOk;
 }

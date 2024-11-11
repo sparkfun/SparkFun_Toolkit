@@ -243,12 +243,12 @@ class sfeTkArdSPI : public sfeTkISPI
 
             @param reg The device's register's 16 bit address.
             @param[out] data Data buffer to read into
-            @param numBytes - Length of data to read/size of data buffer
-            @param[out] readBytes - Number of bytes read
+            @param numWords - Length of data to read/size of data buffer
+            @param[out] readWords - Number of words read
 
             @retval sfeTkError_t - true on success
         */
-    virtual sfeTkError_t readRegister16Region16(uint16_t reg, uint16_t *data, size_t numBytes, size_t &readBytes);
+    virtual sfeTkError_t readRegister16Region16(uint16_t reg, uint16_t *data, size_t numWords, size_t &readWords);
 
   protected:
     // note: The instance data is protected, allowing access if a sub-class is

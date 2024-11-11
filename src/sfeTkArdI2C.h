@@ -259,13 +259,13 @@ class sfeTkArdI2C : public sfeTkII2C
 
         @param reg The device's 16 bit register's address.
         @param data Data buffer to read into
-        @param numBytes - Number of bytes to read/length of data buffer
-        @param[out] readBytes - number of bytes read
+        @param numWords - Number of words to read/length of data buffer
+        @param[out] readWords - number of words read
 
         @retval int returns kSTkErrOk on success, or kSTkErrFail code
 
     */
-    sfeTkError_t readRegister16Region16(uint16_t reg, uint16_t *data, size_t numBytes, size_t &readBytes);
+    sfeTkError_t readRegister16Region16(uint16_t reg, uint16_t *data, size_t numWords, size_t &readWords);
 
     // Buffer size chunk getter/setter
     /**
