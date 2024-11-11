@@ -47,16 +47,8 @@ namespace sfeToolkit
 // Function to determine the byte order of the system
 sfeTKByteOrder systemByteOrder(void);
 
-// Method to swap the byte order of any unsigned integer - you pick the size. Uses constexpr so it's a compile time
-// operation/inline/optimized
-//
-// from
-// https://stackoverflow.com/questions/36936584/how-to-write-constexpr-swap-function-to-change-endianess-of-an-integer
-//
-template <class T>
-constexpr typename std::enable_if<std::is_unsigned<T>::value, T>::type byte_swap(T i, T j = 0u, std::size_t n = 0u)
-{
-    return n == sizeof(T) ? j : byte_swap<T>(i >> CHAR_BIT, (j << CHAR_BIT) | (i & (T)(unsigned char)(-1)), n + 1);
-}
+uint8_t byte_swap(uint8_t i);
+uint16_t byte_swap(uint16_t i);
+uint32_t byte_swap(uint32_t i);
 
 }; // namespace sfeToolkit

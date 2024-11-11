@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include "sfeToolkit.h"
 
+//---------------------------------------------------------------------------------
 /**
  * @brief C function - Runtime check for system byte order
  */
@@ -31,4 +32,40 @@ sfeTKByteOrder sfeToolkit::systemByteOrder(void)
 {
     uint16_t i = 1;
     return *((uint8_t *)&i) == 0 ? sfeTKByteOrder::BigEndian : sfeTKByteOrder::LittleEndian;
+}
+
+//---------------------------------------------------------------------------------
+/**
+ * @brief to catch 8 bit calls for byte swap
+ *
+ */
+uint8_t sfeToolkit::byte_swap(uint8_t i)
+{
+    return i;
+}
+//---------------------------------------------------------------------------------
+/**
+ * @brief function - Byte swap a 16 bit value
+ */
+uint16_t sfeToolkit::byte_swap(uint16_t i)
+{
+    // Use the fast intrinsic if available
+#if defined(__clang__) || defined(__GNUC__)
+    return __builtin_bswap16(i);
+#else
+    return (i << 8) | (i >> 8);
+#endif
+}
+
+//---------------------------------------------------------------------------------
+/**
+ * @brief function - Byte swap a 32 bit value
+ */
+uint32_t sfeToolkit::byte_swap(uint32_t i)
+{
+#if defined(__clang__) || defined(__GNUC__)
+    return __builtin_bswap32(i);
+#else
+    return ((i << 24) & 0xff000000) | ((i << 8) & 0x00ff0000) | ((i >> 8) & 0x0000ff00) | ((i >> 24) & 0x000000ff);
+#endif
 }
