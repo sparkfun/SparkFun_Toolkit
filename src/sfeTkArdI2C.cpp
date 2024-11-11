@@ -388,13 +388,13 @@ sfeTkError_t sfeTkArdI2C::readRegister16Region(uint16_t devReg, uint8_t *data, s
 //
 // Returns the number of bytes read, < 0 is an error
 //
-sfeTkError_t sfeTkArdI2C::readRegister16Region16(uint16_t devReg, uint16_t *data, size_t numBytes, size_t &readBytes)
+sfeTkError_t sfeTkArdI2C::readRegister16Region16(uint16_t devReg, uint16_t *data, size_t numBytes, size_t &readWords)
 {
     // if the system byte order is the same as the desired order, flip the address
     if (sfeToolkit::systemByteOrder() != _byteOrder)
         devReg = ((devReg << 8) & 0xff00) | ((devReg >> 8) & 0x00ff);
 
-    sfeTkError_t status = readRegisterRegionAnyAddress((uint8_t *)&devReg, 2, (uint8_t *)data, numBytes * 2, readBytes);
+    sfeTkError_t status = readRegisterRegionAnyAddress((uint8_t *)&devReg, 2, (uint8_t *)data, numBytes * 2, readWords);
 
     // Do we need to flip the byte order?
     if (status == kSTkErrOk && sfeToolkit::systemByteOrder() != _byteOrder)
@@ -402,5 +402,6 @@ sfeTkError_t sfeTkArdI2C::readRegister16Region16(uint16_t devReg, uint16_t *data
         for (size_t i = 0; i < numBytes; i++)
             data[i] = ((data[i] << 8) & 0xff00) | ((data[i] >> 8) & 0x00ff);
     }
+    readWords = readWords / 2; // convert to words
     return status;
 }
