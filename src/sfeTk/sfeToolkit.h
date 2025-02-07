@@ -33,6 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     @brief Common include file for the core of the SparkFun Electronics Toolkit
 */
 #include "sfeTkError.h"
+#include "sfeTkIBus.h"
 
 // byte order types/enum
 enum class sfeTKByteOrder : uint8_t
@@ -50,5 +51,8 @@ sfeTKByteOrder systemByteOrder(void);
 uint8_t byte_swap(uint8_t i);
 uint16_t byte_swap(uint16_t i);
 uint32_t byte_swap(uint32_t i);
+
+void delay_ms(uint32_t ms);
+uint32_t ticks_ms(void);
 
 }; // namespace sfeToolkit

@@ -24,6 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include "sfeToolkit.h"
 
+// THIS IS A PLACEHOLDER FILE for now
+#ifdef ARDUINO
+#include <Arduino.h>
+#endif
 //---------------------------------------------------------------------------------
 /**
  * @brief C function - Runtime check for system byte order
@@ -68,4 +72,27 @@ uint32_t sfeToolkit::byte_swap(uint32_t i)
 #else
     return ((i << 24) & 0xff000000) | ((i << 8) & 0x00ff0000) | ((i >> 8) & 0x0000ff00) | ((i >> 24) & 0x000000ff);
 #endif
+}
+
+void sfeToolkit::delay_ms(uint32_t ms)
+{
+    // right now we use the Arduino delay function - future we need to abstract out a driver
+
+#if defined(ARDUINO)
+    delay(ms);
+#else
+#error // we need to implement a delay function
+// we need to implement a delay function
+#endif
+}
+
+uint32_t sfeToolkit::ticks_ms(void)
+{
+#if defined(ARDUINO)
+    return millis();
+#else
+#error // we need to implement a delay function
+// we need to implement a delay function
+#endif
+    return 0;
 }
