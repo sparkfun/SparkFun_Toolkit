@@ -1,12 +1,9 @@
-
-// sfeToolkit.h
-//
-// General header file for the SparkFun Toolkit
 /*
+@brief sfeTkArduino.cpp
 
 The MIT License (MIT)
 
-Copyright (c) 2024 SparkFun Electronics
+Copyright (c) 2023 SparkFun Electronics
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
@@ -22,43 +19,19 @@ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
 ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 */
 
-#pragma once
+#include <Arduino.h>
 
-#include <limits.h>
-#include <stdint.h>
+// Implements the sfeToolkit functions for the Arduino platform
 
-/**
-    @brief Common include file for the core of the SparkFun Electronics Toolkit
-*/
-#include "sfeTkError.h"
-#include "sfeTkIBus.h"
-
-// byte order types/enum
-enum class sfeTKByteOrder : uint8_t
+void sfeTk_delay_ms(uint32_t ms)
 {
-    BigEndian = 0x01,
-    LittleEndian = 0x02
-};
+    delay(ms);
+}
 
-// Use a namespace for the toolkit "utilities and helpers"
-namespace sfeToolkit
+uint32_t sfeTk_ticks_ms(void)
 {
-// Function to determine the byte order of the system
-sfeTKByteOrder systemByteOrder(void);
-
-uint8_t byte_swap(uint8_t i);
-uint16_t byte_swap(uint16_t i);
-uint32_t byte_swap(uint32_t i);
-
-}; // namespace sfeToolkit
-
-// Area for platform specific implementations. The interface/functions are 
-// defined here, with the expectation that the platform provides the implementation.
-
-// delay in milliseconds
-void sfeTk_delay_ms(uint32_t ms);
-
-// ticks in milliseconds
-uint32_t sfeTk_ticks_ms(void);
+    return millis();
+}
