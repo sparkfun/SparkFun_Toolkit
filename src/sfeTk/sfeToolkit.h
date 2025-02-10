@@ -26,9 +26,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#include <climits>
-#include <cstdint>
-#include <type_traits>
+#include <limits.h>
+#include <stdint.h>
+
 /**
     @brief Common include file for the core of the SparkFun Electronics Toolkit
 */
