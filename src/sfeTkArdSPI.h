@@ -54,8 +54,7 @@ class sfeTkArdSPI : public sfeTkISPI
     /**
         @brief Copy constructor for Arduino SPI bus object of the toolkit
 
-        @param spiPort Port for SPI communication.
-        @param busSPISettings Settings for speed, endianness, and spi mode of the SPI bus.
+        @param rhs source of the copy operation
     */
     sfeTkArdSPI(sfeTkArdSPI const &rhs) : sfeTkISPI(), _spiPort{rhs._spiPort}, _sfeSPISettings{rhs._sfeSPISettings}
     {
@@ -64,7 +63,7 @@ class sfeTkArdSPI : public sfeTkISPI
     /**
         @brief Assignment copy operator for Arduino SPI bus object of the toolkit
 
-        @param rsh The right hand side of the assignment.
+        @param rhs The right hand side of the assignment.
         @return sfeTkArdSPI& - The left hand side of the assignment.
     */
     sfeTkArdSPI &operator=(const sfeTkArdSPI &rhs)
@@ -78,12 +77,21 @@ class sfeTkArdSPI : public sfeTkISPI
         @brief Method sets up the required SPI settings.
         @note This function provides a default SPI Port.
 
-        @param bInit This flag tracks whether the bus has been initialized.
+        @param bInit Init the device - default is false.
 
         @retval sfeTkError_t -  kSTkErrOk on success
     */
     sfeTkError_t init(bool bInit = false);
 
+    /**
+        @brief Method sets up the required SPI settings.
+        @note This function provides a default SPI Port.
+
+        @param csPin The CS Pin for the device
+        @param bInit Init the device - default is false.
+
+        @retval sfeTkError_t -  kSTkErrOk on success
+    */
     sfeTkError_t init(uint8_t csPin, bool bInit = false);
 
     /**
@@ -91,6 +99,7 @@ class sfeTkArdSPI : public sfeTkISPI
 
         @param spiPort Port for SPI communication.
         @param busSPISettings Settings for speed, endianness, and spi mode of the SPI bus.
+        @param csPin The CS Pin for the device
         @param bInit This flag tracks whether the bus has been initialized.
 
         @retval sfeTkError_t - kSTkErrOk on success
@@ -105,6 +114,25 @@ class sfeTkArdSPI : public sfeTkISPI
         @retval sfeTkError_t - kSTkErrOk on success
     */
     sfeTkError_t writeByte(uint8_t data);
+
+    /**
+        @brief Write a word to the device without indexing to a register.
+
+        @param data Data to write.
+
+        @retval sfeTkError_t - kSTkErrOk on success
+    */
+    sfeTkError_t writeWord(uint16_t data);
+
+    /**
+        @brief Write an array of data to the device without indexing to a register.
+
+        @param data Data to write
+        @param length Length of Data
+
+        @retval sfeTkError_t - kSTkErrOk on success
+    */
+    sfeTkError_t writeRegion(const uint8_t *data, size_t length);
 
     /**
         @brief Write a single byte to the given register
@@ -132,6 +160,7 @@ class sfeTkArdSPI : public sfeTkISPI
 
         @param devReg The device's register's address.
         @param data Data to write.
+        @param length - length of data
 
         @retval sfeTkError_t - kSTkErrOk on success
     */
@@ -143,6 +172,7 @@ class sfeTkArdSPI : public sfeTkISPI
 
         @param devReg The device's register's address.
         @param data Data to write.
+        @param length - length of data
 
         @retval sfeTkError_t - kSTkErrOk on success
     */
@@ -152,7 +182,7 @@ class sfeTkArdSPI : public sfeTkISPI
         @brief Read a single byte from the given register
 
         @param devReg The device's register's address.
-        @param data Data to read.
+        @param[out] data Data to read.
 
         @retval sfeTkError_t - kSTkErrOk on success
     */
@@ -162,7 +192,7 @@ class sfeTkArdSPI : public sfeTkISPI
         @brief read a single word to the given register
 
         @param devReg The device's register's address.
-        @param data Data to write.
+        @param[out] data Data to write.
 
         @retval sfeTkError_t - true on success
     */
@@ -172,9 +202,9 @@ class sfeTkArdSPI : public sfeTkISPI
         @brief Reads a block of data from the given register.
         @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
 
-        @param devReg The device's register's address.
-        @param data Data to write.
-        @param numBytes - length of data
+        @param reg The device's register's address.
+        @param[out] data Data buffer to read into
+        @param numBytes - length of data/size of data buffer
         @param[out] readBytes - Number of bytes read
 
         @retval sfeTkError_t - true on success
@@ -185,9 +215,9 @@ class sfeTkArdSPI : public sfeTkISPI
         @brief Reads a block of data from the given register.
         @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
 
-        @param devReg The device's register's 16 bit address.
-        @param data Data to write.
-        @param numBytes - length of data
+        @param reg The device's register's 16 bit address.
+        @param[out] data Data buffer to read into
+        @param numBytes - Length of data to read/size of data buffer
         @param[out] readBytes - Number of bytes read
 
         @retval sfeTkError_t - true on success

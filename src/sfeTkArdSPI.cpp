@@ -82,7 +82,7 @@ sfeTkError_t sfeTkArdSPI::init(bool bInit)
 }
 
 //---------------------------------------------------------------------------------
-// writeRegisterByte()
+// writeByte()
 //
 // Writes a single byte to the device.
 //
@@ -100,6 +100,46 @@ sfeTkError_t sfeTkArdSPI::writeByte(uint8_t dataToWrite)
     digitalWrite(cs(), LOW);
 
     _spiPort->transfer(dataToWrite);
+
+    // End communication
+    digitalWrite(cs(), HIGH);
+    _spiPort->endTransaction();
+
+    return kSTkErrOk;
+}
+
+//---------------------------------------------------------------------------------
+// writeWord()
+//
+// Writes a word to the device without indexing to a register.
+//
+// Returns kSTkErrOk on success
+//
+sfeTkError_t sfeTkArdSPI::writeWord(uint16_t dataToWrite)
+{
+    return writeRegion((uint8_t *)&dataToWrite, sizeof(uint8_t)) > 0;
+}
+
+
+//---------------------------------------------------------------------------------
+// writeRegion()
+//
+// Writes an array of data to the device without indexing to a register.
+//
+// Returns kSTkErrOk on success
+//
+sfeTkError_t sfeTkArdSPI::writeRegion(const uint8_t *dataToWrite, size_t length)
+{
+
+    if (!_spiPort)
+        return kSTkErrBusNotInit;
+
+    _spiPort->beginTransaction(_sfeSPISettings);
+    // Signal communication start
+    digitalWrite(cs(), LOW);
+
+    for (size_t i = 0; i < length; i++)
+        _spiPort->transfer(*dataToWrite++);
 
     // End communication
     digitalWrite(cs(), HIGH);
@@ -164,6 +204,7 @@ sfeTkError_t sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *dat
 
     // Signal communication start
     digitalWrite(cs(), LOW);
+
     _spiPort->transfer(devReg);
 
     for (size_t i = 0; i < length; i++)

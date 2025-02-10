@@ -84,6 +84,8 @@ class sfeTkArdI2C : public sfeTkII2C
 
     /**
         @brief - address version of the init method
+
+        @param addr The address of the device
     */
     sfeTkError_t init(uint8_t addr);
 
@@ -91,6 +93,7 @@ class sfeTkArdI2C : public sfeTkII2C
         @brief Method sets up the required I2C settings.
 
         @param wirePort Port for I2C communication.
+        @param addr The address of the device
         @param bInit This flag tracks whether the bus has been initialized.
 
         @retval kSTkErrOk on successful execution.
@@ -106,7 +109,7 @@ class sfeTkArdI2C : public sfeTkII2C
     sfeTkError_t ping();
 
     /**
-        @brief Write a single byte to the device
+        @brief Sends a single byte to the device
         @note sfeTkIBus interface method
 
         @param data Data to write.
@@ -114,6 +117,27 @@ class sfeTkArdI2C : public sfeTkII2C
         @retval returns  kStkErrOk on success
     */
     sfeTkError_t writeByte(uint8_t data);
+
+    /**
+        @brief Sends a word to the device.
+        @note sfeTkIBus interface method
+
+        @param data Data to write.
+
+        @retval returns  kStkErrOk on success
+    */
+    sfeTkError_t writeWord(uint16_t data);
+
+    /**
+        @brief Sends a block of data to the device.
+        @note sfeTkIBus interface method
+
+        @param data Data to write.
+        @param length - length of data
+
+        @retval returns  kStkErrOk on success
+    */
+    sfeTkError_t writeRegion(const uint8_t *data, size_t length);
 
     /**
         @brief Write a single byte to the given register
@@ -145,6 +169,7 @@ class sfeTkArdI2C : public sfeTkII2C
 
         @param devReg The device's register's address.
         @param data Data to write.
+        @param length - length of data
 
         @retval kStkErrOk on success
     */
@@ -153,9 +178,9 @@ class sfeTkArdI2C : public sfeTkII2C
     /**
         @brief Writes a number of bytes starting at the given register's 16-bit address.
 
-        @param devAddr The device's 16-bit address/pin
-        param devReg The device's register's address.
+        @param devReg The device's register's address - 16 bit.
         @param data Data to write.
+        @param length - length of data
 
         @retval sfeTkError_t kSTkErrOk on successful execution
 
@@ -168,7 +193,7 @@ class sfeTkArdI2C : public sfeTkII2C
         @note sfeTkIBus interface method
 
         @param devReg The device's register's address.
-        @param data Data to read.
+        @param[out] data Data to read.
 
         @retval  kStkErrOk on success
     */
@@ -180,7 +205,7 @@ class sfeTkArdI2C : public sfeTkII2C
         @note sfeTkIBus interface method
 
         @param devReg The device's register's address.
-        @param data Data to read.
+        @param[out] data Data to read.
 
         @retval kSTkErrOk on success
     */
@@ -193,8 +218,8 @@ class sfeTkArdI2C : public sfeTkII2C
         @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
 
         @param devReg The device's register's address.
-        @param data Data being read.
-        @param numBytes Number of bytes to read.
+        @param[out] data Data buffer to read into
+        @param numBytes Number of bytes to read/length of data buffer
         @param[out] readBytes - Number of bytes read
 
 
@@ -206,8 +231,8 @@ class sfeTkArdI2C : public sfeTkII2C
         @brief Reads a block of data from the given 16-bit register address.
 
         @param reg The device's 16 bit register's address.
-        @param data Data to write.
-        @param numBytes - length of data
+        @param data Data buffer to read into
+        @param numBytes - Number of bytes to read/length of data buffer
         @param[out] readBytes - number of bytes read
 
         @retval int returns kSTkErrOk on success, or kSTkErrFail code

@@ -87,7 +87,7 @@ sfeTkError_t sfeTkArdI2C::ping()
 //---------------------------------------------------------------------------------
 // writeByte()
 //
-// Writes a single byte to the device.
+// Writes a single byte to the device, without indexing to a register.
 //
 // Returns true on success, false on failure
 //
@@ -100,6 +100,33 @@ sfeTkError_t sfeTkArdI2C::writeByte(uint8_t dataToWrite)
     _i2cPort->beginTransmission(address());
     _i2cPort->write(dataToWrite);
     return _i2cPort->endTransmission() == 0 ? kSTkErrOk : kSTkErrFail;
+}
+
+//---------------------------------------------------------------------------------
+// writeWord()
+//
+// Writes a word to the device, without indexing to a register.
+//
+// Returns true on success, false on failure
+//
+sfeTkError_t sfeTkArdI2C::writeWord(uint16_t dataToWrite)
+{
+    if (!_i2cPort)
+        return kSTkErrBusNotInit;
+
+    return writeRegion((uint8_t *)&dataToWrite, sizeof(uint16_t));
+}
+
+//---------------------------------------------------------------------------------
+// writeRegion()
+//
+// Writes a word to the device, without indexing to a register.
+//
+// Returns true on success, false on failure
+//
+sfeTkError_t sfeTkArdI2C::writeRegion(const uint8_t *data, size_t length)
+{
+    return writeRegisterRegionAddress(nullptr, 0, data, length) == 0 ? kSTkErrOk : kSTkErrFail;
 }
 
 //---------------------------------------------------------------------------------
@@ -152,7 +179,10 @@ sfeTkError_t sfeTkArdI2C::writeRegisterRegionAddress(uint8_t *devReg, size_t reg
         return kSTkErrBusNotInit;
 
     _i2cPort->beginTransmission(address());
-    _i2cPort->write(devReg, regLength);
+
+    if(devReg != nullptr && regLength > 0)
+        _i2cPort->write(devReg, regLength);
+
     _i2cPort->write(data, (int)length);
 
     return _i2cPort->endTransmission() ? kSTkErrFail : kSTkErrOk;
@@ -183,7 +213,7 @@ sfeTkError_t sfeTkArdI2C::writeRegister16Region(uint16_t devReg, const uint8_t *
     return writeRegisterRegionAddress((uint8_t *)&devReg, 2, data, length);
 }
 
-//---------------------------------------------------------------------------------
+
 
 /**
  * @brief Reads an array of bytes to a register on the target address. Supports any address size
