@@ -43,16 +43,14 @@ enum class sfeTKByteOrder : uint8_t
 };
 
 // Use a namespace for the toolkit "utilities and helpers"
-namespace sfeToolkit
-{
+
 // Function to determine the byte order of the system
-sfeTKByteOrder systemByteOrder(void);
+sfeTKByteOrder sfeTk_system_byteorder(void);
 
-uint8_t byte_swap(uint8_t i);
-uint16_t byte_swap(uint16_t i);
-uint32_t byte_swap(uint32_t i);
+uint8_t sfeTk_byte_swap(uint8_t i);
+uint16_t sfeTk_byte_swap(uint16_t i);
+uint32_t sfeTk_byte_swap(uint32_t i);
 
-}; // namespace sfeToolkit
 
 // Area for platform specific implementations. The interface/functions are 
 // defined here, with the expectation that the platform provides the implementation.
