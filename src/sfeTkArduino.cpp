@@ -26,12 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // Implements the sfeToolkit functions for the Arduino platform
 
-void sfeTk_delay_ms(uint32_t ms)
+void sftk_delay_ms(uint32_t ms)
 {
     delay(ms);
 }
 
-uint32_t sfeTk_ticks_ms(void)
+uint32_t sftk_ticks_ms(void)
 {
     return millis();
 }

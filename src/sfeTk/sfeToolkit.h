@@ -42,21 +42,21 @@ enum class sfeTKByteOrder : uint8_t
     LittleEndian = 0x02
 };
 
-// Use a namespace for the toolkit "utilities and helpers"
+// Note - toolkit *functions* start with sftk_ to avoid name collisions
 
 // Function to determine the byte order of the system
-sfeTKByteOrder sfeTk_system_byteorder(void);
+sfeTKByteOrder sftk_system_byteorder(void);
 
-uint8_t sfeTk_byte_swap(uint8_t i);
-uint16_t sfeTk_byte_swap(uint16_t i);
-uint32_t sfeTk_byte_swap(uint32_t i);
+uint8_t sftk_byte_swap(uint8_t i);
+uint16_t sftk_byte_swap(uint16_t i);
+uint32_t sftk_byte_swap(uint32_t i);
 
 
 // Area for platform specific implementations. The interface/functions are 
 // defined here, with the expectation that the platform provides the implementation.
 
 // delay in milliseconds
-void sfeTk_delay_ms(uint32_t ms);
+void sftk_delay_ms(uint32_t ms);
 
 // ticks in milliseconds
-uint32_t sfeTk_ticks_ms(void);
+uint32_t sftk_ticks_ms(void);
