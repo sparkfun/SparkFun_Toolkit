@@ -304,6 +304,16 @@ class sfeTkArdI2C : public sfeTkII2C
         _byteOrder = order;
     }
 
+    /**
+     * @brief Get the current byte order
+     *
+     * @retval The current byte order
+     */
+    sfeTKByteOrder byteOrder(void)
+    {
+        return _byteOrder;
+    }
+
   protected:
     // note: The wire port is protected, allowing access if a sub-class is
     //      created to implement a special read/write routine
