@@ -210,7 +210,8 @@ sfeTkError_t sfeTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *dat
 sfeTkError_t sfeTkArdI2C::writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length)
 {
     // devReg = ((devReg << 8) & 0xff00) | ((devReg >> 8) & 0x00ff);
-    devReg = sftk_byte_swap(devReg);
+    if (sftk_system_byteorder() != _byteOrder)
+        devReg = sftk_byte_swap(devReg);
     return writeRegisterRegionAddress((uint8_t *)&devReg, 2, data, length);
 }
 
