@@ -52,7 +52,7 @@ typedef int32_t sfTkError_t;
 /**
  * @brief General error code for a failure. Note all errors are negative.
  */
-const sfTkError_t ksfkErrFail = -1; // general fail
+const sfTkError_t ksfTkErrFail = -1; // general fail
 /**
  * @brief The error code value for success. This is always 0.
  */

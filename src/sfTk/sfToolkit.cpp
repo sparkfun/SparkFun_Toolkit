@@ -32,7 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /**
  * @brief C function - Runtime check for system byte order
  */
-sfeTKByteOrder sftk_system_byteorder(void)
+sfTkByteOrder sftk_system_byteorder(void)
 {
     uint16_t i = 1;
     return *((uint8_t *)&i) == 0 ? sfTkByteOrder::BigEndian : sfTkByteOrder::LittleEndian;

@@ -44,7 +44,7 @@ enum class sfTkByteOrder : uint8_t
 // Note - toolkit *functions* start with sftk_ to avoid name collisions
 
 // Function to determine the byte order of the system
-sfeTKByteOrder sftk_system_byteorder(void);
+sfTkByteOrder sftk_system_byteorder(void);
 
 uint8_t sftk_byte_swap(uint8_t i);
 uint16_t sftk_byte_swap(uint16_t i);

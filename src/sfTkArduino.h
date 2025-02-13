@@ -35,5 +35,5 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // Arduino-ize our byte order types
 
-const sfTKByteOrder SFTK_MSBFIRST = sfTKByteOrder::BigEndian;
-const sfTKByteOrder SFTK_LSBFIRST = sfTKByteOrder::LittleEndian;
+const sfTkByteOrder SFTK_MSBFIRST = sfTkByteOrder::BigEndian;
+const sfTkByteOrder SFTK_LSBFIRST = sfTkByteOrder::LittleEndian;
