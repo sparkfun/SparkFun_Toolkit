@@ -1,3 +1,17 @@
+/**
+ * @file sfToolkit.cpp
+ * @brief Implementation file for the SparkFun Toolkit.
+ *
+ * This file contains the implementation of various utility functions
+ * for the SparkFun Toolkit library.
+ *
+ * @author SparkFun Electronics
+ * @date 2024-2025
+ * @copyright Copyright (c) 2024-2025, SparkFun Electronics Inc. This project is released under the MIT License.
+ * 
+ * SPDX-License-Identifier: MIT
+ */
+
 // File: sfToolkit.cpp
 //
 // General impl file for the SparkFun Toolkit
