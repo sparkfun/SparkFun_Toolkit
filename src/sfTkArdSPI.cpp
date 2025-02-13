@@ -1,5 +1,5 @@
 
-// sfeTkArdSPI.cpp - Arduino SPI implementation for the toolkit
+// sfTkArdSPI.cpp - Arduino SPI implementation for the toolkit
 
 /*
 The MIT License (MIT)
@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#include "sfeTkArdSPI.h"
+#include "sfTkArdSPI.h"
 #include <Arduino.h>
 
 // Note: A leading "1" must be added to transfer with register to indicate a "read"
@@ -38,7 +38,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 // Arduino version of init. Will take in a defined SPI port/settings
 //
-sfeTkError_t sfeTkArdSPI::init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t csPin, bool bInit)
+sfTkError_t sfTkArdSPI::init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t csPin, bool bInit)
 {
     // if we don't have a SPI port already
     if (!_spiPort)
@@ -54,7 +54,7 @@ sfeTkError_t sfeTkArdSPI::init(SPIClass &spiPort, SPISettings &busSPISettings, u
     // SPI settings are needed for every transaction
     _sfeSPISettings = busSPISettings;
 
-    return kSTkErrOk;
+    return ksfTkErrOk;
 }
 
 //---------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ sfeTkError_t sfeTkArdSPI::init(SPIClass &spiPort, SPISettings &busSPISettings, u
 //
 // Arduino version of init.
 //
-sfeTkError_t sfeTkArdSPI::init(uint8_t csPin, bool bInit)
+sfTkError_t sfTkArdSPI::init(uint8_t csPin, bool bInit)
 {
     // If the transaction settings are not provided by the user they are built here.
     SPISettings spiSettings = SPISettings(3000000, MSBFIRST, SPI_MODE3);
@@ -76,7 +76,7 @@ sfeTkError_t sfeTkArdSPI::init(uint8_t csPin, bool bInit)
 //
 // Arduino version of init.
 //
-sfeTkError_t sfeTkArdSPI::init(bool bInit)
+sfTkError_t sfTkArdSPI::init(bool bInit)
 {
     return init(cs(), bInit);
 }
@@ -86,13 +86,13 @@ sfeTkError_t sfeTkArdSPI::init(bool bInit)
 //
 // Writes a single byte to the device.
 //
-// Returns kSTkErrOk on success
+// Returns ksfTkErrOk on success
 //
-sfeTkError_t sfeTkArdSPI::writeByte(uint8_t dataToWrite)
+sfTkError_t sfTkArdSPI::writeByte(uint8_t dataToWrite)
 {
 
     if (!_spiPort)
-        return kSTkErrBusNotInit;
+        return ksfTkErrBusNotInit;
 
     // Apply settings
     _spiPort->beginTransaction(_sfeSPISettings);
@@ -105,7 +105,7 @@ sfeTkError_t sfeTkArdSPI::writeByte(uint8_t dataToWrite)
     digitalWrite(cs(), HIGH);
     _spiPort->endTransaction();
 
-    return kSTkErrOk;
+    return ksfTkErrOk;
 }
 
 //---------------------------------------------------------------------------------
@@ -113,9 +113,9 @@ sfeTkError_t sfeTkArdSPI::writeByte(uint8_t dataToWrite)
 //
 // Writes a word to the device without indexing to a register.
 //
-// Returns kSTkErrOk on success
+// Returns ksfTkErrOk on success
 //
-sfeTkError_t sfeTkArdSPI::writeWord(uint16_t dataToWrite)
+sfTkError_t sfTkArdSPI::writeWord(uint16_t dataToWrite)
 {
     return writeRegion((uint8_t *)&dataToWrite, sizeof(uint8_t)) > 0;
 }
@@ -125,13 +125,13 @@ sfeTkError_t sfeTkArdSPI::writeWord(uint16_t dataToWrite)
 //
 // Writes an array of data to the device without indexing to a register.
 //
-// Returns kSTkErrOk on success
+// Returns ksfTkErrOk on success
 //
-sfeTkError_t sfeTkArdSPI::writeRegion(const uint8_t *dataToWrite, size_t length)
+sfTkError_t sfTkArdSPI::writeRegion(const uint8_t *dataToWrite, size_t length)
 {
 
     if (!_spiPort)
-        return kSTkErrBusNotInit;
+        return ksfTkErrBusNotInit;
 
     _spiPort->beginTransaction(_sfeSPISettings);
     // Signal communication start
@@ -144,7 +144,7 @@ sfeTkError_t sfeTkArdSPI::writeRegion(const uint8_t *dataToWrite, size_t length)
     digitalWrite(cs(), HIGH);
     _spiPort->endTransaction();
 
-    return kSTkErrOk;
+    return ksfTkErrOk;
 }
 
 //---------------------------------------------------------------------------------
@@ -152,13 +152,13 @@ sfeTkError_t sfeTkArdSPI::writeRegion(const uint8_t *dataToWrite, size_t length)
 //
 // Writes a byte to a given register.
 //
-// Returns kSTkErrOk on success
+// Returns ksfTkErrOk on success
 //
-sfeTkError_t sfeTkArdSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
+sfTkError_t sfTkArdSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
 {
 
     if (!_spiPort)
-        return kSTkErrBusNotInit;
+        return ksfTkErrBusNotInit;
 
     // Apply settings
     _spiPort->beginTransaction(_sfeSPISettings);
@@ -172,7 +172,7 @@ sfeTkError_t sfeTkArdSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
     digitalWrite(cs(), HIGH);
     _spiPort->endTransaction();
 
-    return kSTkErrOk;
+    return ksfTkErrOk;
 }
 
 //---------------------------------------------------------------------------------
@@ -180,9 +180,9 @@ sfeTkError_t sfeTkArdSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
 //
 // Writes a world to a given register.
 //
-// Returns kSTkErrOk on success
+// Returns ksfTkErrOk on success
 //
-sfeTkError_t sfeTkArdSPI::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite)
+sfTkError_t sfTkArdSPI::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite)
 {
     return writeRegisterRegion(devReg, (uint8_t *)&dataToWrite, sizeof(uint8_t)) > 0;
 }
@@ -191,12 +191,12 @@ sfeTkError_t sfeTkArdSPI::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite
 //
 // Writes an array of bytes to a given register on the target address
 //
-// Returns kSTkErrOk on success
+// Returns ksfTkErrOk on success
 //
-sfeTkError_t sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
+sfTkError_t sfTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
 {
     if (!_spiPort)
-        return kSTkErrBusNotInit;
+        return ksfTkErrBusNotInit;
 
     // Apply settings before work
     _spiPort->beginTransaction(_sfeSPISettings);
@@ -213,14 +213,14 @@ sfeTkError_t sfeTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *dat
     digitalWrite(cs(), HIGH);
     _spiPort->endTransaction();
 
-    return kSTkErrOk;
+    return ksfTkErrOk;
 }
 
 // 16 bit address version ...
-sfeTkError_t sfeTkArdSPI::writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length)
+sfTkError_t sfTkArdSPI::writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length)
 {
     if (!_spiPort)
-        return kSTkErrBusNotInit;
+        return ksfTkErrBusNotInit;
 
     // Apply settings before work
     _spiPort->beginTransaction(_sfeSPISettings);
@@ -236,15 +236,15 @@ sfeTkError_t sfeTkArdSPI::writeRegister16Region(uint16_t devReg, const uint8_t *
     digitalWrite(cs(), HIGH);
     _spiPort->endTransaction();
 
-    return kSTkErrOk;
+    return ksfTkErrOk;
 }
 
 //---------------------------------------------------------------------------------
 // 16 bit address and data version ...
-sfeTkError_t sfeTkArdSPI::writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length)
+sfTkError_t sfTkArdSPI::writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length)
 {
     if (!_spiPort)
-        return kSTkErrBusNotInit;
+        return ksfTkErrBusNotInit;
 
     // Apply settings before work
     _spiPort->beginTransaction(_sfeSPISettings);
@@ -260,35 +260,36 @@ sfeTkError_t sfeTkArdSPI::writeRegister16Region16(uint16_t devReg, const uint16_
     digitalWrite(cs(), HIGH);
     _spiPort->endTransaction();
 
-    return kSTkErrOk;
+    return ksfTkErrOk;
 }
 //---------------------------------------------------------------------------------
-sfeTkError_t sfeTkArdSPI::readRegisterByte(uint8_t devReg, uint8_t &data)
+sfTkError_t sfTkArdSPI::readRegisterByte(uint8_t devReg, uint8_t &data)
 {
     size_t nRead;
-    sfeTkError_t retval = readRegisterRegion(devReg, (uint8_t *)&data, sizeof(uint8_t), nRead);
+    sfTkError_t retval = readRegisterRegion(devReg, (uint8_t *)&data, sizeof(uint8_t), nRead);
 
-    return (retval == kSTkErrOk && nRead == sizeof(uint8_t) ? kSTkErrOk : retval);
+    return (retval == ksfTkErrOk && nRead == sizeof(uint8_t) ? ksfTkErrOk : retval);
 }
 
-sfeTkError_t sfeTkArdSPI::readRegisterWord(uint8_t devReg, uint16_t &data)
+//---------------------------------------------------------------------------------
+sfTkError_t sfTkArdSPI::readRegisterWord(uint8_t devReg, uint16_t &data)
 {
     size_t nRead;
-    sfeTkError_t retval = readRegisterRegion(devReg, (uint8_t *)&data, sizeof(uint16_t), nRead);
+    sfTkError_t retval = readRegisterRegion(devReg, (uint8_t *)&data, sizeof(uint16_t), nRead);
 
-    return (retval == kSTkErrOk && nRead == sizeof(uint16_t) ? kSTkErrOk : retval);
+    return (retval == ksfTkErrOk && nRead == sizeof(uint16_t) ? ksfTkErrOk : retval);
 }
 //---------------------------------------------------------------------------------
 // readRegisterRegion()
 //
 // Reads an array of bytes to a given register on the target address
 //
-// Returns kSTkErrOk on success
+// Returns ksfTkErrOk on success
 //
-sfeTkError_t sfeTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
+sfTkError_t sfTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
 {
     if (!_spiPort)
-        return kSTkErrBusNotInit;
+        return ksfTkErrBusNotInit;
 
     // Apply settings
     _spiPort->beginTransaction(_sfeSPISettings);
@@ -308,7 +309,7 @@ sfeTkError_t sfeTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size
 
     readBytes = numBytes;
 
-    return kSTkErrOk;
+    return ksfTkErrOk;
 }
 
 //---------------------------------------------------------------------------------
@@ -316,12 +317,12 @@ sfeTkError_t sfeTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size
 //
 // Reads an array of bytes to a given a 16 bit register on the target address
 //
-// Returns kSTkErrOk on success
+// Returns ksfTkErrOk on success
 //
-sfeTkError_t sfeTkArdSPI::readRegister16Region(uint16_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
+sfTkError_t sfTkArdSPI::readRegister16Region(uint16_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
 {
     if (!_spiPort)
-        return kSTkErrBusNotInit;
+        return ksfTkErrBusNotInit;
 
     // Apply settings
     _spiPort->beginTransaction(_sfeSPISettings);
@@ -341,7 +342,7 @@ sfeTkError_t sfeTkArdSPI::readRegister16Region(uint16_t devReg, uint8_t *data, s
 
     readBytes = numBytes;
 
-    return kSTkErrOk;
+    return ksfTkErrOk;
 }
 
 //---------------------------------------------------------------------------------
@@ -349,12 +350,12 @@ sfeTkError_t sfeTkArdSPI::readRegister16Region(uint16_t devReg, uint8_t *data, s
 //
 // Reads an array of uint16 to a given a 16 bit register on the target address
 //
-// Returns kSTkErrOk on success
+// Returns ksfTkErrOk on success
 //
-sfeTkError_t sfeTkArdSPI::readRegister16Region16(uint16_t devReg, uint16_t *data, size_t numBytes, size_t &readWords)
+sfTkError_t sfTkArdSPI::readRegister16Region16(uint16_t devReg, uint16_t *data, size_t numBytes, size_t &readWords)
 {
     if (!_spiPort)
-        return kSTkErrBusNotInit;
+        return ksfTkErrBusNotInit;
 
     // Apply settings
     _spiPort->beginTransaction(_sfeSPISettings);
@@ -374,5 +375,5 @@ sfeTkError_t sfeTkArdSPI::readRegister16Region16(uint16_t devReg, uint16_t *data
 
     readWords = numBytes;
 
-    return kSTkErrOk;
+    return ksfTkErrOk;
 }

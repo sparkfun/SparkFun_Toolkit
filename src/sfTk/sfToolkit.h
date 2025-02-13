@@ -1,11 +1,12 @@
 
-// sfeTkError.h
+// sfToolkit.h
 //
 // General header file for the SparkFun Toolkit
 /*
+
 The MIT License (MIT)
 
-Copyright (c) 2023 SparkFun Electronics
+Copyright (c) 2024 SparkFun Electronics
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
@@ -21,7 +22,6 @@ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
 ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 */
 
 #pragma once
@@ -29,36 +29,33 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdint.h>
 
 /**
- * General Concept
- *    A SparkFun Toolkit error system. The goal is to keep this simple.
- *
- *    This mimics a variety of systems, using an int type for error codes,
- *    where:
- *   		0   = okay
- *         -1   = general failure
- *         >0   = an informative error
- *
- *    Since *subsystems* in the toolkit can have their own errors,
- *    A start range for these errors are defined. Values > than this value
- *    define the errors for the set subsystem. These start ranges are set
- *    in this file, with actual error values defined in the the respective
- *    subsystem header files.
- *
- */
-typedef int32_t sfeTkError_t;
+    @brief Common include file for the core of the SparkFun Electronics Toolkit
+*/
+#include "sfTkError.h"
 
-// General errors
 
-/**
- * @brief General error code for a failure. Note all errors are negative.
- */
-const sfeTkError_t kSTkErrFail = -1; // general fail
-/**
- * @brief The error code value for success. This is always 0.
- */
-const sfeTkError_t kSTkErrOk = 0; // success
+// byte order types/enum
+enum class sfTkByteOrder : uint8_t
+{
+    BigEndian = 0x01,
+    LittleEndian = 0x02
+};
 
-/**
- * @brief A base value for bus errors. All bus errors are greater than this value, in the 1000 range
- */
-const sfeTkError_t kSTkErrBaseBus = 0x1000;
+// Note - toolkit *functions* start with sftk_ to avoid name collisions
+
+// Function to determine the byte order of the system
+sfeTKByteOrder sftk_system_byteorder(void);
+
+uint8_t sftk_byte_swap(uint8_t i);
+uint16_t sftk_byte_swap(uint16_t i);
+uint32_t sftk_byte_swap(uint32_t i);
+
+
+// Area for platform specific implementations. The interface/functions are 
+// defined here, with the expectation that the platform provides the implementation.
+
+// delay in milliseconds
+void sftk_delay_ms(uint32_t ms);
+
+// ticks in milliseconds
+uint32_t sftk_ticks_ms(void);

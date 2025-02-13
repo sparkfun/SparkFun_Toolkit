@@ -31,6 +31,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // Arduino Libraries.
 
 // Just include the toolkit headers
-#include "sfeTkArdI2C.h"
-#include "sfeTkArdSPI.h"
-#include "sfeTkArduino.h"
+#include "sfTkArdI2C.h"
+#include "sfTkArdSPI.h"
+#include "sfTkArduino.h"

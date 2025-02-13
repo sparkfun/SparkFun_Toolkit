@@ -1,5 +1,5 @@
 /*
-sfeTkArdI2c.h
+sfTkArdI2c.h
 
 The MIT License (MIT)
 
@@ -31,21 +31,21 @@ over Inter-Integrated Circuit (I2C) in Arduino
 #include <Wire.h>
 
 // Include our platform I2C interface definition.
-#include "sfeTkArduino.h"
-#include <sfeTk/sfeTkII2C.h>
+#include "sfTkArduino.h"
+#include <sfTk/sfTkII2C.h>
 
 /**
- * @brief The sfeTkArdI2C implements an sfeTkII2C interface, defining the Arduino implementation for I2C in the Toolkit
+ * @brief The sfTkArdI2C implements an sfTkII2C interface, defining the Arduino implementation for I2C in the Toolkit
  */
 
-class sfeTkArdI2C : public sfeTkII2C
+class sfTkArdI2C : public sfTkII2C
 {
   public:
     /**
     @brief Constructor
     */
 
-    sfeTkArdI2C(void) : _i2cPort(nullptr), _bufferChunkSize{kDefaultBufferChunk}
+    sfTkArdI2C(void) : _i2cPort(nullptr), _bufferChunkSize{kDefaultBufferChunk}
     {
     }
     /**
@@ -53,14 +53,14 @@ class sfeTkArdI2C : public sfeTkII2C
 
         @param addr The address of the device
     */
-    sfeTkArdI2C(uint8_t addr) : sfeTkII2C(addr)
+    sfTkArdI2C(uint8_t addr) : sfTkII2C(addr)
     {
     }
 
     /**
      * @brief copy constructor
      */
-    sfeTkArdI2C(sfeTkArdI2C const &rhs) : sfeTkII2C(), _i2cPort{rhs._i2cPort}
+    sfTkArdI2C(sfTkArdI2C const &rhs) : sfTkII2C(), _i2cPort{rhs._i2cPort}
     {
     }
 
@@ -70,7 +70,7 @@ class sfeTkArdI2C : public sfeTkII2C
      * @param rhs right hand side of the assignment
      * @return value of the left hand side of the assignment
      */
-    sfeTkArdI2C &operator=(const sfeTkArdI2C &rhs)
+    sfTkArdI2C &operator=(const sfTkArdI2C &rhs)
     {
         _i2cPort = rhs._i2cPort;
         return *this;
@@ -80,16 +80,16 @@ class sfeTkArdI2C : public sfeTkII2C
         @brief Method sets up the required I2C settings.
         @note This function provides a default I2C Port.
 
-        @retval kSTkErrOk on successful execution.
+        @retval ksfTkErrOk on successful execution.
     */
-    sfeTkError_t init();
+    sfTkError_t init();
 
     /**
         @brief - address version of the init method
 
         @param addr The address of the device
     */
-    sfeTkError_t init(uint8_t addr);
+    sfTkError_t init(uint8_t addr);
 
     /**
         @brief Method sets up the required I2C settings.
@@ -98,84 +98,84 @@ class sfeTkArdI2C : public sfeTkII2C
         @param addr The address of the device
         @param bInit This flag tracks whether the bus has been initialized.
 
-        @retval kSTkErrOk on successful execution.
+        @retval ksfTkErrOk on successful execution.
     */
-    sfeTkError_t init(TwoWire &wirePort, uint8_t addr, bool bInit = false);
+    sfTkError_t init(TwoWire &wirePort, uint8_t addr, bool bInit = false);
 
     /**
         @brief A simple ping of the device at the given address.
-        @note sfeTkIBus interface method
+        @note sfTkIBus interface method
 
-        @retval kSTkErrOk on success,
+        @retval ksfTkErrOk on success,
     */
-    sfeTkError_t ping();
+    sfTkError_t ping();
 
     /**
         @brief Sends a single byte to the device
-        @note sfeTkIBus interface method
+        @note sfTkIBus interface method
 
         @param data Data to write.
 
-        @retval returns  kStkErrOk on success
+        @retval returns  ksfTkErrOk on success
     */
-    sfeTkError_t writeByte(uint8_t data);
+    sfTkError_t writeByte(uint8_t data);
 
     /**
         @brief Sends a word to the device.
-        @note sfeTkIBus interface method
+        @note sfTkIBus interface method
 
         @param data Data to write.
 
-        @retval returns  kStkErrOk on success
+        @retval returns  ksfTkErrOk on success
     */
-    sfeTkError_t writeWord(uint16_t data);
+    sfTkError_t writeWord(uint16_t data);
 
     /**
         @brief Sends a block of data to the device.
-        @note sfeTkIBus interface method
+        @note sfTkIBus interface method
 
         @param data Data to write.
         @param length - length of data
 
-        @retval returns  kStkErrOk on success
+        @retval returns  ksfTkErrOk on success
     */
-    sfeTkError_t writeRegion(const uint8_t *data, size_t length);
+    sfTkError_t writeRegion(const uint8_t *data, size_t length);
 
     /**
         @brief Write a single byte to the given register
-        @note sfeTkIBus interface method
+        @note sfTkIBus interface method
 
         @param devReg The device's register's address.
         @param data Data to write.
 
-        @retval returns  kStkErrOk on success
+        @retval returns  ksfTkErrOk on success
     */
-    sfeTkError_t writeRegisterByte(uint8_t devReg, uint8_t data);
+    sfTkError_t writeRegisterByte(uint8_t devReg, uint8_t data);
 
     /**
         @brief Write a single word to the given register
-        @note sfeTkIBus interface method
+        @note sfTkIBus interface method
 
         @param devReg The device's register's address.
         @param data Data to write.
 
-        @retval returns  kStkErrOk on success
+        @retval returns  ksfTkErrOk on success
     */
-    sfeTkError_t writeRegisterWord(uint8_t devReg, uint16_t data);
+    sfTkError_t writeRegisterWord(uint8_t devReg, uint16_t data);
 
     /**
         @brief Writes a number of bytes starting at the given register's address.
 
-        @note sfeTkIBus interface method
+        @note sfTkIBus interface method
         @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
 
         @param devReg The device's register's address.
         @param data Data to write.
         @param length - length of data
 
-        @retval kStkErrOk on success
+        @retval ksfTkErrOk on success
     */
-    sfeTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
+    sfTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
 
     /**
         @brief Writes a number of bytes starting at the given register's 16-bit address.
@@ -184,10 +184,10 @@ class sfeTkArdI2C : public sfeTkII2C
         @param data Data to write.
         @param length - length of data
 
-        @retval sfeTkError_t kSTkErrOk on successful execution
+        @retval sfTkError_t ksfTkErrOk on successful execution
 
     */
-    sfeTkError_t writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length);
+    sfTkError_t writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length);
 
     /**
         @brief Writes a number of bytes starting at the given register's 16-bit address.
@@ -196,39 +196,39 @@ class sfeTkArdI2C : public sfeTkII2C
         @param data Data to write.
         @param length - length of data
 
-        @retval sfeTkError_t kSTkErrOk on successful execution
+        @retval sfTkError_t ksfTkErrOk on successful execution
 
     */
-    sfeTkError_t writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length);
+    sfTkError_t writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length);
 
     /**
         @brief Reads a byte of data from the given register.
 
-        @note sfeTkIBus interface method
+        @note sfTkIBus interface method
 
         @param devReg The device's register's address.
         @param[out] data Data to read.
 
-        @retval  kStkErrOk on success
+        @retval  ksfTkErrOk on success
     */
-    sfeTkError_t readRegisterByte(uint8_t devReg, uint8_t &data);
+    sfTkError_t readRegisterByte(uint8_t devReg, uint8_t &data);
 
     /**
         @brief Reads a word of data from the given register.
 
-        @note sfeTkIBus interface method
+        @note sfTkIBus interface method
 
         @param devReg The device's register's address.
         @param[out] data Data to read.
 
-        @retval kSTkErrOk on success
+        @retval ksfTkErrOk on success
     */
-    sfeTkError_t readRegisterWord(uint8_t devReg, uint16_t &data);
+    sfTkError_t readRegisterWord(uint8_t devReg, uint16_t &data);
 
     /**
         @brief Reads a block of data from the given register.
 
-        @note sfeTkIBus interface method
+        @note sfTkIBus interface method
         @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
 
         @param devReg The device's register's address.
@@ -237,9 +237,9 @@ class sfeTkArdI2C : public sfeTkII2C
         @param[out] readBytes - Number of bytes read
 
 
-        @retval kSTkErrOk on success
+        @retval ksfTkErrOk on success
     */
-    sfeTkError_t readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes);
+    sfTkError_t readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes);
 
     /**
         @brief Reads a block of data from the given 16-bit register address.
@@ -249,10 +249,10 @@ class sfeTkArdI2C : public sfeTkII2C
         @param numBytes - Number of bytes to read/length of data buffer
         @param[out] readBytes - number of bytes read
 
-        @retval int returns kSTkErrOk on success, or kSTkErrFail code
+        @retval int returns ksfTkErrOk on success, or ksfTkErrFail code
 
     */
-    sfeTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes);
+    sfTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes);
 
     /**
         @brief Reads a block of data from the given 16-bit register address.
@@ -262,10 +262,10 @@ class sfeTkArdI2C : public sfeTkII2C
         @param numBytes - Number of bytes to read/length of data buffer
         @param[out] readBytes - number of bytes read
 
-        @retval int returns kSTkErrOk on success, or kSTkErrFail code
+        @retval int returns ksfTkErrOk on success, or ksfTkErrFail code
 
     */
-    sfeTkError_t readRegister16Region16(uint16_t reg, uint16_t *data, size_t numBytes, size_t &readBytes);
+    sfTkError_t readRegister16Region16(uint16_t reg, uint16_t *data, size_t numBytes, size_t &readBytes);
 
     // Buffer size chunk getter/setter
     /**
@@ -303,9 +303,9 @@ class sfeTkArdI2C : public sfeTkII2C
     TwoWire *_i2cPort;
 
   private:
-    sfeTkError_t writeRegisterRegionAddress(uint8_t *devReg, size_t regLength, const uint8_t *data, size_t length);
+    sfTkError_t writeRegisterRegionAddress(uint8_t *devReg, size_t regLength, const uint8_t *data, size_t length);
 
-    sfeTkError_t readRegisterRegionAnyAddress(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes,
+    sfTkError_t readRegisterRegionAnyAddress(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes,
                                               size_t &readBytes);
 
     /** Default buffer chunk size*/

@@ -1,5 +1,5 @@
 /*
-@brief sfeTkArduino.cpp
+@brief sfTkArduino.cpp
 
 The MIT License (MIT)
 
@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <Arduino.h>
 
-// Implements the sfeToolkit functions for the Arduino platform
+// Implements the sfToolkit functions for the Arduino platform
 
 void sftk_delay_ms(uint32_t ms)
 {

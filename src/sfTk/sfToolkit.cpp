@@ -1,4 +1,4 @@
-// File: sfeToolkit.cpp
+// File: sfToolkit.cpp
 //
 // General impl file for the SparkFun Toolkit
 /*
@@ -22,9 +22,9 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
 ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-#include "sfeToolkit.h"
+#include "sfToolkit.h"
 
-// THIS IS A PLACEHOLDER FILE for now
+
 #ifdef ARDUINO
 #include <Arduino.h>
 #endif
@@ -35,7 +35,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 sfeTKByteOrder sftk_system_byteorder(void)
 {
     uint16_t i = 1;
-    return *((uint8_t *)&i) == 0 ? sfeTKByteOrder::BigEndian : sfeTKByteOrder::LittleEndian;
+    return *((uint8_t *)&i) == 0 ? sfTkByteOrder::BigEndian : sfTkByteOrder::LittleEndian;
 }
 
 //---------------------------------------------------------------------------------

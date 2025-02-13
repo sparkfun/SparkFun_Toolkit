@@ -1,6 +1,6 @@
 
 /*
-@brief sfeTkArduino.h
+@brief sfTkArduino.h
 
 The MIT License (MIT)
 
@@ -31,9 +31,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // Just include the toolkit headers
 
-#include <sfeTk/sfeToolkit.h>
+#include <sfTk/sfToolkit.h>
 
 // Arduino-ize our byte order types
 
-const sfeTKByteOrder SFTK_MSBFIRST = sfeTKByteOrder::BigEndian;
-const sfeTKByteOrder SFTK_LSBFIRST = sfeTKByteOrder::LittleEndian;
+const sfTKByteOrder SFTK_MSBFIRST = sfTKByteOrder::BigEndian;
+const sfTKByteOrder SFTK_LSBFIRST = sfTKByteOrder::LittleEndian;

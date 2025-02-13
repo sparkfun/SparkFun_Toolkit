@@ -1,5 +1,5 @@
 
-// sfeTkISPI.h
+// sfTkISPI.h
 //
 // Defines the SPI communication bus interface for the SparkFun Electronics Toolkit
 /*
@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#include "sfeTkIBus.h"
+#include "sfTkIBus.h"
 
 /**
  * @brief Interface that defines the SPI communication bus for the SparkFun Electronics Toolkit.
@@ -35,15 +35,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * The SPI bus interface extends the IBus interface and adds the ability to set and get the CS pin.
  */
 
-const uint8_t kBusTypeSPI = 0x02;
-class sfeTkISPI : public sfeTkIBus
+const uint8_t ksfTkBusTypeSPI = 0x02;
+class sfTkISPI : public sfTkIBus
 {
   public:
     /**--------------------------------------------------------------------------
         @brief Constructor for the SPI bus
 
     */
-    sfeTkISPI() : _cs{kNoCSPin}
+    sfTkISPI() : _cs{kNoCSPin}
     {
     }
 
@@ -53,7 +53,7 @@ class sfeTkISPI : public sfeTkIBus
         @param csPin The CS Pin for the device
 
     */
-    sfeTkISPI(uint8_t csPin) : _cs{csPin}
+    sfTkISPI(uint8_t csPin) : _cs{csPin}
     {
     }
 
@@ -86,7 +86,7 @@ class sfeTkISPI : public sfeTkIBus
 
     virtual uint8_t type(void)
     {
-        return kBusTypeSPI;
+        return ksfTkBusTypeSPI;
     }
 
   private:

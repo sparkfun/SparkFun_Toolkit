@@ -1,5 +1,5 @@
 
-// sfeTkII2C.h
+// sfTkII2C.h
 //
 // Defines the I2C communication bus interface for the SparkFun Electronics Toolkit
 /*
@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#include "sfeTkIBus.h"
+#include "sfTkIBus.h"
 
 /**
  * @brief Interface that defines the I2C communication bus for the SparkFun Electronics Toolkit.
@@ -34,16 +34,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * The I2C bus interface extends the IBus interface and adds the ability to set and get the I2C
  * address and stop flag.
  */
-const uint8_t kBusTypeI2C = 0x01;
+const uint8_t ksfTkBusTypeI2C = 0x01;
 
-class sfeTkII2C : public sfeTkIBus
+class sfTkII2C : public sfTkIBus
 {
   public:
     // set the address to No address and stop flag to true
     /**
      * @brief Constructor for the I2C bus
      */
-    sfeTkII2C() : _address{kNoAddress}, _stop{true}
+    sfTkII2C() : _address{kNoAddress}, _stop{true}
     {
     }
     /**
@@ -51,17 +51,17 @@ class sfeTkII2C : public sfeTkIBus
      *
      * @param addr
      */
-    sfeTkII2C(uint8_t addr) : _address{addr}
+    sfTkII2C(uint8_t addr) : _address{addr}
     {
     }
 
     /**--------------------------------------------------------------------------
         @brief A simple ping of the device at the set address
 
-        @retval sfeTkError_t - ok on success
+        @retval sfTkError_t - ok on success
 
     */
-    virtual sfeTkError_t ping() = 0;
+    virtual sfTkError_t ping() = 0;
 
     /**--------------------------------------------------------------------------
         @brief setter for the I2C address
@@ -113,7 +113,7 @@ class sfeTkII2C : public sfeTkIBus
 
     virtual uint8_t type(void)
     {
-        return kBusTypeI2C;
+        return ksfTkBusTypeI2C;
     }
 
   private:
