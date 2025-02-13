@@ -1,6 +1,5 @@
-
 /*
-SparkFun_Toolkit.h
+@brief sfeTkArduino.cpp
 
 The MIT License (MIT)
 
@@ -23,14 +22,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#pragma once
+#include <Arduino.h>
 
-// Purpose:
-//
-// The SparkFun Toolkit provides a set of common implementations used throughout our (and others)
-// Arduino Libraries.
+// Implements the sfeToolkit functions for the Arduino platform
 
-// Just include the toolkit headers
-#include "sfeTkArdI2C.h"
-#include "sfeTkArdSPI.h"
-#include "sfeTkArduino.h"
+void sftk_delay_ms(uint32_t ms)
+{
+    delay(ms);
+}
+
+uint32_t sftk_ticks_ms(void)
+{
+    return millis();
+}

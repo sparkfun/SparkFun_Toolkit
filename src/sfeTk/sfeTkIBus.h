@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
-#include "sfeTkError.h"
+#include "sfeToolkit.h"
 #include <stddef.h>
 
 /**
@@ -52,7 +52,7 @@ const sfeTkError_t kSTkErrBusTimeout = kSTkErrFail * (kSTkErrBaseBus + 2);
 const sfeTkError_t kSTkErrBusNoResponse = kSTkErrFail * (kSTkErrBaseBus + 3);
 
 /**
- * @brief Returned when the data to be sent is too long or recieved is too short.
+ * @brief Returned when the data to be sent is too long or received is too short.
  */
 const sfeTkError_t kSTkErrBusDataTooLong = kSTkErrFail * (kSTkErrBaseBus + 4);
 
@@ -86,6 +86,12 @@ const sfeTkError_t kSTkErrBusNotEnabled = kSTkErrBaseBus + 8;
 class sfeTkIBus
 {
   public:
+    /**
+     * @brief Constructor
+     */
+    sfeTkIBus() {
+        _byteOrder = sftk_system_byteorder();
+    }
     /**--------------------------------------------------------------------------
      *  @brief Send a single byte to the device*
      *  @param data Data to write.
@@ -96,7 +102,7 @@ class sfeTkIBus
     virtual sfeTkError_t writeByte(uint8_t data) = 0;
 
     /**--------------------------------------------------------------------------
-     *  @brief Send a word to the device. 
+     *  @brief Send a word to the device.
      *  @param data Data to write.
      *
      *  @retval sfeTkError_t -  kSTkErrOk on successful execution.
@@ -125,6 +131,12 @@ class sfeTkIBus
      */
     virtual sfeTkError_t writeRegisterByte(uint8_t devReg, uint8_t data) = 0;
 
+    // Overload version
+    sfeTkError_t writeRegister(uint8_t devReg, uint8_t data)
+    {
+        return writeRegisterByte(devReg, data);
+    }
+
     /**--------------------------------------------------------------------------
      * @brief Write a single word (16 bit) to the given register
      *
@@ -135,6 +147,12 @@ class sfeTkIBus
      *
      */
     virtual sfeTkError_t writeRegisterWord(uint8_t devReg, uint16_t data) = 0;
+
+    // Overload version
+    sfeTkError_t writeRegister(uint8_t devReg, uint16_t data)
+    {
+        return writeRegisterWord(devReg, data);
+    }
 
     /**--------------------------------------------------------------------------
      *  @brief Writes a number of bytes starting at the given register's address.
@@ -148,6 +166,12 @@ class sfeTkIBus
      */
     virtual sfeTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length) = 0;
 
+    // Overload version
+    sfeTkError_t writeRegister(uint8_t devReg, const uint8_t *data, size_t length)
+    {
+        return writeRegisterRegion(devReg, data, length);
+    }
+
     /**--------------------------------------------------------------------------
      *  @brief Writes a number of bytes starting at the given register's 16-bit address.
      *
@@ -160,6 +184,29 @@ class sfeTkIBus
      */
     virtual sfeTkError_t writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length) = 0;
 
+    // Overload version
+    sfeTkError_t writeRegister(uint16_t devReg, const uint8_t *data, size_t length)
+    {
+        return writeRegister16Region(devReg, data, length);
+    }
+
+    /**--------------------------------------------------------------------------
+     *  @brief Writes a number of uint16's starting at the given register's 16-bit address.
+     *
+     *  @param devReg The device's register's address.
+     *  @param data Data to write.
+     *  @param length - length of data
+     *
+     *   @retval sfeTkError_t kSTkErrOk on successful execution
+     *
+     */
+    virtual sfeTkError_t writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length) = 0;
+
+    // Overload version
+    sfeTkError_t writeRegister(uint16_t devReg, const uint16_t *data, size_t length)
+    {
+        return writeRegister16Region16(devReg, data, length);
+    }
     /**--------------------------------------------------------------------------
      *  @brief Read a single byte from the given register
      *
@@ -171,6 +218,12 @@ class sfeTkIBus
      */
     virtual sfeTkError_t readRegisterByte(uint8_t devReg, uint8_t &data) = 0;
 
+    // Overload version
+    sfeTkError_t readRegister(uint8_t devReg, uint8_t &data)
+    {
+        return readRegisterByte(devReg, data);
+    }
+
     /**--------------------------------------------------------------------------
      *  @brief Read a single word (16 bit) from the given register
      *
@@ -180,6 +233,12 @@ class sfeTkIBus
      *   @retval sfeTkError_t -  kSTkErrOk on successful execution.
      */
     virtual sfeTkError_t readRegisterWord(uint8_t devReg, uint16_t &data) = 0;
+
+    // Overload version
+    sfeTkError_t readRegister(uint8_t devReg, uint16_t &data)
+    {
+        return readRegisterWord(devReg, data);
+    }
 
     /**--------------------------------------------------------------------------
      *  @brief Reads a block of data from the given register.
@@ -194,6 +253,12 @@ class sfeTkIBus
      */
     virtual sfeTkError_t readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes, size_t &readBytes) = 0;
 
+    // Overload version
+    sfeTkError_t readRegister(uint8_t reg, uint8_t *data, size_t numBytes, size_t &readBytes)
+    {
+        return readRegisterRegion(reg, data, numBytes, readBytes);
+    }
+
     /**--------------------------------------------------------------------------
      *  @brief Reads a block of data from the given 16-bit register address.
      *
@@ -206,6 +271,58 @@ class sfeTkIBus
      *
      */
     virtual sfeTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes) = 0;
+
+    // Overload version
+    sfeTkError_t readRegister(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes)
+    {
+        return readRegister16Region(reg, data, numBytes, readBytes);
+    }
+    /**--------------------------------------------------------------------------
+     *  @brief Reads a block of data from the given 16-bit register address.
+     *
+     *   @param reg The device's 16 bit register's address.
+     *   @param data Data to write.
+     *   @param numBytes - length of data
+     *   @param[out] readBytes - number of bytes read
+     *
+     *   @retval int returns kSTkErrOk on success, or kSTkErrFail code
+     *
+     */
+    virtual sfeTkError_t readRegister16Region16(uint16_t reg, uint16_t *data, size_t numBytes, size_t &readBytes) = 0;
+
+    // Overload version
+    sfeTkError_t readRegister(uint16_t reg, uint16_t *data, size_t numBytes, size_t &readBytes)
+    {
+        return readRegister16Region16(reg, data, numBytes, readBytes);
+    }
+
+    virtual uint8_t type(void)
+    {
+        return 0;
+    }
+    /**
+     * @brief Set the byte order for multi-byte data transfers
+     *
+     * @param order The byte order to set - set to either SFTK_MSBFIRST or SFTK_LSBFIRST. The default is SFTK_LSBFIRST
+     *
+     */
+    void setByteOrder(sfeTKByteOrder order)
+    {
+        _byteOrder = order;
+    }
+
+    /**
+     * @brief Get the current byte order
+     *
+     * @retval The current byte order
+     */
+    sfeTKByteOrder byteOrder(void)
+    {
+        return _byteOrder;
+    }
+
+  protected:
+    /** flag to manage byte swapping */
+    sfeTKByteOrder _byteOrder;
 };
 
-//};

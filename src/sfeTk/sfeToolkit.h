@@ -6,7 +6,7 @@
 
 The MIT License (MIT)
 
-Copyright (c) 2023 SparkFun Electronics
+Copyright (c) 2024 SparkFun Electronics
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
@@ -26,7 +26,36 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
+#include <stdint.h>
+
 /**
     @brief Common include file for the core of the SparkFun Electronics Toolkit
 */
 #include "sfeTkError.h"
+
+
+// byte order types/enum
+enum class sfeTKByteOrder : uint8_t
+{
+    BigEndian = 0x01,
+    LittleEndian = 0x02
+};
+
+// Note - toolkit *functions* start with sftk_ to avoid name collisions
+
+// Function to determine the byte order of the system
+sfeTKByteOrder sftk_system_byteorder(void);
+
+uint8_t sftk_byte_swap(uint8_t i);
+uint16_t sftk_byte_swap(uint16_t i);
+uint32_t sftk_byte_swap(uint32_t i);
+
+
+// Area for platform specific implementations. The interface/functions are 
+// defined here, with the expectation that the platform provides the implementation.
+
+// delay in milliseconds
+void sftk_delay_ms(uint32_t ms);
+
+// ticks in milliseconds
+uint32_t sftk_ticks_ms(void);

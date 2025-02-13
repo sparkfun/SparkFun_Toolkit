@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #pragma once
 
+#include "sfeTkArduino.h"
 #include <SPI.h>
 #include <sfeTk/sfeTkISPI.h>
 
@@ -179,6 +180,18 @@ class sfeTkArdSPI : public sfeTkISPI
     sfeTkError_t writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length);
 
     /**
+        @brief Writes a number of uint16s starting at the given register's address.
+        @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
+
+        @param devReg The device's register's address.
+        @param data Data to write.
+        @param length - length of data
+
+        @retval sfeTkError_t - kSTkErrOk on success
+        */
+    sfeTkError_t writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length);
+
+    /**
         @brief Read a single byte from the given register
 
         @param devReg The device's register's address.
@@ -223,6 +236,19 @@ class sfeTkArdSPI : public sfeTkISPI
         @retval sfeTkError_t - true on success
     */
     virtual sfeTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes);
+
+    /**
+            @brief Reads a block of data from the given register.
+            @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
+
+            @param reg The device's register's 16 bit address.
+            @param[out] data Data buffer to read into
+            @param numBytes - Length of data to read/size of data buffer
+            @param[out] readBytes - Number of bytes read
+
+            @retval sfeTkError_t - true on success
+        */
+    virtual sfeTkError_t readRegister16Region16(uint16_t reg, uint16_t *data, size_t numBytes, size_t &readBytes);
 
   protected:
     // note: The instance data is protected, allowing access if a sub-class is

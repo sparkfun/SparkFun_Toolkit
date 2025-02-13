@@ -180,7 +180,7 @@ sfeTkError_t sfeTkArdI2C::writeRegisterRegionAddress(uint8_t *devReg, size_t reg
 
     _i2cPort->beginTransmission(address());
 
-    if(devReg != nullptr && regLength > 0)
+    if (devReg != nullptr && regLength > 0)
         _i2cPort->write(devReg, regLength);
 
     _i2cPort->write(data, (int)length);
@@ -209,11 +209,34 @@ sfeTkError_t sfeTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *dat
 //
 sfeTkError_t sfeTkArdI2C::writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length)
 {
-    devReg = ((devReg << 8) & 0xff00) | ((devReg >> 8) & 0x00ff);
+    // Byteorder check
+    if (sftk_system_byteorder() != _byteOrder)
+        devReg = sftk_byte_swap(devReg);
     return writeRegisterRegionAddress((uint8_t *)&devReg, 2, data, length);
 }
 
+//---------------------------------------------------------------------------------
+// write16BitRegisterRegion16()
+//
+// Writes an array of bytes to a given 16-bit register on the target address
+//
+// Returns the number of bytes written, < 0 is an error
+//
+sfeTkError_t sfeTkArdI2C::writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length)
+{
+    // if the system byte order is the same as the desired order, just send the buffer
+    if (sftk_system_byteorder() == _byteOrder)
+        return writeRegisterRegionAddress((uint8_t *)&devReg, 2, (uint8_t *)data, length * 2);
 
+    // okay, we need to swap
+    devReg = sftk_byte_swap(devReg);
+    
+    uint16_t data16[length];
+    for (size_t i = 0; i < length; i++)
+        data16[i] = ((data[i] << 8) & 0xff00) | ((data[i] >> 8) & 0x00ff);
+
+    return writeRegisterRegionAddress((uint8_t *)&devReg, 2, (uint8_t *)data16, length * 2);
+}
 
 /**
  * @brief Reads an array of bytes to a register on the target address. Supports any address size
@@ -358,4 +381,29 @@ sfeTkError_t sfeTkArdI2C::readRegister16Region(uint16_t devReg, uint8_t *data, s
 {
     devReg = ((devReg << 8) & 0xff00) | ((devReg >> 8) & 0x00ff);
     return readRegisterRegionAnyAddress((uint8_t *)&devReg, 2, data, numBytes, readBytes);
+}
+//---------------------------------------------------------------------------------
+// read16BitRegisterRegion16()
+//
+// Reads an array of bytes to a given 16-bit register on the target address
+//
+// Returns the number of bytes read, < 0 is an error
+//
+sfeTkError_t sfeTkArdI2C::readRegister16Region16(uint16_t devReg, uint16_t *data, size_t numBytes, size_t &readWords)
+{
+    // if the system byte order is the same as the desired order, flip the address
+    if (sftk_system_byteorder() != _byteOrder)
+        devReg = sftk_byte_swap(devReg);
+        
+
+    sfeTkError_t status = readRegisterRegionAnyAddress((uint8_t *)&devReg, 2, (uint8_t *)data, numBytes * 2, readWords);
+
+    // Do we need to flip the byte order?
+    if (status == kSTkErrOk && sftk_system_byteorder() != _byteOrder)
+    {
+        for (size_t i = 0; i < numBytes; i++)
+            data[i] = sftk_byte_swap(data[i]);
+    }
+    readWords = readWords / 2; // convert to words
+    return status;
 }
