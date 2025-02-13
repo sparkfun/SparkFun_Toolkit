@@ -45,7 +45,7 @@ class sfeTkArdI2C : public sfeTkII2C
     @brief Constructor
     */
 
-    sfeTkArdI2C(void) : _i2cPort(nullptr), _bufferChunkSize{kDefaultBufferChunk}, _byteOrder{SFTK_LSBFIRST}
+    sfeTkArdI2C(void) : _i2cPort(nullptr), _bufferChunkSize{kDefaultBufferChunk}
     {
     }
     /**
@@ -293,26 +293,7 @@ class sfeTkArdI2C : public sfeTkII2C
         return _bufferChunkSize;
     }
 
-    /**
-     * @brief Set the byte order for multi-byte data transfers
-     *
-     * @param order The byte order to set - set to either SFTK_MSBFIRST or SFTK_LSBFIRST. The default is SFTK_LSBFIRST
-     *
-     */
-    void setByteOrder(sfeTKByteOrder order)
-    {
-        _byteOrder = order;
-    }
-
-    /**
-     * @brief Get the current byte order
-     *
-     * @retval The current byte order
-     */
-    sfeTKByteOrder byteOrder(void)
-    {
-        return _byteOrder;
-    }
+   
 
   protected:
     // note: The wire port is protected, allowing access if a sub-class is
@@ -333,6 +314,4 @@ class sfeTkArdI2C : public sfeTkII2C
     /** The I2C buffer chunker - chunk size*/
     size_t _bufferChunkSize;
 
-    /** flag to manage byte swapping */
-    sfeTKByteOrder _byteOrder;
 };

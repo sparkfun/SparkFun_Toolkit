@@ -52,7 +52,7 @@ const sfeTkError_t kSTkErrBusTimeout = kSTkErrFail * (kSTkErrBaseBus + 2);
 const sfeTkError_t kSTkErrBusNoResponse = kSTkErrFail * (kSTkErrBaseBus + 3);
 
 /**
- * @brief Returned when the data to be sent is too long or recieved is too short.
+ * @brief Returned when the data to be sent is too long or received is too short.
  */
 const sfeTkError_t kSTkErrBusDataTooLong = kSTkErrFail * (kSTkErrBaseBus + 4);
 
@@ -86,6 +86,12 @@ const sfeTkError_t kSTkErrBusNotEnabled = kSTkErrBaseBus + 8;
 class sfeTkIBus
 {
   public:
+    /**
+     * @brief Constructor
+     */
+    sfeTkIBus() {
+        _byteOrder = sftk_system_byteorder();
+    }
     /**--------------------------------------------------------------------------
      *  @brief Send a single byte to the device*
      *  @param data Data to write.
@@ -294,6 +300,29 @@ class sfeTkIBus
     {
         return 0;
     }
+    /**
+     * @brief Set the byte order for multi-byte data transfers
+     *
+     * @param order The byte order to set - set to either SFTK_MSBFIRST or SFTK_LSBFIRST. The default is SFTK_LSBFIRST
+     *
+     */
+    void setByteOrder(sfeTKByteOrder order)
+    {
+        _byteOrder = order;
+    }
+
+    /**
+     * @brief Get the current byte order
+     *
+     * @retval The current byte order
+     */
+    sfeTKByteOrder byteOrder(void)
+    {
+        return _byteOrder;
+    }
+
+  protected:
+    /** flag to manage byte swapping */
+    sfeTKByteOrder _byteOrder;
 };
 
-//};
