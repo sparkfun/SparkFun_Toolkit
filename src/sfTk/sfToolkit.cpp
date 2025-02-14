@@ -8,7 +8,7 @@
  * @author SparkFun Electronics
  * @date 2024-2025
  * @copyright Copyright (c) 2024-2025, SparkFun Electronics Inc. This project is released under the MIT License.
- * 
+ *
  * SPDX-License-Identifier: MIT
  */
 
@@ -37,7 +37,6 @@ ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include "sfToolkit.h"
-
 
 #ifdef ARDUINO
 #include <Arduino.h>
@@ -86,4 +85,24 @@ uint32_t sftk_byte_swap(uint32_t i)
 #else
     return ((i << 24) & 0xff000000) | ((i << 8) & 0x00ff0000) | ((i >> 8) & 0x0000ff00) | ((i >> 24) & 0x000000ff);
 #endif
+}
+
+//---------------------------------------------------------------------------------
+/**
+ * @brief function - Byte swap an int 16
+ */
+int16_t sftk_byte_swap(int16_t i)
+{
+    uint16_t tmp = sftk_byte_swap(*(uint16_t *)&i);
+    return *(int16_t *)&tmp;
+}
+
+//---------------------------------------------------------------------------------
+/**
+ * @brief function - Byte swap an int 32
+ */
+int32_t sftk_byte_swap(int32_t i)
+{
+    uint32_t tmp = sftk_byte_swap(*(uint32_t *)&i);
+    return *(int32_t *)&tmp;
 }

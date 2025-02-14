@@ -9,10 +9,9 @@
  * @author SparkFun Electronics
  * @date 2024-2025
  * @copyright Copyright (c) 2024-2025, SparkFun Electronics Inc. This project is released under the MIT License.
- * 
+ *
  * SPDX-License-Identifier: MIT
  */
-
 
 #pragma once
 
@@ -22,7 +21,6 @@
     @brief Common include file for the core of the SparkFun Electronics Toolkit
 */
 #include "sfTkError.h"
-
 
 // byte order types/enum
 enum class sfTkByteOrder : uint8_t
@@ -39,9 +37,10 @@ sfTkByteOrder sftk_system_byteorder(void);
 uint8_t sftk_byte_swap(uint8_t i);
 uint16_t sftk_byte_swap(uint16_t i);
 uint32_t sftk_byte_swap(uint32_t i);
+int16_t sftk_byte_swap(int16_t i);
+int32_t sftk_byte_swap(int32_t i);
 
-
-// Area for platform specific implementations. The interface/functions are 
+// Area for platform specific implementations. The interface/functions are
 // defined here, with the expectation that the platform provides the implementation.
 
 // delay in milliseconds
