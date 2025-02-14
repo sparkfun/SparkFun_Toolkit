@@ -1,33 +1,19 @@
-
-// sfeTkIBus.h
-//
-// Defines the communication bus interface for the SparkFun Electronics Toolkit -> sfeTk
-/*
-
-The MIT License (MIT)
-
-Copyright (c) 2023 SparkFun Electronics
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions: The
-above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED
-"AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
-NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-*/
+/**
+ * @file sfTkIBus.h
+ * @brief Header file for the SparkFun Toolkit Device Bus Interface Definition.
+ *
+ * This file contains the interface declaration for the Communication Bus Interface
+ *
+ * @author SparkFun Electronics
+ * @date 2024-2025
+ * @copyright Copyright (c) 2024-2025, SparkFun Electronics Inc. This project is released under the MIT License.
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #pragma once
 
-#include "sfeToolkit.h"
+#include "sfToolkit.h"
 #include <stddef.h>
 
 /**
@@ -39,42 +25,42 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /**
  * @brief Error code for when a bus system is not initalized.
  */
-const sfeTkError_t kSTkErrBusNotInit = kSTkErrFail * (kSTkErrBaseBus + 1);
+const sfTkError_t ksfTkErrBusNotInit = ksfTkErrFail * (ksfTkErrBaseBus + 1);
 
 /**
  * @brief Returned when a bus system times out.
  */
-const sfeTkError_t kSTkErrBusTimeout = kSTkErrFail * (kSTkErrBaseBus + 2);
+const sfTkError_t ksfTkErrBusTimeout = ksfTkErrFail * (ksfTkErrBaseBus + 2);
 
 /**
  * @brief Returned when a bus system does not respond.
  */
-const sfeTkError_t kSTkErrBusNoResponse = kSTkErrFail * (kSTkErrBaseBus + 3);
+const sfTkError_t ksfTkErrBusNoResponse = ksfTkErrFail * (ksfTkErrBaseBus + 3);
 
 /**
  * @brief Returned when the data to be sent is too long or received is too short.
  */
-const sfeTkError_t kSTkErrBusDataTooLong = kSTkErrFail * (kSTkErrBaseBus + 4);
+const sfTkError_t ksfTkErrBusDataTooLong = ksfTkErrFail * (ksfTkErrBaseBus + 4);
 
 /**
  * @brief Returned when the bus settings are null, invalid or on set/initialised
  */
-const sfeTkError_t kSTkErrBusNullSettings = kSTkErrFail * (kSTkErrBaseBus + 5);
+const sfTkError_t ksfTkErrBusNullSettings = ksfTkErrFail * (ksfTkErrBaseBus + 5);
 
 /**
  * @brief Returned when the buffer is null or invalid.
  */
-const sfeTkError_t kSTkErrBusNullBuffer = kSTkErrFail * (kSTkErrBaseBus + 6);
+const sfTkError_t ksfTkErrBusNullBuffer = ksfTkErrFail * (ksfTkErrBaseBus + 6);
 
 /**
  * @brief Returned when the bus is under read. Warning
  */
-const sfeTkError_t kSTkErrBusUnderRead = kSTkErrBaseBus + 7;
+const sfTkError_t ksfTkErrBusUnderRead = ksfTkErrBaseBus + 7;
 
 /**
  * @brief Returned when the bus is not enabled. Warning
  */
-const sfeTkError_t kSTkErrBusNotEnabled = kSTkErrBaseBus + 8;
+const sfTkError_t ksfTkErrBusNotEnabled = ksfTkErrBaseBus + 8;
 
 /**
  * @brief Interface that defines the communication bus for the SparkFun Electronics Toolkit.
@@ -83,42 +69,42 @@ const sfeTkError_t kSTkErrBusNotEnabled = kSTkErrBaseBus + 8;
  * bus implementations will extend this interface to provide the necessary functionality for the
  * desired bus type.
  */
-class sfeTkIBus
+class sfTkIBus
 {
   public:
     /**
      * @brief Constructor
      */
-    sfeTkIBus() {
+    sfTkIBus() {
         _byteOrder = sftk_system_byteorder();
     }
     /**--------------------------------------------------------------------------
      *  @brief Send a single byte to the device*
      *  @param data Data to write.
      *
-     *  @retval sfeTkError_t -  kSTkErrOk on successful execution.
+     *  @retval sfTkError_t -  ksfTkErrOk on successful execution.
      *
      */
-    virtual sfeTkError_t writeByte(uint8_t data) = 0;
+    virtual sfTkError_t writeByte(uint8_t data) = 0;
 
     /**--------------------------------------------------------------------------
      *  @brief Send a word to the device.
      *  @param data Data to write.
      *
-     *  @retval sfeTkError_t -  kSTkErrOk on successful execution.
+     *  @retval sfTkError_t -  ksfTkErrOk on successful execution.
      *
      */
-    virtual sfeTkError_t writeWord(uint16_t data) = 0;
+    virtual sfTkError_t writeWord(uint16_t data) = 0;
 
     /**--------------------------------------------------------------------------
      *  @brief Send an array of data to the device.
      *  @param data Data to write.
      *  @param length - length of data.
      *
-     *  @retval sfeTkError_t -  kSTkErrOk on successful execution.
+     *  @retval sfTkError_t -  ksfTkErrOk on successful execution.
      *
      */
-    virtual sfeTkError_t writeRegion(const uint8_t *data, size_t length) = 0;
+    virtual sfTkError_t writeRegion(const uint8_t *data, size_t length) = 0;
 
     /**--------------------------------------------------------------------------
      *  @brief Write a single byte to the given register
@@ -126,13 +112,13 @@ class sfeTkIBus
      *   @param devReg The device's register's address.
      *   @param data Data to write.
      *
-     *   @retval sfeTkError_t -  kSTkErrOk on successful execution.
+     *   @retval sfTkError_t -  ksfTkErrOk on successful execution.
      *
      */
-    virtual sfeTkError_t writeRegisterByte(uint8_t devReg, uint8_t data) = 0;
+    virtual sfTkError_t writeRegisterByte(uint8_t devReg, uint8_t data) = 0;
 
     // Overload version
-    sfeTkError_t writeRegister(uint8_t devReg, uint8_t data)
+    sfTkError_t writeRegister(uint8_t devReg, uint8_t data)
     {
         return writeRegisterByte(devReg, data);
     }
@@ -143,13 +129,13 @@ class sfeTkIBus
      *   @param devReg The device's register's address.
      *   @param data Data to write.
      *
-     *   @retval sfeTkError_t -  kSTkErrOk on successful execution.
+     *   @retval sfTkError_t -  ksfTkErrOk on successful execution.
      *
      */
-    virtual sfeTkError_t writeRegisterWord(uint8_t devReg, uint16_t data) = 0;
+    virtual sfTkError_t writeRegisterWord(uint8_t devReg, uint16_t data) = 0;
 
     // Overload version
-    sfeTkError_t writeRegister(uint8_t devReg, uint16_t data)
+    sfTkError_t writeRegister(uint8_t devReg, uint16_t data)
     {
         return writeRegisterWord(devReg, data);
     }
@@ -161,13 +147,13 @@ class sfeTkIBus
      *  @param data Data to write.
      *  @param length - length of data
      *
-     *   @retval sfeTkError_t kSTkErrOk on successful execution
+     *   @retval sfTkError_t ksfTkErrOk on successful execution
      *
      */
-    virtual sfeTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length) = 0;
+    virtual sfTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length) = 0;
 
     // Overload version
-    sfeTkError_t writeRegister(uint8_t devReg, const uint8_t *data, size_t length)
+    sfTkError_t writeRegister(uint8_t devReg, const uint8_t *data, size_t length)
     {
         return writeRegisterRegion(devReg, data, length);
     }
@@ -179,13 +165,13 @@ class sfeTkIBus
      *  @param data Data to write.
      *  @param length - length of data
      *
-     *   @retval sfeTkError_t kSTkErrOk on successful execution
+     *   @retval sfTkError_t ksfTkErrOk on successful execution
      *
      */
-    virtual sfeTkError_t writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length) = 0;
+    virtual sfTkError_t writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length) = 0;
 
     // Overload version
-    sfeTkError_t writeRegister(uint16_t devReg, const uint8_t *data, size_t length)
+    sfTkError_t writeRegister(uint16_t devReg, const uint8_t *data, size_t length)
     {
         return writeRegister16Region(devReg, data, length);
     }
@@ -197,13 +183,13 @@ class sfeTkIBus
      *  @param data Data to write.
      *  @param length - length of data
      *
-     *   @retval sfeTkError_t kSTkErrOk on successful execution
+     *   @retval sfTkError_t ksfTkErrOk on successful execution
      *
      */
-    virtual sfeTkError_t writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length) = 0;
+    virtual sfTkError_t writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length) = 0;
 
     // Overload version
-    sfeTkError_t writeRegister(uint16_t devReg, const uint16_t *data, size_t length)
+    sfTkError_t writeRegister(uint16_t devReg, const uint16_t *data, size_t length)
     {
         return writeRegister16Region16(devReg, data, length);
     }
@@ -213,13 +199,13 @@ class sfeTkIBus
      *  @param devReg The device's register's address.
      *  @param data Data to read.
      *
-     *   @retval sfeTkError_t -  kSTkErrOk on successful execution.
+     *   @retval sfTkError_t -  ksfTkErrOk on successful execution.
      *
      */
-    virtual sfeTkError_t readRegisterByte(uint8_t devReg, uint8_t &data) = 0;
+    virtual sfTkError_t readRegisterByte(uint8_t devReg, uint8_t &data) = 0;
 
     // Overload version
-    sfeTkError_t readRegister(uint8_t devReg, uint8_t &data)
+    sfTkError_t readRegister(uint8_t devReg, uint8_t &data)
     {
         return readRegisterByte(devReg, data);
     }
@@ -230,12 +216,12 @@ class sfeTkIBus
      *   @param devReg The device's register's address.
      *   @param data Data to read.
      *
-     *   @retval sfeTkError_t -  kSTkErrOk on successful execution.
+     *   @retval sfTkError_t -  ksfTkErrOk on successful execution.
      */
-    virtual sfeTkError_t readRegisterWord(uint8_t devReg, uint16_t &data) = 0;
+    virtual sfTkError_t readRegisterWord(uint8_t devReg, uint16_t &data) = 0;
 
     // Overload version
-    sfeTkError_t readRegister(uint8_t devReg, uint16_t &data)
+    sfTkError_t readRegister(uint8_t devReg, uint16_t &data)
     {
         return readRegisterWord(devReg, data);
     }
@@ -248,13 +234,13 @@ class sfeTkIBus
      *   @param numBytes - length of data
      *   @param[out] readBytes - number of bytes read
      *
-     *   @retval int returns kSTkErrOk on success, or kSTkErrFail code
+     *   @retval int returns ksfTkErrOk on success, or ksfTkErrFail code
      *
      */
-    virtual sfeTkError_t readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes, size_t &readBytes) = 0;
+    virtual sfTkError_t readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes, size_t &readBytes) = 0;
 
     // Overload version
-    sfeTkError_t readRegister(uint8_t reg, uint8_t *data, size_t numBytes, size_t &readBytes)
+    sfTkError_t readRegister(uint8_t reg, uint8_t *data, size_t numBytes, size_t &readBytes)
     {
         return readRegisterRegion(reg, data, numBytes, readBytes);
     }
@@ -267,13 +253,13 @@ class sfeTkIBus
      *   @param numBytes - length of data
      *   @param[out] readBytes - number of bytes read
      *
-     *   @retval int returns kSTkErrOk on success, or kSTkErrFail code
+     *   @retval int returns ksfTkErrOk on success, or ksfTkErrFail code
      *
      */
-    virtual sfeTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes) = 0;
+    virtual sfTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes) = 0;
 
     // Overload version
-    sfeTkError_t readRegister(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes)
+    sfTkError_t readRegister(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes)
     {
         return readRegister16Region(reg, data, numBytes, readBytes);
     }
@@ -285,13 +271,13 @@ class sfeTkIBus
      *   @param numBytes - length of data
      *   @param[out] readBytes - number of bytes read
      *
-     *   @retval int returns kSTkErrOk on success, or kSTkErrFail code
+     *   @retval int returns ksfTkErrOk on success, or ksfTkErrFail code
      *
      */
-    virtual sfeTkError_t readRegister16Region16(uint16_t reg, uint16_t *data, size_t numBytes, size_t &readBytes) = 0;
+    virtual sfTkError_t readRegister16Region16(uint16_t reg, uint16_t *data, size_t numBytes, size_t &readBytes) = 0;
 
     // Overload version
-    sfeTkError_t readRegister(uint16_t reg, uint16_t *data, size_t numBytes, size_t &readBytes)
+    sfTkError_t readRegister(uint16_t reg, uint16_t *data, size_t numBytes, size_t &readBytes)
     {
         return readRegister16Region16(reg, data, numBytes, readBytes);
     }
@@ -306,7 +292,7 @@ class sfeTkIBus
      * @param order The byte order to set - set to either SFTK_MSBFIRST or SFTK_LSBFIRST. The default is SFTK_LSBFIRST
      *
      */
-    void setByteOrder(sfeTKByteOrder order)
+    void setByteOrder(sfTkByteOrder order)
     {
         _byteOrder = order;
     }
@@ -316,13 +302,13 @@ class sfeTkIBus
      *
      * @retval The current byte order
      */
-    sfeTKByteOrder byteOrder(void)
+    sfTkByteOrder byteOrder(void)
     {
         return _byteOrder;
     }
 
   protected:
     /** flag to manage byte swapping */
-    sfeTKByteOrder _byteOrder;
+    sfTkByteOrder _byteOrder;
 };
 

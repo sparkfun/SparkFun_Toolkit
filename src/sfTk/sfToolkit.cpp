@@ -1,4 +1,18 @@
-// File: sfeToolkit.cpp
+/**
+ * @file sfToolkit.cpp
+ * @brief Implementation file for the SparkFun Toolkit.
+ *
+ * This file contains the implementation of various utility functions
+ * for the SparkFun Toolkit library.
+ *
+ * @author SparkFun Electronics
+ * @date 2024-2025
+ * @copyright Copyright (c) 2024-2025, SparkFun Electronics Inc. This project is released under the MIT License.
+ * 
+ * SPDX-License-Identifier: MIT
+ */
+
+// File: sfToolkit.cpp
 //
 // General impl file for the SparkFun Toolkit
 /*
@@ -22,9 +36,9 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
 ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-#include "sfeToolkit.h"
+#include "sfToolkit.h"
 
-// THIS IS A PLACEHOLDER FILE for now
+
 #ifdef ARDUINO
 #include <Arduino.h>
 #endif
@@ -32,10 +46,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /**
  * @brief C function - Runtime check for system byte order
  */
-sfeTKByteOrder sftk_system_byteorder(void)
+sfTkByteOrder sftk_system_byteorder(void)
 {
     uint16_t i = 1;
-    return *((uint8_t *)&i) == 0 ? sfeTKByteOrder::BigEndian : sfeTKByteOrder::LittleEndian;
+    return *((uint8_t *)&i) == 0 ? sfTkByteOrder::BigEndian : sfTkByteOrder::LittleEndian;
 }
 
 //---------------------------------------------------------------------------------

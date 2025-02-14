@@ -1,32 +1,19 @@
-
-// sfeTkII2C.h
-//
-// Defines the I2C communication bus interface for the SparkFun Electronics Toolkit
-/*
-The MIT License (MIT)
-
-Copyright (c) 2023 SparkFun Electronics
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions: The
-above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED
-"AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
-NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-*/
+/**
+ * @file sfTkII2C.h
+ * @brief Header file for the SparkFun Toolkit I2C Interface Definition.
+ *
+ * This file contains the interface declaration for the I2C communication bus
+ *
+ * @author SparkFun Electronics
+ * @date 2024-2025
+ * @copyright Copyright (c) 2024-2025, SparkFun Electronics Inc. This project is released under the MIT License.
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #pragma once
 
-#include "sfeTkIBus.h"
+#include "sfTkIBus.h"
 
 /**
  * @brief Interface that defines the I2C communication bus for the SparkFun Electronics Toolkit.
@@ -34,16 +21,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * The I2C bus interface extends the IBus interface and adds the ability to set and get the I2C
  * address and stop flag.
  */
-const uint8_t kBusTypeI2C = 0x01;
+const uint8_t ksfTkBusTypeI2C = 0x01;
 
-class sfeTkII2C : public sfeTkIBus
+class sfTkII2C : public sfTkIBus
 {
   public:
     // set the address to No address and stop flag to true
     /**
      * @brief Constructor for the I2C bus
      */
-    sfeTkII2C() : _address{kNoAddress}, _stop{true}
+    sfTkII2C() : _address{kNoAddress}, _stop{true}
     {
     }
     /**
@@ -51,17 +38,17 @@ class sfeTkII2C : public sfeTkIBus
      *
      * @param addr
      */
-    sfeTkII2C(uint8_t addr) : _address{addr}
+    sfTkII2C(uint8_t addr) : _address{addr}
     {
     }
 
     /**--------------------------------------------------------------------------
         @brief A simple ping of the device at the set address
 
-        @retval sfeTkError_t - ok on success
+        @retval sfTkError_t - ok on success
 
     */
-    virtual sfeTkError_t ping() = 0;
+    virtual sfTkError_t ping() = 0;
 
     /**--------------------------------------------------------------------------
         @brief setter for the I2C address
@@ -113,7 +100,7 @@ class sfeTkII2C : public sfeTkIBus
 
     virtual uint8_t type(void)
     {
-        return kBusTypeI2C;
+        return ksfTkBusTypeI2C;
     }
 
   private:
