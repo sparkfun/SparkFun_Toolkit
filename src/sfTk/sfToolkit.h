@@ -57,7 +57,7 @@ uint32_t sftk_ticks_ms(void);
  * @param __value__ The value to check.
  * @param __bitmask__ The bitmask specifying which bits to check.
  * @return True if all bits specified by the bitmask are set, false otherwise.
- */.
+ */
 #define SFTK_CHECK_BITS_SET(__value__, __bitmask__) (((__value__) & (__bitmask__)) == __bitmask__)
 
 /**
