@@ -94,24 +94,6 @@ class sfTkArdSPI : public sfTkISPI
     sfTkError_t init(SPIClass &spiPort, SPISettings &busSPISettings, uint8_t csPin, bool bInit = false);
 
     /**
-        @brief Write a single byte to the device
-
-        @param data Data to write.
-
-        @retval sfTkError_t - ksfTkErrOk on success
-    */
-    sfTkError_t writeByte(uint8_t data);
-
-    /**
-        @brief Write a word to the device without indexing to a register.
-
-        @param data Data to write.
-
-        @retval sfTkError_t - ksfTkErrOk on success
-    */
-    sfTkError_t writeWord(uint16_t data);
-
-    /**
         @brief Write an array of data to the device without indexing to a register.
 
         @param data Data to write
@@ -120,26 +102,6 @@ class sfTkArdSPI : public sfTkISPI
         @retval sfTkError_t - ksfTkErrOk on success
     */
     sfTkError_t writeRegion(const uint8_t *data, size_t length);
-
-    /**
-        @brief Write a single byte to the given register
-
-        @param devReg The device's register's address.
-        @param data Data to write.
-
-        @retval sfTkError_t - ksfTkErrOk on success
-    */
-    sfTkError_t writeRegisterByte(uint8_t devReg, uint8_t data);
-
-    /**
-        @brief Write a single word to the given register
-
-        @param devReg The device's register's address.
-        @param data Data to write.
-
-        @retval sfTkError_t - ksfTkErrOk on success
-    */
-    sfTkError_t writeRegisterWord(uint8_t devReg, uint16_t data);
 
     /**
         @brief Writes a number of bytes starting at the given register's address.
@@ -176,26 +138,6 @@ class sfTkArdSPI : public sfTkISPI
         @retval sfTkError_t - ksfTkErrOk on success
         */
     sfTkError_t writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length);
-
-    /**
-        @brief Read a single byte from the given register
-
-        @param devReg The device's register's address.
-        @param[out] data Data to read.
-
-        @retval sfTkError_t - ksfTkErrOk on success
-    */
-    sfTkError_t readRegisterByte(uint8_t devReg, uint8_t &data);
-
-    /**
-        @brief read a single word to the given register
-
-        @param devReg The device's register's address.
-        @param[out] data Data to write.
-
-        @retval sfTkError_t - true on success
-    */
-    sfTkError_t readRegisterWord(uint8_t devReg, uint16_t &data);
 
     /**
         @brief Reads a block of data from the given register.

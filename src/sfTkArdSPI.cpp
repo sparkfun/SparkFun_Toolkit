@@ -70,45 +70,6 @@ sfTkError_t sfTkArdSPI::init(bool bInit)
 }
 
 //---------------------------------------------------------------------------------
-// writeByte()
-//
-// Writes a single byte to the device.
-//
-// Returns ksfTkErrOk on success
-//
-sfTkError_t sfTkArdSPI::writeByte(uint8_t dataToWrite)
-{
-
-    if (!_spiPort)
-        return ksfTkErrBusNotInit;
-
-    // Apply settings
-    _spiPort->beginTransaction(_sfeSPISettings);
-    // Signal communication start
-    digitalWrite(cs(), LOW);
-
-    _spiPort->transfer(dataToWrite);
-
-    // End communication
-    digitalWrite(cs(), HIGH);
-    _spiPort->endTransaction();
-
-    return ksfTkErrOk;
-}
-
-//---------------------------------------------------------------------------------
-// writeWord()
-//
-// Writes a word to the device without indexing to a register.
-//
-// Returns ksfTkErrOk on success
-//
-sfTkError_t sfTkArdSPI::writeWord(uint16_t dataToWrite)
-{
-    return writeRegion((uint8_t *)&dataToWrite, sizeof(uint8_t)) > 0;
-}
-
-//---------------------------------------------------------------------------------
 // writeRegion()
 //
 // Writes an array of data to the device without indexing to a register.
@@ -135,45 +96,6 @@ sfTkError_t sfTkArdSPI::writeRegion(const uint8_t *dataToWrite, size_t length)
     return ksfTkErrOk;
 }
 
-//---------------------------------------------------------------------------------
-// writeRegisterByte()
-//
-// Writes a byte to a given register.
-//
-// Returns ksfTkErrOk on success
-//
-sfTkError_t sfTkArdSPI::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
-{
-
-    if (!_spiPort)
-        return ksfTkErrBusNotInit;
-
-    // Apply settings
-    _spiPort->beginTransaction(_sfeSPISettings);
-    // Signal communication start
-    digitalWrite(cs(), LOW);
-
-    _spiPort->transfer(devReg);
-    _spiPort->transfer(dataToWrite);
-
-    // End communication
-    digitalWrite(cs(), HIGH);
-    _spiPort->endTransaction();
-
-    return ksfTkErrOk;
-}
-
-//---------------------------------------------------------------------------------
-// writeRegisterWord()
-//
-// Writes a world to a given register.
-//
-// Returns ksfTkErrOk on success
-//
-sfTkError_t sfTkArdSPI::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite)
-{
-    return writeRegisterRegion(devReg, (uint8_t *)&dataToWrite, sizeof(uint8_t)) > 0;
-}
 //---------------------------------------------------------------------------------
 // writeRegisterRegion()
 //
@@ -250,23 +172,7 @@ sfTkError_t sfTkArdSPI::writeRegister16Region16(uint16_t devReg, const uint16_t 
 
     return ksfTkErrOk;
 }
-//---------------------------------------------------------------------------------
-sfTkError_t sfTkArdSPI::readRegisterByte(uint8_t devReg, uint8_t &data)
-{
-    size_t nRead;
-    sfTkError_t retval = readRegisterRegion(devReg, (uint8_t *)&data, sizeof(uint8_t), nRead);
 
-    return (retval == ksfTkErrOk && nRead == sizeof(uint8_t) ? ksfTkErrOk : retval);
-}
-
-//---------------------------------------------------------------------------------
-sfTkError_t sfTkArdSPI::readRegisterWord(uint8_t devReg, uint16_t &data)
-{
-    size_t nRead;
-    sfTkError_t retval = readRegisterRegion(devReg, (uint8_t *)&data, sizeof(uint16_t), nRead);
-
-    return (retval == ksfTkErrOk && nRead == sizeof(uint16_t) ? ksfTkErrOk : retval);
-}
 //---------------------------------------------------------------------------------
 // readRegisterRegion()
 //
