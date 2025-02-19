@@ -75,7 +75,8 @@ class sfTkIBus
     /**
      * @brief Constructor
      */
-    sfTkIBus() {
+    sfTkIBus()
+    {
         _byteOrder = sftk_system_byteorder();
     }
     /**--------------------------------------------------------------------------
@@ -245,6 +246,31 @@ class sfTkIBus
         return readRegisterRegion(reg, data, numBytes, readBytes);
     }
 
+    /**
+     * @brief Overloaded function to read a 32-bit value from the given 16-bit register address.
+     *
+     * This function reads a 32-bit value from the specified 16-bit register address.
+     *
+     * @param reg The device's 16-bit register's address.
+     * @param[out] value The 32-bit value read from the register.
+     *
+     * @return sfTkError_t Returns ksfTkErrOk on success, or an error code on failure.
+     */
+    virtual sfTkError_t readRegister(uint16_t reg, uint32_t &value)
+    {
+        size_t readBytes = 0;
+
+        // this is a reg 16 address - so call the method to manage this. Note - it manages the
+        // byte swapping of the address.
+
+        sfTkError_t retValue = readRegister16Region(reg, (uint8_t *)&value, sizeof(uint32_t), readBytes);
+
+        // The data is a uint32 - byte swap the result?
+        if (retValue == ksfTkErrOk && sftk_system_byteorder() != _byteOrder)
+            value = sftk_byte_swap(value);
+
+        return retValue;
+    }
     /**--------------------------------------------------------------------------
      *  @brief Reads a block of data from the given 16-bit register address.
      *
@@ -311,4 +337,3 @@ class sfTkIBus
     /** flag to manage byte swapping */
     sfTkByteOrder _byteOrder;
 };
-
