@@ -33,8 +33,10 @@ However, for solutions that use the SparkFun Toolkit, it is installed automatica
 To mark the `SparkFun Toolkit` as a dependency, add the following line to the `library.properties` file for your library.
 
 ```INI
-depends=SparkFun Toolkit
+depends=SparkFun Toolkit (>=1.0.0)
 ```
+
+Note: A version indicator is included to ensure your library uses the correct version of the toolkit.
 
 ## Examples
 
