@@ -108,12 +108,13 @@ class sfTkArdSPI : public sfTkISPI
         @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
 
         @param devReg The device's register's address.
+        @param regLength Size of the address - value of 1 or 2 are only accepted
         @param data Data to write.
         @param length - length of data
 
         @retval sfTkError_t - ksfTkErrOk on success
     */
-    sfTkError_t writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length);
+    sfTkError_t writeRegister(uint8_t *devReg, size_t regLength, const uint8_t *data, size_t length);
 
     /**
         @brief Writes a number of bytes starting at the given register's address.
@@ -125,7 +126,7 @@ class sfTkArdSPI : public sfTkISPI
 
         @retval sfTkError_t - ksfTkErrOk on success
     */
-    sfTkError_t writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length);
+    sfTkError_t writeRegister(uint16_t devReg, const uint8_t *data, size_t length);
 
     /**
         @brief Writes a number of uint16s starting at the given register's address.
@@ -137,20 +138,19 @@ class sfTkArdSPI : public sfTkISPI
 
         @retval sfTkError_t - ksfTkErrOk on success
         */
-    sfTkError_t writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length);
+    sfTkError_t writeRegister(uint16_t devReg, const uint16_t *data, size_t length);
 
     /**
-        @brief Reads a block of data from the given register.
-        @note This method is virtual to allow it to be overridden to support a device that requires a unique impl
-
-        @param reg The device's register's address.
-        @param[out] data Data buffer to read into
-        @param numBytes - length of data/size of data buffer
-        @param[out] readBytes - Number of bytes read
-
-        @retval sfTkError_t - true on success
-    */
-    virtual sfTkError_t readRegisterRegion(uint8_t reg, uint8_t *data, size_t numBytes, size_t &readBytes);
+     * @brief Reads data from a specified register of an I2C device.
+     *
+     * @param devReg Pointer to the register address to read from.
+     * @param regLength Length of the register address.
+     * @param data Pointer to the buffer where the read data will be stored.
+     * @param numBytes Number of bytes to read from the register.
+     * @param readBytes Reference to a variable where the number of bytes actually read will be stored.
+     * @return sfTkError_t Error code indicating the success or failure of the read operation.
+     */
+    sfTkError_t readRegister(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes, size_t &readBytes);
 
     /**
         @brief Reads a block of data from the given register.
@@ -163,7 +163,7 @@ class sfTkArdSPI : public sfTkISPI
 
         @retval sfTkError_t - true on success
     */
-    virtual sfTkError_t readRegister16Region(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes);
+    virtual sfTkError_t readRegister(uint16_t reg, uint8_t *data, size_t numBytes, size_t &readBytes);
 
     /**
             @brief Reads a block of data from the given register.
@@ -171,12 +171,12 @@ class sfTkArdSPI : public sfTkISPI
 
             @param reg The device's register's 16 bit address.
             @param[out] data Data buffer to read into
-            @param numBytes - Length of data to read/size of data buffer
-            @param[out] readBytes - Number of bytes read
+            @param length - Length of data to read/size of data buffer
+            @param[out] readWords - Number of words read
 
             @retval sfTkError_t - true on success
         */
-    virtual sfTkError_t readRegister16Region16(uint16_t reg, uint16_t *data, size_t numBytes, size_t &readBytes);
+    virtual sfTkError_t readRegister(uint16_t reg, uint16_t *data, size_t length, size_t &readWords);
 
   protected:
     // note: The instance data is protected, allowing access if a sub-class is

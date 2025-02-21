@@ -74,18 +74,6 @@ sfTkError_t sfTkArdI2C::ping()
     return _i2cPort->endTransmission() == 0 ? ksfTkErrOk : ksfTkErrFail;
 }
 
-//---------------------------------------------------------------------------------
-// writeRegion()
-//
-// Writes a word to the device, without indexing to a register.
-//
-// Returns true on success, false on failure
-//
-sfTkError_t sfTkArdI2C::writeRegion(const uint8_t *data, size_t length)
-{
-    return writeRegisterRegionAddress(nullptr, 0, data, length) == 0 ? ksfTkErrOk : ksfTkErrFail;
-}
-
 /**
  * @brief Writes an array of bytes to a register on the target address. Supports any address size
  *
@@ -95,8 +83,7 @@ sfTkError_t sfTkArdI2C::writeRegion(const uint8_t *data, size_t length)
  * @param length The length of the data buffer
  * @return sfTkError_t Returns ksfTkErrOk on success, or ksfTkErrFail code
  */
-sfTkError_t sfTkArdI2C::writeRegisterRegionAddress(uint8_t *devReg, size_t regLength, const uint8_t *data,
-                                                   size_t length)
+sfTkError_t sfTkArdI2C::writeRegister(uint8_t *devReg, size_t regLength, const uint8_t *data, size_t length)
 {
     if (!_i2cPort)
         return ksfTkErrBusNotInit;
@@ -111,56 +98,6 @@ sfTkError_t sfTkArdI2C::writeRegisterRegionAddress(uint8_t *devReg, size_t regLe
     return _i2cPort->endTransmission() ? ksfTkErrFail : ksfTkErrOk;
 }
 
-//---------------------------------------------------------------------------------
-// writeRegisterRegion()
-//
-// Writes an array of bytes to a given register on the target address
-//
-// Returns the number of bytes written, < 0 is an error
-//
-sfTkError_t sfTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
-{
-    return writeRegisterRegionAddress(&devReg, 1, data, length);
-}
-
-//---------------------------------------------------------------------------------
-// write16BitRegisterRegion()
-//
-// Writes an array of bytes to a given 16-bit register on the target address
-//
-// Returns the number of bytes written, < 0 is an error
-//
-sfTkError_t sfTkArdI2C::writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length)
-{
-    // Byteorder check
-    if (sftk_system_byteorder() != _byteOrder)
-        devReg = sftk_byte_swap(devReg);
-    return writeRegisterRegionAddress((uint8_t *)&devReg, 2, data, length);
-}
-
-//---------------------------------------------------------------------------------
-// write16BitRegisterRegion16()
-//
-// Writes an array of bytes to a given 16-bit register on the target address
-//
-// Returns the number of bytes written, < 0 is an error
-//
-sfTkError_t sfTkArdI2C::writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length)
-{
-    // if the system byte order is the same as the desired order, just send the buffer
-    if (sftk_system_byteorder() == _byteOrder)
-        return writeRegisterRegionAddress((uint8_t *)&devReg, 2, (uint8_t *)data, length * 2);
-
-    // okay, we need to swap
-    devReg = sftk_byte_swap(devReg);
-
-    uint16_t data16[length];
-    for (size_t i = 0; i < length; i++)
-        data16[i] = sftk_byte_swap(data[i]);
-
-    return writeRegisterRegionAddress((uint8_t *)&devReg, 2, (uint8_t *)data16, length * 2);
-}
-
 /**
  * @brief Reads an array of bytes to a register on the target address. Supports any address size
  *
@@ -171,10 +108,9 @@ sfTkError_t sfTkArdI2C::writeRegister16Region16(uint16_t devReg, const uint16_t 
  * @param readBytes[out] The number of bytes read
  * @return sfTkError_t Returns ksfTkErrOk on success, or ksfTkErrFail code
  */
-sfTkError_t sfTkArdI2C::readRegisterRegionAnyAddress(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes,
-                                                     size_t &readBytes)
+sfTkError_t sfTkArdI2C::readRegister(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes,
+                                     size_t &readBytes)
 {
-
     // got port
     if (!_i2cPort)
         return ksfTkErrBusNotInit;
@@ -227,56 +163,4 @@ sfTkError_t sfTkArdI2C::readRegisterRegionAnyAddress(uint8_t *devReg, size_t reg
     readBytes = nOrig - numBytes; // Bytes read.
 
     return (readBytes == nOrig) ? ksfTkErrOk : ksfTkErrBusUnderRead; // Success
-}
-
-//---------------------------------------------------------------------------------
-// readRegisterRegion()
-//
-// Reads an array of bytes to a given register on the target address
-//
-// Returns the number of bytes read, < 0 is an error
-//
-sfTkError_t sfTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
-{
-    return readRegisterRegionAnyAddress(&devReg, 1, data, numBytes, readBytes);
-}
-
-//---------------------------------------------------------------------------------
-// read16BitRegisterRegion()
-//
-// Reads an array of bytes to a given 16-bit register on the target address
-//
-// Returns the number of bytes read, < 0 is an error
-//
-sfTkError_t sfTkArdI2C::readRegister16Region(uint16_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
-{
-    // if the system byte order is the same as the desired order, flip the address
-    if (sftk_system_byteorder() != _byteOrder)
-        devReg = sftk_byte_swap(devReg);
-
-    return readRegisterRegionAnyAddress((uint8_t *)&devReg, 2, data, numBytes, readBytes);
-}
-//---------------------------------------------------------------------------------
-// read16BitRegisterRegion16()
-//
-// Reads an array of bytes to a given 16-bit register on the target address
-//
-// Returns the number of bytes read, < 0 is an error
-//
-sfTkError_t sfTkArdI2C::readRegister16Region16(uint16_t devReg, uint16_t *data, size_t numBytes, size_t &readWords)
-{
-    // if the system byte order is the same as the desired order, flip the address
-    if (sftk_system_byteorder() != _byteOrder)
-        devReg = sftk_byte_swap(devReg);
-
-    sfTkError_t status = readRegisterRegionAnyAddress((uint8_t *)&devReg, 2, (uint8_t *)data, numBytes * 2, readWords);
-
-    // Do we need to flip the byte order?
-    if (status == ksfTkErrOk && sftk_system_byteorder() != _byteOrder)
-    {
-        for (size_t i = 0; i < numBytes; i++)
-            data[i] = sftk_byte_swap(data[i]);
-    }
-    readWords = readWords / 2; // convert to words
-    return status;
 }

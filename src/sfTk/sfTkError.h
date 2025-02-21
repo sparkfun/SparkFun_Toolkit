@@ -1,4 +1,4 @@
- /**
+/**
  * @file sfTkError.h
  * @brief Header file for the SparkFun Toolkit - Base Error Code defines.
  *
@@ -10,7 +10,6 @@
  *
  * SPDX-License-Identifier: MIT
  */
-
 
 #pragma once
 
@@ -45,6 +44,11 @@ const sfTkError_t ksfTkErrFail = -1; // general fail
  * @brief The error code value for success. This is always 0.
  */
 const sfTkError_t ksfTkErrOk = 0; // success
+
+/**
+ * @brief Invalid parameter error
+ */
+const sfTkError_t ksfTkErrInvalidParam = -2; // invalid parameter error
 
 /**
  * @brief A base value for bus errors. All bus errors are greater than this value, in the 1000 range

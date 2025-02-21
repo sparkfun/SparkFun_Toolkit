@@ -70,40 +70,13 @@ sfTkError_t sfTkArdSPI::init(bool bInit)
 }
 
 //---------------------------------------------------------------------------------
-// writeRegion()
-//
-// Writes an array of data to the device without indexing to a register.
-//
-// Returns ksfTkErrOk on success
-//
-sfTkError_t sfTkArdSPI::writeRegion(const uint8_t *dataToWrite, size_t length)
-{
-
-    if (!_spiPort)
-        return ksfTkErrBusNotInit;
-
-    _spiPort->beginTransaction(_sfeSPISettings);
-    // Signal communication start
-    digitalWrite(cs(), LOW);
-
-    for (size_t i = 0; i < length; i++)
-        _spiPort->transfer(*dataToWrite++);
-
-    // End communication
-    digitalWrite(cs(), HIGH);
-    _spiPort->endTransaction();
-
-    return ksfTkErrOk;
-}
-
-//---------------------------------------------------------------------------------
-// writeRegisterRegion()
+// writeRegister()
 //
 // Writes an array of bytes to a given register on the target address
 //
 // Returns ksfTkErrOk on success
 //
-sfTkError_t sfTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
+sfTkError_t sfTkArdSPI::writeRegister(uint8_t *devReg, size_t regLength, const uint8_t *data, size_t length)
 {
     if (!_spiPort)
         return ksfTkErrBusNotInit;
@@ -114,8 +87,14 @@ sfTkError_t sfTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data,
     // Signal communication start
     digitalWrite(cs(), LOW);
 
-    _spiPort->transfer(devReg);
+    // send over the address
+    if (devReg != nullptr && regLength > 0)
+    {
+        for (size_t i = 0; i < regLength; i++)
+            _spiPort->transfer(devReg[i]);
+    }
 
+    // now the data
     for (size_t i = 0; i < length; i++)
         _spiPort->transfer(*data++);
 
@@ -126,8 +105,10 @@ sfTkError_t sfTkArdSPI::writeRegisterRegion(uint8_t devReg, const uint8_t *data,
     return ksfTkErrOk;
 }
 
+//---------------------------------------------------------------------------------
 // 16 bit address version ...
-sfTkError_t sfTkArdSPI::writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length)
+// override the interface version of this method -- to make use of the vast 16 bit xfer with arduino SPI
+sfTkError_t sfTkArdSPI::writeRegister(uint16_t devReg, const uint8_t *data, size_t length)
 {
     if (!_spiPort)
         return ksfTkErrBusNotInit;
@@ -151,7 +132,8 @@ sfTkError_t sfTkArdSPI::writeRegister16Region(uint16_t devReg, const uint8_t *da
 
 //---------------------------------------------------------------------------------
 // 16 bit address and data version ...
-sfTkError_t sfTkArdSPI::writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length)
+// override the interface version of this method -- to make use of the vast 16 bit xfer with arduino SPI
+sfTkError_t sfTkArdSPI::writeRegister(uint16_t devReg, const uint16_t *data, size_t length)
 {
     if (!_spiPort)
         return ksfTkErrBusNotInit;
@@ -180,10 +162,15 @@ sfTkError_t sfTkArdSPI::writeRegister16Region16(uint16_t devReg, const uint16_t 
 //
 // Returns ksfTkErrOk on success
 //
-sfTkError_t sfTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
+sfTkError_t sfTkArdSPI::readRegister(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes,
+                                     size_t &readBytes)
 {
+
     if (!_spiPort)
         return ksfTkErrBusNotInit;
+
+    if (devReg == nullptr || regLength == 0)
+        return ksfTkErrInvalidParam;
 
     // Apply settings
     _spiPort->beginTransaction(_sfeSPISettings);
@@ -191,9 +178,20 @@ sfTkError_t sfTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t
     // Signal communication start
     digitalWrite(cs(), LOW);
 
-    // A leading "1" must be added to transfer with devRegister to indicate a "read"
-    _spiPort->transfer(devReg | kSPIReadBit);
+    // we really just 1 or two byte addresses
+    if (regLength == 1) // 1 byte -  A leading "1" must be added to transfer with devRegister to indicate a "read"
+        _spiPort->transfer(*devReg | kSPIReadBit);
+    else if (regLength == 2)
+        _spiPort->transfer16(*(uint16_t *)devReg);
+    else
+    {
+        // End transaction
+        digitalWrite(cs(), HIGH);
+        _spiPort->endTransaction();
+        return ksfTkErrInvalidParam;
+    }
 
+    // data now!
     for (size_t i = 0; i < numBytes; i++)
         *data++ = _spiPort->transfer(0x00);
 
@@ -213,30 +211,12 @@ sfTkError_t sfTkArdSPI::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t
 //
 // Returns ksfTkErrOk on success
 //
-sfTkError_t sfTkArdSPI::readRegister16Region(uint16_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
+sfTkError_t sfTkArdSPI::readRegister(uint16_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
 {
     if (!_spiPort)
         return ksfTkErrBusNotInit;
 
-    // Apply settings
-    _spiPort->beginTransaction(_sfeSPISettings);
-
-    // Signal communication start
-    digitalWrite(cs(), LOW);
-
-    // A leading "1" must be added to transfer with devRegister to indicate a "read"
-    _spiPort->transfer16(devReg | kSPIReadBit);
-
-    for (size_t i = 0; i < numBytes; i++)
-        *data++ = _spiPort->transfer(0x00);
-
-    // End transaction
-    digitalWrite(cs(), HIGH);
-    _spiPort->endTransaction();
-
-    readBytes = numBytes;
-
-    return ksfTkErrOk;
+    return readRegister((uint8_t *)&devReg, sizeof(uint16_t), data, numBytes, readBytes);
 }
 
 //---------------------------------------------------------------------------------
@@ -246,7 +226,7 @@ sfTkError_t sfTkArdSPI::readRegister16Region(uint16_t devReg, uint8_t *data, siz
 //
 // Returns ksfTkErrOk on success
 //
-sfTkError_t sfTkArdSPI::readRegister16Region16(uint16_t devReg, uint16_t *data, size_t numBytes, size_t &readWords)
+sfTkError_t sfTkArdSPI::readRegister(uint16_t devReg, uint16_t *data, size_t numBytes, size_t &readWords)
 {
     if (!_spiPort)
         return ksfTkErrBusNotInit;
