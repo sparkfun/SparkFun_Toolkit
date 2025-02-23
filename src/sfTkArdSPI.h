@@ -178,6 +178,9 @@ class sfTkArdSPI : public sfTkISPI
         */
     virtual sfTkError_t readRegister(uint16_t reg, uint16_t *data, size_t length, size_t &readWords);
 
+    // Explicitly let the compiler know we are using the interface methods.
+    using sfTkIBus::readRegister;
+
   protected:
     // note: The instance data is protected, allowing access if a sub-class is
     //      created to implement a special read/write routine
@@ -185,6 +188,6 @@ class sfTkArdSPI : public sfTkISPI
     /** Pointer to the spi port being used */
     SPIClass *_spiPort;
 
-    /** This objects spi settings are used for every transaction. */
+    /** This object's spi settings are used for every transaction. */
     SPISettings _sfeSPISettings;
 };

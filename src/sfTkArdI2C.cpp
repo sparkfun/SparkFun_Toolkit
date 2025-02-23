@@ -14,10 +14,22 @@
 #include "sfTkArdI2C.h"
 
 //---------------------------------------------------------------------------------
-// init()
-//
-// Arduino version of init - pass in already setup wire port ...
-//
+
+/**
+ * @brief Initializes the I2C communication for the sfTkArdI2C object.
+ *
+ * This function sets up the I2C communication by assigning the provided TwoWire
+ * object to the internal _i2cPort pointer. If the I2C port is not already set,
+ * it will use the provided wirePort and optionally initialize it by calling
+ * its begin() method. It also sets the I2C address for communication.
+ *
+ * @param wirePort Reference to a TwoWire object representing the I2C port.
+ * @param addr The I2C address to be used for communication.
+ * @param bInit Boolean flag indicating whether to initialize the I2C port by
+ *              calling its begin() method. If true, begin() will be called.
+ *
+ * @return sfTkError_t Returns ksfTkErrOk on successful initialization.
+ */
 sfTkError_t sfTkArdI2C::init(TwoWire &wirePort, uint8_t addr, bool bInit)
 {
     // if we don't have a wire port already
@@ -35,10 +47,17 @@ sfTkError_t sfTkArdI2C::init(TwoWire &wirePort, uint8_t addr, bool bInit)
 }
 
 //---------------------------------------------------------------------------------
-// init()
-//
-// no parameters version of init. Setups a a wire port if needed.
-//
+/**
+ * @brief Initializes the I2C communication with the specified address.
+ *
+ * This function initializes the I2C communication for the device. If no I2C port
+ * is specified, it defaults to using the Wire library. If an I2C port is already
+ * specified, it assumes the initialization is already done.
+ *
+ * @param addr The I2C address of the device.
+ * @return sfTkError_t Returns ksfTkErrOk if the initialization is successful,
+ *         otherwise returns an error code.
+ */
 sfTkError_t sfTkArdI2C::init(uint8_t addr)
 {
     // no port yet, do the default version of it
@@ -50,20 +69,33 @@ sfTkError_t sfTkArdI2C::init(uint8_t addr)
 }
 
 //---------------------------------------------------------------------------------
-// init()
-//
-// no parameters version of init. Setups a a wire port if needed.
-//
+
+/**
+ * @brief Initializes the I2C communication with the currently set address.
+ *
+ * This function initializes the I2C communication by calling the init function
+ * with the address that is currently set for the I2C device.
+ *
+ * @return sfTkError_t Returns an error code indicating the success or failure of the initialization.
+ */
 sfTkError_t sfTkArdI2C::init(void)
 {
     // call with our currently set address ...
     return init(address());
 }
 //---------------------------------------------------------------------------------
-// ping()
-//
-// Ping an I2C address to see if something is there.
-//
+/**
+ * @brief Pings the I2C device to check if it is responsive.
+ *
+ * This function attempts to initiate a transmission to the I2C device
+ * and checks if the device acknowledges the transmission. It can be
+ * used to verify that the device is properly connected and responsive.
+ *
+ * @return sfTkError_t
+ *         - ksfTkErrOk: if the device acknowledges the transmission.
+ *         - ksfTkErrFail: if the device does not acknowledge the transmission.
+ *         - ksfTkErrBusNotInit: if the I2C bus is not initialized.
+ */
 sfTkError_t sfTkArdI2C::ping()
 {
     // no port, no
