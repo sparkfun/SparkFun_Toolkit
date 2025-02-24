@@ -178,8 +178,9 @@ class sfTkArdSPI : public sfTkISPI
         */
     virtual sfTkError_t readRegister(uint16_t reg, uint16_t *data, size_t length, size_t &readWords);
 
-    // Explicitly let the compiler know we are using the interface methods.
+    // For overloaded virtual methods, make sure to elevate our subclass methods.
     using sfTkIBus::readRegister;
+    using sfTkIBus::writeRegister;
 
   protected:
     // note: The instance data is protected, allowing access if a sub-class is
