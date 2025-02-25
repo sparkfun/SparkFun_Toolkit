@@ -8,6 +8,29 @@ For bus communication, the SparkFun Toolkit is designed to provide a common impl
 
 This pattern allows an application to develop against the common bus interface without regard to the underlying bus type or implementation. This *plug-in* nature of this model enables core application reuse across a range of bus devices. What to use a different bus type? Just use a different driver.
 
+```mermaid
+---
+title: Design Pattern Bus Interface
+---
+classDiagram
+class MyApplication
+
+class IBus
+<<Interface>> IBus
+IBus : writeData(...)
+IBus : readRegister(...)
+IBus : writeRegister(...)
+
+MyApplication --> IBus
+
+IBus <|-- IBusType
+
+note for MyApplication "Application/library that <br>uses the IBus Interface"
+note for IBus "Defines the bus interface"
+note for IBusType "Specific implementation type <br> methods [I2C, SPI, UART,...]"
+
+```
+
 This pattern is show in the following diagram:
 
 ![Driver Pattern](images/tk_ibus_p1.png)
