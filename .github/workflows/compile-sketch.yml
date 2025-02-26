@@ -44,12 +44,12 @@ jobs:
               - name: esp32:esp32
                 source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
 
-          # Artemis / Apollo3
+          # Artemis / Apollo3  Feb 25 - there some issue here -- will need to look at 
           # https://github.com/sparkfun/Arduino_Apollo3/blob/main/boards.txt
-          - fqbn: SparkFun:apollo3:sfe_artemis_atp
-            platforms: |
-              - name: SparkFun:apollo3
-                source-url: https://raw.githubusercontent.com/sparkfun/Arduino_Apollo3/master/package_sparkfun_apollo3_index.json
+        #   - fqbn: SparkFun:apollo3:sfe_artemis_atp
+        #     platforms: |
+        #       - name: SparkFun:apollo3
+        #         source-url: https://raw.githubusercontent.com/sparkfun/Arduino_Apollo3/master/package_sparkfun_apollo3_index.json
 
           # ESP8266
           # https://github.com/esp8266/Arduino/blob/master/boards.txt

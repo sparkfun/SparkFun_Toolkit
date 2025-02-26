@@ -11,14 +11,25 @@
  * SPDX-License-Identifier: MIT
  */
 
-
 #include "sfTkArdI2C.h"
 
 //---------------------------------------------------------------------------------
-// init()
-//
-// Arduino version of init - pass in already setup wire port ...
-//
+
+/**
+ * @brief Initializes the I2C communication for the sfTkArdI2C object.
+ *
+ * This function sets up the I2C communication by assigning the provided TwoWire
+ * object to the internal _i2cPort pointer. If the I2C port is not already set,
+ * it will use the provided wirePort and optionally initialize it by calling
+ * its begin() method. It also sets the I2C address for communication.
+ *
+ * @param wirePort Reference to a TwoWire object representing the I2C port.
+ * @param addr The I2C address to be used for communication.
+ * @param bInit Boolean flag indicating whether to initialize the I2C port by
+ *              calling its begin() method. If true, begin() will be called.
+ *
+ * @return sfTkError_t Returns ksfTkErrOk on successful initialization.
+ */
 sfTkError_t sfTkArdI2C::init(TwoWire &wirePort, uint8_t addr, bool bInit)
 {
     // if we don't have a wire port already
@@ -36,10 +47,17 @@ sfTkError_t sfTkArdI2C::init(TwoWire &wirePort, uint8_t addr, bool bInit)
 }
 
 //---------------------------------------------------------------------------------
-// init()
-//
-// no parameters version of init. Setups a a wire port if needed.
-//
+/**
+ * @brief Initializes the I2C communication with the specified address.
+ *
+ * This function initializes the I2C communication for the device. If no I2C port
+ * is specified, it defaults to using the Wire library. If an I2C port is already
+ * specified, it assumes the initialization is already done.
+ *
+ * @param addr The I2C address of the device.
+ * @return sfTkError_t Returns ksfTkErrOk if the initialization is successful,
+ *         otherwise returns an error code.
+ */
 sfTkError_t sfTkArdI2C::init(uint8_t addr)
 {
     // no port yet, do the default version of it
@@ -51,20 +69,33 @@ sfTkError_t sfTkArdI2C::init(uint8_t addr)
 }
 
 //---------------------------------------------------------------------------------
-// init()
-//
-// no parameters version of init. Setups a a wire port if needed.
-//
+
+/**
+ * @brief Initializes the I2C communication with the currently set address.
+ *
+ * This function initializes the I2C communication by calling the init function
+ * with the address that is currently set for the I2C device.
+ *
+ * @return sfTkError_t Returns an error code indicating the success or failure of the initialization.
+ */
 sfTkError_t sfTkArdI2C::init(void)
 {
     // call with our currently set address ...
     return init(address());
 }
 //---------------------------------------------------------------------------------
-// ping()
-//
-// Ping an I2C address to see if something is there.
-//
+/**
+ * @brief Pings the I2C device to check if it is responsive.
+ *
+ * This function attempts to initiate a transmission to the I2C device
+ * and checks if the device acknowledges the transmission. It can be
+ * used to verify that the device is properly connected and responsive.
+ *
+ * @return sfTkError_t
+ *         - ksfTkErrOk: if the device acknowledges the transmission.
+ *         - ksfTkErrFail: if the device does not acknowledge the transmission.
+ *         - ksfTkErrBusNotInit: if the I2C bus is not initialized.
+ */
 sfTkError_t sfTkArdI2C::ping()
 {
     // no port, no
@@ -73,85 +104,6 @@ sfTkError_t sfTkArdI2C::ping()
 
     _i2cPort->beginTransmission(address());
     return _i2cPort->endTransmission() == 0 ? ksfTkErrOk : ksfTkErrFail;
-}
-
-//---------------------------------------------------------------------------------
-// writeByte()
-//
-// Writes a single byte to the device, without indexing to a register.
-//
-// Returns true on success, false on failure
-//
-sfTkError_t sfTkArdI2C::writeByte(uint8_t dataToWrite)
-{
-    if (!_i2cPort)
-        return ksfTkErrBusNotInit;
-
-    // do the Arduino I2C work
-    _i2cPort->beginTransmission(address());
-    _i2cPort->write(dataToWrite);
-    return _i2cPort->endTransmission() == 0 ? ksfTkErrOk : ksfTkErrFail;
-}
-
-//---------------------------------------------------------------------------------
-// writeWord()
-//
-// Writes a word to the device, without indexing to a register.
-//
-// Returns true on success, false on failure
-//
-sfTkError_t sfTkArdI2C::writeWord(uint16_t dataToWrite)
-{
-    if (!_i2cPort)
-        return ksfTkErrBusNotInit;
-
-    return writeRegion((uint8_t *)&dataToWrite, sizeof(uint16_t));
-}
-
-//---------------------------------------------------------------------------------
-// writeRegion()
-//
-// Writes a word to the device, without indexing to a register.
-//
-// Returns true on success, false on failure
-//
-sfTkError_t sfTkArdI2C::writeRegion(const uint8_t *data, size_t length)
-{
-    return writeRegisterRegionAddress(nullptr, 0, data, length) == 0 ? ksfTkErrOk : ksfTkErrFail;
-}
-
-//---------------------------------------------------------------------------------
-// writeRegisterByte()
-//
-// Writes a byte to a given register.
-//
-// Returns true on success, false on failure
-//
-sfTkError_t sfTkArdI2C::writeRegisterByte(uint8_t devReg, uint8_t dataToWrite)
-{
-    if (!_i2cPort)
-        return ksfTkErrBusNotInit;
-
-    // do the Arduino I2C work
-    _i2cPort->beginTransmission(address());
-    _i2cPort->write(devReg);
-    _i2cPort->write(dataToWrite);
-    return _i2cPort->endTransmission() == 0 ? ksfTkErrOk : ksfTkErrFail;
-}
-
-//---------------------------------------------------------------------------------
-// writeRegisterWord()
-//
-// Writes a word to a given register.
-//
-// Returns true on success, false on failure
-//
-sfTkError_t sfTkArdI2C::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite)
-{
-    if (!_i2cPort)
-        return ksfTkErrBusNotInit;
-
-    return writeRegisterRegion(devReg, (uint8_t *)&dataToWrite, sizeof(uint16_t));
 }
 
 /**
@@ -163,8 +115,7 @@ sfTkError_t sfTkArdI2C::writeRegisterWord(uint8_t devReg, uint16_t dataToWrite)
  * @param length The length of the data buffer
  * @return sfTkError_t Returns ksfTkErrOk on success, or ksfTkErrFail code
  */
-sfTkError_t sfTkArdI2C::writeRegisterRegionAddress(uint8_t *devReg, size_t regLength, const uint8_t *data,
-                                                   size_t length)
+sfTkError_t sfTkArdI2C::writeRegister(uint8_t *devReg, size_t regLength, const uint8_t *data, size_t length)
 {
     if (!_i2cPort)
         return ksfTkErrBusNotInit;
@@ -179,56 +130,6 @@ sfTkError_t sfTkArdI2C::writeRegisterRegionAddress(uint8_t *devReg, size_t regLe
     return _i2cPort->endTransmission() ? ksfTkErrFail : ksfTkErrOk;
 }
 
-//---------------------------------------------------------------------------------
-// writeRegisterRegion()
-//
-// Writes an array of bytes to a given register on the target address
-//
-// Returns the number of bytes written, < 0 is an error
-//
-sfTkError_t sfTkArdI2C::writeRegisterRegion(uint8_t devReg, const uint8_t *data, size_t length)
-{
-    return writeRegisterRegionAddress(&devReg, 1, data, length);
-}
-
-//---------------------------------------------------------------------------------
-// write16BitRegisterRegion()
-//
-// Writes an array of bytes to a given 16-bit register on the target address
-//
-// Returns the number of bytes written, < 0 is an error
-//
-sfTkError_t sfTkArdI2C::writeRegister16Region(uint16_t devReg, const uint8_t *data, size_t length)
-{
-    // Byteorder check
-    if (sftk_system_byteorder() != _byteOrder)
-        devReg = sftk_byte_swap(devReg);
-    return writeRegisterRegionAddress((uint8_t *)&devReg, 2, data, length);
-}
-
-//---------------------------------------------------------------------------------
-// write16BitRegisterRegion16()
-//
-// Writes an array of bytes to a given 16-bit register on the target address
-//
-// Returns the number of bytes written, < 0 is an error
-//
-sfTkError_t sfTkArdI2C::writeRegister16Region16(uint16_t devReg, const uint16_t *data, size_t length)
-{
-    // if the system byte order is the same as the desired order, just send the buffer
-    if (sftk_system_byteorder() == _byteOrder)
-        return writeRegisterRegionAddress((uint8_t *)&devReg, 2, (uint8_t *)data, length * 2);
-
-    // okay, we need to swap
-    devReg = sftk_byte_swap(devReg);
-
-    uint16_t data16[length];
-    for (size_t i = 0; i < length; i++)
-        data16[i] = sftk_byte_swap(data[i]);
-
-    return writeRegisterRegionAddress((uint8_t *)&devReg, 2, (uint8_t *)data16, length * 2);
-}
-
 /**
  * @brief Reads an array of bytes to a register on the target address. Supports any address size
  *
@@ -239,10 +140,9 @@ sfTkError_t sfTkArdI2C::writeRegister16Region16(uint16_t devReg, const uint16_t 
  * @param readBytes[out] The number of bytes read
  * @return sfTkError_t Returns ksfTkErrOk on success, or ksfTkErrFail code
  */
-sfTkError_t sfTkArdI2C::readRegisterRegionAnyAddress(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes,
-                                                     size_t &readBytes)
+sfTkError_t sfTkArdI2C::readRegister(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes,
+                                     size_t &readBytes)
 {
-
     // got port
     if (!_i2cPort)
         return ksfTkErrBusNotInit;
@@ -295,108 +195,4 @@ sfTkError_t sfTkArdI2C::readRegisterRegionAnyAddress(uint8_t *devReg, size_t reg
     readBytes = nOrig - numBytes; // Bytes read.
 
     return (readBytes == nOrig) ? ksfTkErrOk : ksfTkErrBusUnderRead; // Success
-}
-
-//---------------------------------------------------------------------------------
-// readRegisterByte()
-//
-// Reads a byte to a given register.
-//
-// Returns true on success, false on failure
-//
-sfTkError_t sfTkArdI2C::readRegisterByte(uint8_t devReg, uint8_t &dataToRead)
-{
-    if (!_i2cPort)
-        return ksfTkErrBusNotInit;
-
-    // Return value
-    uint8_t result = 0;
-
-    int nData = 0;
-
-    _i2cPort->beginTransmission(address());
-    _i2cPort->write(devReg);
-    _i2cPort->endTransmission(stop());
-    _i2cPort->requestFrom(address(), (uint8_t)1);
-
-    while (_i2cPort->available()) // slave may send less than requested
-    {
-        result = _i2cPort->read(); // receive a byte as a proper uint8_t
-        nData++;
-    }
-
-    if (nData == sizeof(uint8_t)) // Only update outputPointer if a single byte was returned
-        dataToRead = result;
-
-    return (nData == sizeof(uint8_t) ? ksfTkErrOk : ksfTkErrFail);
-}
-
-//---------------------------------------------------------------------------------
-// readRegisterWord()
-//
-// Reads a word to a given register.
-//
-// Returns true on success, false on failure
-//
-sfTkError_t sfTkArdI2C::readRegisterWord(uint8_t devReg, uint16_t &dataToRead)
-{
-    if (!_i2cPort)
-        return ksfTkErrBusNotInit;
-
-    size_t nRead;
-    sfTkError_t retval = readRegisterRegion(devReg, (uint8_t *)&dataToRead, sizeof(uint16_t), nRead);
-
-    return (retval == ksfTkErrOk && nRead == sizeof(uint16_t) ? ksfTkErrOk : retval);
-}
-
-//---------------------------------------------------------------------------------
-// readRegisterRegion()
-//
-// Reads an array of bytes to a given register on the target address
-//
-// Returns the number of bytes read, < 0 is an error
-//
-sfTkError_t sfTkArdI2C::readRegisterRegion(uint8_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
-{
-    return readRegisterRegionAnyAddress(&devReg, 1, data, numBytes, readBytes);
-}
-
-//---------------------------------------------------------------------------------
-// read16BitRegisterRegion()
-//
-// Reads an array of bytes to a given 16-bit register on the target address
-//
-// Returns the number of bytes read, < 0 is an error
-//
-sfTkError_t sfTkArdI2C::readRegister16Region(uint16_t devReg, uint8_t *data, size_t numBytes, size_t &readBytes)
-{
-    // if the system byte order is the same as the desired order, flip the address
-    if (sftk_system_byteorder() != _byteOrder)
-        devReg = sftk_byte_swap(devReg);
-        
-    return readRegisterRegionAnyAddress((uint8_t *)&devReg, 2, data, numBytes, readBytes);
-}
-//---------------------------------------------------------------------------------
-// read16BitRegisterRegion16()
-//
-// Reads an array of bytes to a given 16-bit register on the target address
-//
-// Returns the number of bytes read, < 0 is an error
-//
-sfTkError_t sfTkArdI2C::readRegister16Region16(uint16_t devReg, uint16_t *data, size_t numBytes, size_t &readWords)
-{
-    // if the system byte order is the same as the desired order, flip the address
-    if (sftk_system_byteorder() != _byteOrder)
-        devReg = sftk_byte_swap(devReg);
-
-    sfTkError_t status = readRegisterRegionAnyAddress((uint8_t *)&devReg, 2, (uint8_t *)data, numBytes * 2, readWords);
-
-    // Do we need to flip the byte order?
-    if (status == ksfTkErrOk && sftk_system_byteorder() != _byteOrder)
-    {
-        for (size_t i = 0; i < numBytes; i++)
-            data[i] = sftk_byte_swap(data[i]);
-    }
-    readWords = readWords / 2; // convert to words
-    return status;
 }

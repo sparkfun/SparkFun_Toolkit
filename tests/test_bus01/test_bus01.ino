@@ -4,8 +4,8 @@
 
 #include "SparkFun_Toolkit.h"
 
-sfeTkArdI2C myI2C;
-sfeTkArdSPI mySPI;
+sfTkArdI2C myI2C;
+sfTkArdSPI mySPI;
 
 void setup()
 {
@@ -13,4 +13,5 @@ void setup()
 
 void loop()
 {
+    sftk_delay_ms(1000);
 }
