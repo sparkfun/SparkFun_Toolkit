@@ -71,9 +71,9 @@ classDiagram
 
     note for CoreToolkit "SparkFun Toolkit"
     class ApplicationPlatform["Application Platform"]
-    style ApplicationPlatform fill:#F0F0A0
+    style ApplicationPlatform fill:#909090
     class PlatformOne["Platform Implementation"]
-    style PlatformOne fill:#F0F0a0    
+    style PlatformOne fill:#909090
     
     CoreToolkit <|-- PlatformOne
     ApplicationCore <--> Application Platform
