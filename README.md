@@ -33,7 +33,9 @@ The SparkFun Toolkit provides a single implementation of common functionality us
 
 Implemented using C++, the SparkFun toolkit follows a simple two layered approach in it's design: A core foundational layer, and a platform specific layer. 
 
-```mermaid
+![Core Architecture](docs/images/rm_img_01.png)
+
+<!-- ```mermaid
 ---
 title: General Architecture Structure
 ---
@@ -42,9 +44,12 @@ classDiagram
     class PlatformOne["Platform Implementation"]
     CoreToolkit <|-- PlatformOne
 
-```
-And as additional plaforms are added, they also implement/inherit from the SparkFun Toolkit Core.
-```mermaid
+``` -->
+And as additional platforms are added, they also implement/inherit from the SparkFun Toolkit Core.
+
+![Multi-Platform Structure](docs/images/rm_img_02.png)
+
+<!-- ```mermaid
 ---
 title: Multi-Platform Structure
 ---
@@ -55,11 +60,13 @@ classDiagram
 
     CoreToolkit <|-- PlatformOne
     CoreToolkit <|-- PlatformTwo
-```
+``` -->
 
 When using the SparkFun Toolkit, the intent is for the implementation to follow the same pattern: A platform independent layer that works with the SparkFun Toolkit core, and a platform specific layer that utilizes the SparkFun Toolkit platform specific implementation. 
 
-```mermaid
+![Application Structure](docs/images/rm_img_03.png)
+
+<!-- ```mermaid
 ---
 title: Application Structure
 ---
@@ -76,9 +83,9 @@ classDiagram
     style PlatformOne fill:#909090
     
     CoreToolkit <|-- PlatformOne
-    ApplicationCore <--> Application Platform
+    ApplicationCore <-- > ApplicationPlatform
 
-```
+``` -->
 
 If/when the application is moved to another platform, just the platform specific logic needs implementation. 
 
