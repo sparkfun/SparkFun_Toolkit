@@ -13,5 +13,5 @@ void setup()
 
 void loop()
 {
-    sftk_delay_ms(1000)
+    sftk_delay_ms(1000);
 }
