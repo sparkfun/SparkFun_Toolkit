@@ -101,7 +101,7 @@ jobs:
           libraries: |
             - source-path: ./
           sketch-paths: |
-            - tests
+            - examples
           enable-warnings-report: true
           enable-deltas-report: true
           verbose: true
