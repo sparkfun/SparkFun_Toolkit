@@ -21,4 +21,5 @@
 // Just include the toolkit headers
 #include "sfTkArdI2C.h"
 #include "sfTkArdSPI.h"
+#include "sfTkArdUART.h"
 #include "sfTkArduino.h"
