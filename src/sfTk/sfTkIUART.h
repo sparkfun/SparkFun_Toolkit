@@ -29,14 +29,14 @@ typedef enum _sfTkUARTParity
 } sfTkUARTParity_t;
 
 inline const char* parityToString(sfTkUARTParity_t parity) {
-    switch(parity) {
-        case kUARTParityEven:  return "Even";
-        case kUARTParityOdd:   return "Odd";
-        case kUARTParityNone:  return "None";
-        case kUARTParityMark:  return "Mark";
-        case kUARTParitySpace: return "Space";
-        default:               return "Unknown";
-    }
+    static const char* parityArray[] = {"Even", "Odd", "None", "Mark", "Space"};
+    
+    // if the parity is out of bounds, return "Unknown"
+    if(parity < kUARTParityEven || parity > kUARTParitySpace)
+        return "Unknown";
+
+    // return the parity string
+    return parityArray[((uint8_t)parity) - 1];
 }
 
 typedef enum _sfTkUARTStopBits
@@ -47,12 +47,14 @@ typedef enum _sfTkUARTStopBits
 } sfTkUARTStopBits_t;
 
 inline const char* stopBitsToString(sfTkUARTStopBits_t stopBits) {
-    switch(stopBits) {
-        case kUARTStopBitsOne:        return "One";
-        case kUARTStopBitsOneAndHalf: return "OneAndHalf";
-        case kUARTStopBitsTwo:        return "Two";
-        default:                      return "Unknown";
-    }
+    static const char* stopBitsArray[] = {"One", "OneAndHalf", "Two"};
+    
+    // Return "Unknown" if index is out of bounds (less than 0 or greater than 2)
+    if (stopBits < kUARTStopBitsOne || stopBits > kUARTStopBitsTwo)
+        return "Unknown";
+
+    // Return the stop bits string
+    return stopBitsArray[(((uint8_t)stopBits) >> 4) - 1];
 }
 
 typedef enum _sfTkUARTDataBits
@@ -64,13 +66,14 @@ typedef enum _sfTkUARTDataBits
 } sfTkUARTDataBits_t;
 
 inline const uint8_t dataBitsToValue(sfTkUARTDataBits_t dataBits) {
-    switch(dataBits) {
-        case kUARTDataBitsFive:   return 5;
-        case kUARTDataBitsSix:    return 6;
-        case kUARTDataBitsSeven:  return 7;
-        case kUARTDataBitsEight:  return 8;
-        default:                  return 0; // Invalid data bits
-    }
+    static const uint8_t dataBitsArray[] = {5, 6, 7, 8};
+    
+    // Check if data bits are within valid range
+    if (dataBits < kUARTDataBitsFive || dataBits > kUARTDataBitsEight)
+        return 0;
+
+    // Extract index using bit shift (removing first 8 bits) and subtract 1
+    return dataBitsArray[(((uint16_t)dataBits) >> 8) - 1];
 }
 
 typedef struct _sfTkUARTConfig
@@ -85,28 +88,12 @@ class sfTkIUART : public sfTkISerial
 {
 public:
     /**
-     *  @brief Constructor for the UART bus
-     * 
-     */
-    sfTkIUART(void)
-    {
-        _config.baudRate = kDefaultBaudRate;
-        _config.parity = kUARTParityNone;
-        _config.stopBits = kUARTStopBitsOne;
-        _config.dataBits = kUARTDataBitsEight;
-    }
-
-    /**
-     * @brief Constructor for the UART bus with the baud rate passed in
+     * @brief Default constructor for the UART bus
      * 
      * @param baudRate
      */
-    sfTkIUART(uint32_t baudRate)
+    sfTkIUART(uint32_t baudRate = kDefaultBaudRate) : _config{kDefaultBaudRate, kUARTDataBitsEight, kUARTParityNone, kUARTStopBitsOne}
     {
-        _config.baudRate = baudRate;
-        _config.parity = kUARTParityNone;
-        _config.stopBits = kUARTStopBitsOne;
-        _config.dataBits = kUARTDataBitsEight;
     }
 
     /**
@@ -217,16 +204,28 @@ public:
     /**
      * @brief setter for the internal config object
      * 
-     * @param config The config struct to set
+     * @param baudRate The baud rate to set
+     * @param dataBits The data bits to set
+     * @param parity The parity to set
+     * @param stopBits The stop bits to set
      * @return sfTkError_t Returns ksfTkErrOk on success, or ksfTkErrFail code
      */
-    virtual sfTkError_t setConfig(const sfTkUARTConfig_t config)
+    virtual sfTkError_t setConfig(const uint32_t baudRate = kDefaultBaudRate, 
+                                  const sfTkUARTDataBits_t dataBits = kDefaultDataBits, 
+                                  const sfTkUARTParity_t parity = kDefaultParity, 
+                                  const sfTkUARTStopBits_t stopBits = kDefaultStopBits)
     {
-        if(_config.baudRate != config.baudRate || 
-            _config.stopBits != config.stopBits || 
-            _config.parity != config.parity || 
-            _config.dataBits != config.dataBits)
-                _config = config;
+        if(_config.baudRate != baudRate)
+            _config.baudRate = baudRate;
+        
+        if(_config.dataBits != dataBits)
+            _config.dataBits = dataBits;
+        
+        if(_config.parity != parity)
+            _config.parity = parity;
+
+        if(_config.stopBits != stopBits)
+            _config.stopBits = stopBits;
 
         return ksfTkErrOk;
     }

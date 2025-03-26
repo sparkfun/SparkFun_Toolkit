@@ -152,13 +152,22 @@ sfTkError_t sfTkArdUART::setDataBits(const sfTkUARTDataBits_t dataBits)
     return _start(); // start the port again
 }
 
-sfTkError_t sfTkArdUART::setConfig(const sfTkUARTConfig_t config)
+sfTkError_t sfTkArdUART::setConfig(const uint32_t baudRate, 
+                      const sfTkUARTDataBits_t dataBits, 
+                      const sfTkUARTParity_t parity, 
+                      const sfTkUARTStopBits_t stopBits)
 {
-    if(_config.baudRate != config.baudRate || 
-        _config.stopBits != config.stopBits || 
-        _config.parity != config.parity || 
-        _config.dataBits != config.dataBits)
-            _config = config;
+    if(_config.baudRate != baudRate)
+        _config.baudRate = baudRate;
+        
+    if(_config.dataBits != dataBits)
+        _config.dataBits = dataBits;
+        
+    if(_config.parity != parity)
+        _config.parity = parity;
+
+    if(_config.stopBits != stopBits)
+        _config.stopBits = stopBits;
 
     return _start(); // start the port again
 }

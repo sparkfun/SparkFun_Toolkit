@@ -107,7 +107,7 @@ void test3() {
     printUARTConfig(testConfigs[i]);
 
     // Apply new configuration
-    err = myExtUART.setConfig(testConfigs[i]);
+    err = myExtUART.setConfig(testConfigs[i].baudRate, testConfigs[i].dataBits, testConfigs[i].parity, testConfigs[i].stopBits);
     if (err != ksfTkErrOk) {
       myUART.print("Failed to set UART config. Error: ");
       myUART.println(err);
@@ -166,7 +166,7 @@ void test3() {
   }
 
   // Restore initial configuration
-  myExtUART.setConfig(initialConfig);
+  myExtUART.setConfig(initialConfig.baudRate, initialConfig.dataBits, initialConfig.parity, initialConfig.stopBits);
   myUART.println("\nTest 3 complete. Waiting for button press to continue.");
   waitForButtonPress();
 }
