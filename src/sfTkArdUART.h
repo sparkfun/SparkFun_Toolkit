@@ -13,6 +13,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include <Arduino.h>
 #include <api/HardwareSerial.h>
 #include <api/Print.h>
@@ -135,7 +137,7 @@ class sfTkArdUART : public sfTkIUART
      *
      * @retval ksftkErrOk on successful execution.
      */
-    sfTkError_t init(arduino::HardwareSerial &hwSerial, UARTConfig_t config, bool bInit = false);
+    sfTkError_t init(arduino::HardwareSerial &hwSerial, sfTkIUART::UARTConfig_t &config, bool bInit = false);
 
     /**
      * @brief Write `len` bytes to the UART TX buffer.
