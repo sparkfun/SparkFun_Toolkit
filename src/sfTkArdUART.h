@@ -13,7 +13,6 @@
 
 #pragma once
 
-#include <cstddef>
 #include <memory>
 
 #include <Arduino.h>
