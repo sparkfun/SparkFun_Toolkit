@@ -20,7 +20,7 @@
 #include "sfTk/sfTkISerial.h"
 #include "sfTk/sfTkIUART.h"
 
-sfTkError_t sfTkArdUART::init(arduino::HardwareSerial &hwSerial, sfTkIUART::UARTConfig_t config, bool bInit)
+sfTkError_t sfTkArdUART::init(arduino::HardwareSerial &hwSerial, sfTkIUART::UARTConfig_t &config, bool bInit)
 {
     _hwSerial = &hwSerial; // set the serial port
 
