@@ -28,7 +28,8 @@ typedef enum _sfTkUARTParity
     kUARTParitySpace        = 0x5ul
 } sfTkUARTParity_t;
 
-inline const char* parityToString(sfTkUARTParity_t parity) {
+inline const char* parityToString(sfTkUARTParity_t parity) 
+{
     static const char* parityArray[] = {"Even", "Odd", "None", "Mark", "Space"};
     
     // if the parity is out of bounds, return "Unknown"
@@ -46,7 +47,8 @@ typedef enum _sfTkUARTStopBits
     kUARTStopBitsTwo        = 0x30ul
 } sfTkUARTStopBits_t;
 
-inline const char* stopBitsToString(sfTkUARTStopBits_t stopBits) {
+inline const char* stopBitsToString(sfTkUARTStopBits_t stopBits) 
+{
     static const char* stopBitsArray[] = {"One", "OneAndHalf", "Two"};
     
     // Return "Unknown" if index is out of bounds (less than 0 or greater than 2)
@@ -65,7 +67,8 @@ typedef enum _sfTkUARTDataBits
     kUARTDataBitsEight      = 0x400ul,
 } sfTkUARTDataBits_t;
 
-inline const uint8_t dataBitsToValue(sfTkUARTDataBits_t dataBits) {
+inline const uint8_t dataBitsToValue(sfTkUARTDataBits_t dataBits) 
+{
     static const uint8_t dataBitsArray[] = {5, 6, 7, 8};
     
     // Check if data bits are within valid range
@@ -76,17 +79,17 @@ inline const uint8_t dataBitsToValue(sfTkUARTDataBits_t dataBits) {
     return dataBitsArray[(((uint16_t)dataBits) >> 8) - 1];
 }
 
-typedef struct _sfTkUARTConfig
-{
-    uint32_t baudRate;
-    sfTkUARTDataBits_t dataBits;
-    sfTkUARTParity_t parity;
-    sfTkUARTStopBits_t stopBits;
-} sfTkUARTConfig_t;
-
 class sfTkIUART : public sfTkISerial
 {
 public:
+
+    typedef struct _UARTConfig
+    {
+        uint32_t baudRate;
+        sfTkUARTDataBits_t dataBits;
+        sfTkUARTParity_t parity;
+        sfTkUARTStopBits_t stopBits;
+    } UARTConfig_t;
     /**
      * @brief Default constructor for the UART bus
      * 
@@ -101,7 +104,7 @@ public:
      * 
      * @param config
      */
-    sfTkIUART(sfTkUARTConfig_t config) : _config(config)
+    sfTkIUART(UARTConfig_t config) : _config(config)
     {
     }
 
@@ -235,7 +238,7 @@ public:
      * 
      * @return sfTkUARTConfig_t 
      */
-    virtual sfTkUARTConfig_t config(void) const
+    virtual UARTConfig_t config(void) const
     {
         return _config;
     }
@@ -266,5 +269,5 @@ public:
 
 protected:
     /** The internal storage of the UART config */
-    sfTkUARTConfig_t _config;
+    UARTConfig_t _config;
 };

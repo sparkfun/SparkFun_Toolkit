@@ -58,7 +58,7 @@ public:
      * 
      * @param config The UART configuration settings.
      */
-    sfTkArdUART(sfTkUARTConfig_t config) : sfTkIUART(config), _hwSerial{nullptr}
+    sfTkArdUART(UARTConfig_t config) : sfTkIUART(config), _hwSerial{nullptr}
     {
     }
 
@@ -114,7 +114,7 @@ public:
      * 
      * @param config The UART configuration settings.
      */
-    sfTkError_t init(sfTkUARTConfig_t config, bool bInit = false);
+    sfTkError_t init(UARTConfig_t config, bool bInit = false);
 
     /**
      * @brief Method sets up the required UART settings.
@@ -136,7 +136,7 @@ public:
      * 
      * @retval ksftkErrOk on successful execution.
      */
-    sfTkError_t init(arduino::HardwareSerial &hwSerial, sfTkUARTConfig_t config, bool bInit = false);
+    sfTkError_t init(arduino::HardwareSerial &hwSerial, UARTConfig_t config, bool bInit = false);
     
     /**
      * @brief Write `len` bytes to the UART TX buffer.
@@ -407,7 +407,7 @@ public:
      * 
      * @param config The configuration to set
      */
-    sfTkError_t init(sfTkUARTConfig_t config, bool bInit = false)
+    sfTkError_t init(sfTkIUART::UARTConfig_t config, bool bInit = false)
     {
         if(!_uartPort)
             _uartPort = std::make_unique<sfTkArdUART>();
@@ -436,7 +436,7 @@ public:
      * @param bInit This flag tracks whether the bus has been initialized.
      * @return sfTkError_t ksfTkErrOk on successful execution.
      */
-    sfTkError_t init(sfTkArdUART &uartPort, sfTkUARTConfig_t config, bool bInit = false)
+    sfTkError_t init(sfTkArdUART &uartPort, sfTkIUART::UARTConfig_t config, bool bInit = false)
     {
         _uartPort = std::make_unique<sfTkArdUART>(uartPort);
         return _uartPort->init(config, bInit);
@@ -477,7 +477,7 @@ public:
      * @param bInit This flag tracks whether the bus has been initialized.
      * @return sfTkError_t ksfTkErrOk on successful execution.
      */
-    sfTkError_t init(arduino::HardwareSerial &hwSerial, sfTkUARTConfig_t config, bool bInit = false)
+    sfTkError_t init(arduino::HardwareSerial &hwSerial, sfTkIUART::UARTConfig_t config, bool bInit = false)
     {
         _uartPort = std::make_unique<sfTkArdUART>(hwSerial);
         return _uartPort->init(config, bInit);

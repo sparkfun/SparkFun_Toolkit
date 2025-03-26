@@ -59,7 +59,7 @@ void test1() {
 
 void test2() {
   myUART.println("Test 2: Get UART parameters.");
-  sfTkUARTConfig_t config = myUART.config();
+  sfTkIUART::UARTConfig_t config = myUART.config();
   myUART.print("Baud rate: ");
   myUART.println(config.baudRate);
   myUART.print("Data bits: ");
@@ -84,12 +84,12 @@ void test3() {
   }
 
   // Get initial configuration
-  sfTkUARTConfig_t initialConfig = myExtUART.config();
+  sfTkIUART::UARTConfig_t initialConfig = myExtUART.config();
   myUART.println("Initial UART configuration:");
   printUARTConfig(initialConfig);
 
   // Test different configurations
-  sfTkUARTConfig_t testConfigs[] = {
+  sfTkIUART::UARTConfig_t testConfigs[] = {
       // Test config 1: 9600 baud, 7 bits, odd parity, 2 stop bits
       {9600, kUARTDataBitsSeven, kUARTParityOdd, kUARTStopBitsTwo},
       // Test config 2: 57600 baud, 8 bits, even parity, 1 stop bit
@@ -233,7 +233,7 @@ void waitForButtonPress()
 }
 
 // Helper function to print UART configuration
-void printUARTConfig(const sfTkUARTConfig_t& config) {
+void printUARTConfig(const sfTkIUART::UARTConfig_t& config) {
     myUART.print("  Baud Rate: ");
     myUART.println(config.baudRate);
     myUART.print("  Data Bits: ");
