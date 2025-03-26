@@ -77,7 +77,7 @@ sfTkError_t sfTkArdUART::write(const uint8_t *data, size_t len)
     if(!_hwSerial)
         return ksfTkErrSerialNotInit;
 
-    return (_hwSerial->write(data, len) ? ksfTkErrOk : ksfTkErrFail);
+    return (_hwSerial->write(data, len) == len ? ksfTkErrOk : ksfTkErrSerialUnderRead);
 }
 
 sfTkError_t sfTkArdUART::write(const uint8_t data)
