@@ -86,7 +86,7 @@ class sfTkISerial
      */
     virtual sfTkError_t write(const uint8_t data)
     {
-        return write(&data, 1);
+        return write(&data, sizeof(data));
     }
 
     /**
