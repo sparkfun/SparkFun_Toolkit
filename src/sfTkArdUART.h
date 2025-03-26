@@ -13,8 +13,6 @@
 
 #pragma once
 
-#include <memory>
-
 #include <Arduino.h>
 #include <api/HardwareSerial.h>
 #include <api/Print.h>
