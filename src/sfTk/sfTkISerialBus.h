@@ -17,7 +17,6 @@
 #include "sfTkError.h"
 #include "sfTkIBus.h"
 #include "sfTkISerial.h"
-#include <cstdint>
 // clang-format on
 
 const uint8_t ksfTkBusTypeSerialBus = 0x03;

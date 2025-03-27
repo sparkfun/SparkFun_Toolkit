@@ -15,7 +15,6 @@
 
 // clang-format off
 #include "sfTkError.h"
-#include <cstdint>
 // clang-format on
 
 /**

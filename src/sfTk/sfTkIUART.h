@@ -16,7 +16,6 @@
 // clang-format off
 #include "sfTkError.h"
 #include "sfTkISerial.h"
-#include <cstdint>
 // clang-format on
 
 // Enums follow the Arduino Serial API constants.

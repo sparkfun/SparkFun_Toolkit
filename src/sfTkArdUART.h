@@ -13,13 +13,11 @@
 
 #pragma once
 
-#include <memory>
-
 #include <Arduino.h>
-#include <api/HardwareSerial.h>
-#include <api/Print.h>
-#include <api/Stream.h>
-#include <api/String.h>
+#include <HardwareSerial.h>
+#include <Print.h>
+#include <Stream.h>
+#include <String.h>
 
 // clang-format off
 // Include our platform UART interface definitions.
@@ -31,6 +29,12 @@
 // clang-format on
 
 #define NO_IGNORE_CHAR '\x01' // a char not found in a valid ASCII numeric field
+
+#ifdef ARDUINO_ARCH_AVR
+#define CONSTVAR 
+#else
+#define CONSTVAR const
+#endif
 
 /**
  * @brief The sfTkArdUART implements an sfTkIUART interface, defining the Arduino implementation for UART in the Toolkit
@@ -68,7 +72,7 @@ class sfTkArdUART : public sfTkIUART
      *
      * @param uartPort Port for UART communication.
      */
-    sfTkArdUART(arduino::HardwareSerial &hwSerial) : sfTkIUART(), _hwSerial{&hwSerial}
+    sfTkArdUART(HardwareSerial &hwSerial) : sfTkIUART(), _hwSerial{&hwSerial}
     {
     }
 
@@ -126,7 +130,7 @@ class sfTkArdUART : public sfTkIUART
      *
      * @retval ksfTkErrOk on successful execution.
      */
-    sfTkError_t init(arduino::HardwareSerial &hwSerial, uint32_t baudRate, bool bInit = false);
+    sfTkError_t init(HardwareSerial &hwSerial, uint32_t baudRate, bool bInit = false);
 
     /**
      * @brief Method sets up the required UART settings.
@@ -137,7 +141,7 @@ class sfTkArdUART : public sfTkIUART
      *
      * @retval ksftkErrOk on successful execution.
      */
-    sfTkError_t init(arduino::HardwareSerial &hwSerial, sfTkIUART::UARTConfig_t &config, bool bInit = false);
+    sfTkError_t init(HardwareSerial &hwSerial, sfTkIUART::UARTConfig_t &config, bool bInit = false);
 
     /**
      * @brief Write `len` bytes to the UART TX buffer.
@@ -240,24 +244,29 @@ class sfTkArdUART : public sfTkIUART
      *
      */
     void setTimeout(unsigned long timeout);
-    unsigned long getTimeout();
+    unsigned long getTimeout(void);
 
-    bool find(const char *target);
-    bool find(const uint8_t *target);
+    bool find(CONSTVAR char *target);
+    bool find(CONSTVAR uint8_t *target);
 
-    bool find(const char *target, size_t length);
-    bool find(const uint8_t *target, size_t length);
+    bool find(CONSTVAR char *target, size_t length);
+    bool find(CONSTVAR uint8_t *target, size_t length);
 
     bool find(char target);
 
-    bool findUntil(const char *target, const char *terminator);
-    bool findUntil(const uint8_t *target, const char *terminator);
+    bool findUntil(CONSTVAR char *target, CONSTVAR char *terminator);
+    bool findUntil(CONSTVAR uint8_t *target, CONSTVAR char *terminator);
 
-    bool findUntil(const char *target, size_t targetLen, const char *terminate, size_t termLen);
-    bool findUntil(const uint8_t *target, size_t targetLen, const char *terminate, size_t termLen);
+    bool findUntil(CONSTVAR char *target, size_t targetLen, CONSTVAR char *terminate, size_t termLen);
+    bool findUntil(CONSTVAR uint8_t *target, size_t targetLen, CONSTVAR char *terminate, size_t termLen);
 
-    long parseInt(arduino::LookaheadMode lookahead = arduino::LookaheadMode::SKIP_ALL, char ignore = NO_IGNORE_CHAR);
-    float parseFloat(arduino::LookaheadMode lookahead = arduino::LookaheadMode::SKIP_ALL, char ignore = NO_IGNORE_CHAR);
+#ifdef ARDUINO_ARCH_ESP8266
+    long parseInt();
+    float parseFloat();
+#else
+    long parseInt(LookaheadMode lookahead = LookaheadMode::SKIP_ALL, char ignore = NO_IGNORE_CHAR);
+    float parseFloat(LookaheadMode lookahead = LookaheadMode::SKIP_ALL, char ignore = NO_IGNORE_CHAR);
+#endif
 
     size_t readBytes(char *buffer, size_t length);
     size_t readBytes(uint8_t *buffer, size_t length);
@@ -265,15 +274,15 @@ class sfTkArdUART : public sfTkIUART
     size_t readBytesUntil(char terminator, char *buffer, size_t length);
     size_t readBytesUntil(char terminator, uint8_t *buffer, size_t length);
 
-    arduino::String readString();
-    arduino::String readStringUntil(char terminator);
+    String readString(void);
+    String readStringUntil(char terminator);
 
     /**
      * @brief Arduino Print functionality mappings.
      *
      */
-    size_t print(const arduino::__FlashStringHelper *);
-    size_t print(const arduino::String &);
+    size_t print(const __FlashStringHelper *);
+    size_t print(const String &);
     size_t print(const char[]);
     size_t print(char);
     size_t print(unsigned char, int = DEC);
@@ -284,10 +293,10 @@ class sfTkArdUART : public sfTkIUART
     size_t print(long long, int = DEC);
     size_t print(unsigned long long, int = DEC);
     size_t print(double, int = 2);
-    size_t print(const arduino::Printable &);
+    size_t print(const Printable &);
 
-    size_t println(const arduino::__FlashStringHelper *);
-    size_t println(const arduino::String &s);
+    size_t println(const __FlashStringHelper *);
+    size_t println(const String &s);
     size_t println(const char[]);
     size_t println(char);
     size_t println(unsigned char, int = DEC);
@@ -298,15 +307,13 @@ class sfTkArdUART : public sfTkIUART
     size_t println(long long, int = DEC);
     size_t println(unsigned long long, int = DEC);
     size_t println(double, int = 2);
-    size_t println(const arduino::Printable &);
+    size_t println(const Printable &);
     size_t println(void);
 
-    size_t printf(const char *format, ...);
-    size_t printf_P(const char *format, ...);
 
   protected:
     /** The actual Arduino hardware port */
-    arduino::HardwareSerial *_hwSerial;
+    HardwareSerial *_hwSerial;
 
   private:
     bool _running = false;    // Flag to track if the bus is running
@@ -334,7 +341,7 @@ class sfTkArdUARTBus : public sfTkISerialBus
      *
      * @param uartPort UART port to use
      */
-    sfTkArdUARTBus(sfTkArdUART &uartPort) : sfTkISerialBus(), _uartPort{std::make_unique<sfTkArdUART>(uartPort)}
+    sfTkArdUARTBus(sfTkArdUART &uartPort) : sfTkISerialBus(), _uartPort{&uartPort}
     {
     }
 
@@ -343,19 +350,27 @@ class sfTkArdUARTBus : public sfTkISerialBus
      *
      * @param hwSerial Pass in an underlying hardware serial port
      */
-    sfTkArdUARTBus(arduino::HardwareSerial &hwSerial)
-        : sfTkISerialBus(), _uartPort{std::make_unique<sfTkArdUART>(hwSerial)}
+    sfTkArdUARTBus(HardwareSerial &hwSerial) : sfTkISerialBus()
     {
+        _uartPort = new sfTkArdUART(hwSerial);
     }
 
     /**
-     * @brief Copy constructer
+     * @brief Copy constructor
      *
      * @param rhs Bus object to be copied
      */
-    sfTkArdUARTBus(sfTkArdUARTBus const &rhs)
-        : sfTkISerialBus(), _uartPort{std::make_unique<sfTkArdUART>(*rhs._uartPort)}
+    sfTkArdUARTBus(sfTkArdUARTBus const &rhs) : sfTkISerialBus()
     {
+        _uartPort = rhs._uartPort ? new sfTkArdUART(*rhs._uartPort) : nullptr;
+    }
+
+    /**
+     * @brief Destructor
+     */
+    ~sfTkArdUARTBus()
+    {
+        delete _uartPort;
     }
 
     /**
@@ -368,14 +383,8 @@ class sfTkArdUARTBus : public sfTkISerialBus
     {
         if (this != &rhs)
         {
-            if (rhs._uartPort)
-            {
-                _uartPort = std::make_unique<sfTkArdUART>(*rhs._uartPort);
-            }
-            else
-            {
-                _uartPort.reset();
-            }
+            delete _uartPort;
+            _uartPort = rhs._uartPort ? new sfTkArdUART(*rhs._uartPort) : nullptr;
         }
         return *this;
     }
@@ -389,7 +398,7 @@ class sfTkArdUARTBus : public sfTkISerialBus
     sfTkError_t init(void)
     {
         if (!_uartPort)
-            _uartPort = std::make_unique<sfTkArdUART>();
+            _uartPort = new sfTkArdUART();
         return _uartPort->init();
     }
 
@@ -401,7 +410,7 @@ class sfTkArdUARTBus : public sfTkISerialBus
     sfTkError_t init(uint32_t baudRate, bool bInit = false)
     {
         if (!_uartPort)
-            _uartPort = std::make_unique<sfTkArdUART>();
+            _uartPort = new sfTkArdUART();
         return _uartPort->init(baudRate, bInit);
     }
 
@@ -413,7 +422,7 @@ class sfTkArdUARTBus : public sfTkISerialBus
     sfTkError_t init(sfTkIUART::UARTConfig_t config, bool bInit = false)
     {
         if (!_uartPort)
-            _uartPort = std::make_unique<sfTkArdUART>();
+            _uartPort = new sfTkArdUART();
         return _uartPort->init(config, bInit);
     }
 
@@ -427,7 +436,8 @@ class sfTkArdUARTBus : public sfTkISerialBus
      */
     sfTkError_t init(sfTkArdUART &uartPort, uint32_t baudRate, bool bInit = false)
     {
-        _uartPort = std::make_unique<sfTkArdUART>(uartPort);
+        delete _uartPort; // Delete existing reference to port.
+        _uartPort = new sfTkArdUART(uartPort);
         return _uartPort->init(baudRate, bInit);
     }
 
@@ -441,7 +451,8 @@ class sfTkArdUARTBus : public sfTkISerialBus
      */
     sfTkError_t init(sfTkArdUART &uartPort, sfTkIUART::UARTConfig_t config, bool bInit = false)
     {
-        _uartPort = std::make_unique<sfTkArdUART>(uartPort);
+        delete _uartPort; // Delete existing reference to port.
+        _uartPort = new sfTkArdUART(uartPort);
         return _uartPort->init(config, bInit);
     }
 
@@ -454,7 +465,8 @@ class sfTkArdUARTBus : public sfTkISerialBus
      */
     sfTkError_t init(sfTkArdUART &uartPort, bool bInit = false)
     {
-        _uartPort = std::make_unique<sfTkArdUART>(uartPort);
+        delete _uartPort; // Delete existing reference to port.
+        _uartPort = new sfTkArdUART(uartPort);
         return _uartPort->init(sfTkIUART::kDefaultBaudRate, bInit);
     }
 
@@ -466,9 +478,10 @@ class sfTkArdUARTBus : public sfTkISerialBus
      * @param bInit This flag tracks whether the bus has been initialized.
      * @return sfTkError_t ksfTkErrOk on successful execution.
      */
-    sfTkError_t init(arduino::HardwareSerial &hwSerial, uint32_t baudRate, bool bInit = false)
+    sfTkError_t init(HardwareSerial &hwSerial, uint32_t baudRate, bool bInit = false)
     {
-        _uartPort = std::make_unique<sfTkArdUART>(hwSerial);
+        delete _uartPort; // Delete existing reference to port.
+        _uartPort = new sfTkArdUART(hwSerial);
         return _uartPort->init(baudRate, bInit);
     }
 
@@ -480,9 +493,10 @@ class sfTkArdUARTBus : public sfTkISerialBus
      * @param bInit This flag tracks whether the bus has been initialized.
      * @return sfTkError_t ksfTkErrOk on successful execution.
      */
-    sfTkError_t init(arduino::HardwareSerial &hwSerial, sfTkIUART::UARTConfig_t config, bool bInit = false)
+    sfTkError_t init(HardwareSerial &hwSerial, sfTkIUART::UARTConfig_t config, bool bInit = false)
     {
-        _uartPort = std::make_unique<sfTkArdUART>(hwSerial);
+        delete _uartPort; // Delete existing reference to port.
+        _uartPort = new sfTkArdUART(hwSerial);
         return _uartPort->init(config, bInit);
     }
 
@@ -493,9 +507,10 @@ class sfTkArdUARTBus : public sfTkISerialBus
      * @param bInit This flag tracks whether the bus has been initialized.
      * @return sfTkError_t ksfTkErrOk on successful execution.
      */
-    sfTkError_t init(arduino::HardwareSerial &hwSerial, bool bInit = false)
+    sfTkError_t init(HardwareSerial &hwSerial, bool bInit = false)
     {
-        _uartPort = std::make_unique<sfTkArdUART>(hwSerial);
+        delete _uartPort; // Delete existing reference to port.
+        _uartPort = new sfTkArdUART(hwSerial);
         return _uartPort->init(sfTkIUART::kDefaultBaudRate, bInit);
     }
 
@@ -533,5 +548,5 @@ class sfTkArdUARTBus : public sfTkISerialBus
 
   protected:
     /** The actual UART port */
-    std::unique_ptr<sfTkArdUART> _uartPort;
+    sfTkArdUART* _uartPort;
 };
