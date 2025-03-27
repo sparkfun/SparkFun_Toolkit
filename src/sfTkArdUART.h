@@ -17,7 +17,6 @@
 #include <HardwareSerial.h>
 #include <Print.h>
 #include <Stream.h>
-#include <String.h>
 
 // clang-format off
 // Include our platform UART interface definitions.
