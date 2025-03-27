@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - main
-  #- pull_request
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 
 jobs:
@@ -108,4 +111,3 @@ jobs:
 
     # outputs:
     #   report-artifact-name: ${{ steps.report-artifact-name.outputs.report-artifact-name }}
-
