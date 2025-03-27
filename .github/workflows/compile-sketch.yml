@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - main
-  #- pull_request
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 
 jobs:
@@ -101,11 +104,10 @@ jobs:
           libraries: |
             - source-path: ./
           sketch-paths: |
-            - tests
+            - examples/Example_01_TestCompile
           enable-warnings-report: true
           enable-deltas-report: true
           verbose: true
 
     # outputs:
     #   report-artifact-name: ${{ steps.report-artifact-name.outputs.report-artifact-name }}
-
