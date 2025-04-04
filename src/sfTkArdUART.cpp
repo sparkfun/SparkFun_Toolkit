@@ -48,7 +48,8 @@ sfTkError_t sfTkArdUART::init(HardwareSerial &hwSerial, uint32_t baudRate, bool 
 
 sfTkError_t sfTkArdUART::init(uint32_t baudRate, bool bInit)
 {
-#ifdef _THIS__NOT_IS_BROKEN
+    // issues here on some devices - $defineing out for now
+#ifdef _THIS_IS_BROKEN
     // if we don't have a port already, use the default Arduino Serial.
     if (!_hwSerial)
         return init(Serial, baudRate, bInit);
@@ -62,7 +63,8 @@ sfTkError_t sfTkArdUART::init(uint32_t baudRate, bool bInit)
 
 sfTkError_t sfTkArdUART::init(sfTkIUART::UARTConfig_t config, bool bInit)
 {
-#ifdef _THIS__NOT_IS_BROKEN
+// issues here on some devices - $defineing out for now
+#ifdef _THIS_IS_BROKEN
     // if we don't have a port already, use the default Arduino Serial.
     if (!_hwSerial)
         return init(Serial, config, bInit);
