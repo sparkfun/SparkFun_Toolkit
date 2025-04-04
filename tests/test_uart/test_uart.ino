@@ -2,9 +2,7 @@
 
 #include "SparkFun_Toolkit.h"
 
-#ifndef USER_SW
 #define USER_SW 9
-#endif
 
 sfTkArdUART myUART;
 sfTkArdUART myExtUART(Serial1);
@@ -18,7 +16,7 @@ bool buttonPressed = false;
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(USER_SW, INPUT);
+  pinMode(USER_SW, INPUT_PULLUP);
   Serial.begin(115200);
   while(!Serial) { delay(100);};
   Serial.println("Begin UART test.");
