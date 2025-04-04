@@ -21,7 +21,7 @@
 
 const uint8_t ksfTkBusTypeSerialBus = 0x03;
 
-class sfTkISerialBus : sfTkIBus
+class sfTkISerialBus : public sfTkIBus
 {
   public:
     /**
