@@ -63,6 +63,12 @@ const sfTkError_t ksfTkErrBusUnderRead = ksfTkErrBaseBus + 7;
 const sfTkError_t ksfTkErrBusNotEnabled = ksfTkErrBaseBus + 8;
 
 /**
+ * @brief Returned when the data received is not valid or does not match the expected format.
+ * 
+ */
+const sfTkError_t ksfTkErrBusBadData = ksfTkErrFail * (ksfTkErrBaseBus + 9);
+
+/**
  * @brief Interface that defines the communication bus for the SparkFun Electronics Toolkit.
  *
  * The bus interface defines the basic methods for reading and writing data to a device. Specific
