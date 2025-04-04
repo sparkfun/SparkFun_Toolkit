@@ -40,7 +40,7 @@ jobs:
           - fqbn: esp32:esp32:sparkfun_esp32s2_thing_plus
             name: ESP32-S2 Thing Plus
             platforms: |
-              - name: esp32:esp32s2
+              - name: esp32:esp32
                 source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
 
           # ESP32-S3
@@ -48,7 +48,7 @@ jobs:
           - fqbn: esp32:esp32:sparkfun_esp32s3_thing_plus
             name: ESP32-S3 Thing Plus
             platforms: |
-              - name: esp32:esp32s3
+              - name: esp32:esp32
                 source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
 
           # ESP32-C3
@@ -56,7 +56,7 @@ jobs:
           - fqbn: esp32:esp32:sparkfun_pro_micro_esp32c3
             name: ESP32-C3 Pro Micro
             platforms: |
-              - name: esp32:esp32c3
+              - name: esp32:esp32
                 source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
 
           # ESP32-C6
@@ -64,7 +64,7 @@ jobs:
           - fqbn: esp32:esp32:sparkfun_esp32c6_thing_plus
             name: ESP32-C6 Thing Plus
             platforms: |
-              - name: esp32:esp32c6
+              - name: esp32:esp32
                 source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
 
           # Artemis / Apollo3  Feb 25 - there some issue here -- will need to look at 
@@ -112,7 +112,7 @@ jobs:
           - fqbn: rp2040:rp2040:sparkfun_iotredboard_rp2350
             name: SparkFun IoT RedBoard RP2350
             platforms: |
-              - name: rp2040:rp2350
+              - name: rp2040:rp2040
                 source-url: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
 
           # STM32
