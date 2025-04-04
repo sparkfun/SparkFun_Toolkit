@@ -48,16 +48,23 @@ sfTkError_t sfTkArdUART::init(HardwareSerial &hwSerial, uint32_t baudRate, bool 
 
 sfTkError_t sfTkArdUART::init(uint32_t baudRate, bool bInit)
 {
+    // issues here on some devices - $defineing out for now
+#ifdef _THIS_IS_BROKEN
     // if we don't have a port already, use the default Arduino Serial.
     if (!_hwSerial)
         return init(Serial, baudRate, bInit);
 
     // We already have a UART setup, so it's already initialized. Change the baud rate.
     return setBaudRate(baudRate); // set the baud rate
+#else
+    return ksfTkErrFail;
+#endif
 }
 
 sfTkError_t sfTkArdUART::init(sfTkIUART::UARTConfig_t config, bool bInit)
 {
+// issues here on some devices - $defineing out for now
+#ifdef _THIS_IS_BROKEN
     // if we don't have a port already, use the default Arduino Serial.
     if (!_hwSerial)
         return init(Serial, config, bInit);
@@ -67,6 +74,9 @@ sfTkError_t sfTkArdUART::init(sfTkIUART::UARTConfig_t config, bool bInit)
 
     // We already have a UART setup, so it's already initialized.
     return ksfTkErrOk;
+#else
+    return ksfTkErrFail;
+#endif
 }
 
 sfTkError_t sfTkArdUART::init()
@@ -103,11 +113,11 @@ sfTkError_t sfTkArdUART::read(uint8_t *data, size_t length, size_t &bytesRead)
 
     bytesRead = 0; // zero out value
 
-// #ifdef ARDUINO_ARCH_AVR
+    // #ifdef ARDUINO_ARCH_AVR
     bytesRead = _hwSerial->readBytes(data, length);
-// #else
-//     bytesRead = readBytes(data, length);
-// #endif
+    // #else
+    //     bytesRead = readBytes(data, length);
+    // #endif
 
     if (bytesRead == 0)
         return ksfTkErrFail;
@@ -187,7 +197,8 @@ sfTkError_t sfTkArdUART::_start(void)
     // ESP8266 does not support setting stop bits, parity, and data bits in a stanard manner.
     _hwSerial->begin(_config.baudRate);
 #else
-    _hwSerial->begin(_config.baudRate, _config.stopBits | _config.parity | _config.dataBits);
+    _hwSerial->begin(_config.baudRate,
+                     (uint32_t)_config.stopBits | (uint32_t)_config.parity | (uint32_t)_config.dataBits);
 #endif
     if (!availableForWrite())
         return ksfTkErrSerialNotInit; // check if the port is available
