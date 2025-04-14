@@ -67,12 +67,12 @@ const sfTkError_t ksfTkErrSerialUnderRead = ksfTkErrBaseSerial + 7;
 /**
  * @brief Returned when the serial is not enabled. Warning
  */
-const sfTkError_t ksfTkErrSerialNotEnabled = ksfTkErrBaseBus + 8;
+const sfTkError_t ksfTkErrSerialNotEnabled = ksfTkErrBaseSerial + 8;
 
 /**
  * @brief Returned when the serial data is bad or corrupted.
  */
-const sfTkError_t ksfTkErrSerialBadData = ksfTkErrFail * (ksfTkErrBaseBus + 9);
+const sfTkError_t ksfTkErrSerialBadData = ksfTkErrFail * (ksfTkErrBaseSerial + 9);
 
 class sfTkISerial
 {
