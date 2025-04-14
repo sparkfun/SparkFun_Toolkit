@@ -59,10 +59,20 @@ const sfTkError_t ksfTkErrSerialNullSettings = ksfTkErrFail * (ksfTkErrBaseSeria
 const sfTkError_t ksfTkErrSerialNullBuffer = ksfTkErrFail * (ksfTkErrBaseSerial + 6);
 
 /**
- * @brief Returned when the bus is under read. Warning.
+ * @brief Returned when the serial is under read. Warning.
  *
  */
 const sfTkError_t ksfTkErrSerialUnderRead = ksfTkErrBaseSerial + 7;
+
+/**
+ * @brief Returned when the serial is not enabled. Warning
+ */
+const sfTkError_t ksfTkErrSerialNotEnabled = ksfTkErrBaseBus + 8;
+
+/**
+ * @brief Returned when the serial data is bad or corrupted.
+ */
+const sfTkError_t ksfTkErrSerialBadData = ksfTkErrFail * (ksfTkErrBaseBus + 9);
 
 class sfTkISerial
 {
@@ -112,4 +122,31 @@ class sfTkISerial
 
         return read(&data, sizeof(data), nRead);
     }
+
+    /**
+     * @brief Check if there are bytes available to read
+     *
+     * @return int Returns the number of bytes available to read in the read buffer
+     */
+    virtual int available() = 0;
+
+    /**
+     * @brief Check if the serial interface is available for writing
+     *
+     * @return int Returns the number of bytes available to write
+     */
+    virtual int availableForWrite() = 0;
+
+    /**
+     * @brief Peek at the next byte available to read without removing it from the buffer
+     *
+     * @return int Returns the next byte available to read, or -1 if no bytes are available
+     */
+    virtual int peek() = 0;
+
+    /**
+     * @brief Flush the serial interface's write buffer
+     *
+     */
+    virtual void flush() = 0;
 };
