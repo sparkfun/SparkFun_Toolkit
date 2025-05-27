@@ -138,10 +138,11 @@ sfTkError_t sfTkArdI2C::writeRegister(uint8_t *devReg, size_t regLength, const u
  * @param data The data to buffer to read into
  * @param numBytes The length of the data buffer
  * @param readBytes[out] The number of bytes read
+ * @param read_delay After sending the address, delay in milliseconds before reading the data
  * @return sfTkError_t Returns ksfTkErrOk on success, or ksfTkErrFail code
  */
 sfTkError_t sfTkArdI2C::readRegister(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes,
-                                     size_t &readBytes)
+                                     size_t &readBytes, uint32_t read_delay)
 {
     // got port
     if (!_i2cPort)
@@ -150,6 +151,9 @@ sfTkError_t sfTkArdI2C::readRegister(uint8_t *devReg, size_t regLength, uint8_t 
     // Buffer valid?
     if (!data)
         return ksfTkErrBusNullBuffer;
+
+    if (devReg == nullptr || regLength == 0)
+        return ksfTkErrInvalidParam;
 
     readBytes = 0;
 
@@ -171,6 +175,10 @@ sfTkError_t sfTkArdI2C::readRegister(uint8_t *devReg, size_t regLength, uint8_t 
                 return ksfTkErrFail; // error with the end transmission
 
             bFirstInter = false;
+
+            // Was a delay requested between write addr and read bytes
+            if (read_delay > 0)
+                delay(read_delay);
         }
 
         // We're chunking in data - keeping the max chunk to kMaxI2CBufferLength

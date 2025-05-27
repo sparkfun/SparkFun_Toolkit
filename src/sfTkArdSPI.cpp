@@ -163,7 +163,7 @@ sfTkError_t sfTkArdSPI::writeRegister(uint16_t devReg, const uint16_t *data, siz
 // Returns ksfTkErrOk on success
 //
 sfTkError_t sfTkArdSPI::readRegister(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes,
-                                     size_t &readBytes)
+                                     size_t &readBytes, uint32_t read_delay)
 {
 
     if (!_spiPort)
@@ -190,6 +190,9 @@ sfTkError_t sfTkArdSPI::readRegister(uint8_t *devReg, size_t regLength, uint8_t 
         _spiPort->endTransaction();
         return ksfTkErrInvalidParam;
     }
+    // Was a delay requested between write addr and read bytes
+    if (read_delay > 0)
+        delay(read_delay);
 
     // data now!
     for (size_t i = 0; i < numBytes; i++)

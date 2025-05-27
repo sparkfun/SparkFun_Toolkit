@@ -462,10 +462,11 @@ class sfTkIBus
      * @param data The data to buffer to read into
      * @param numBytes The length of the data buffer
      * @param readBytes[out] The number of bytes read
+     * @param read_delay After sending the address, delay in milliseconds before reading the data
      * @return sfTkError_t Returns ksfTkErrOk on success, or ksfTkErrFail code
      */
     virtual sfTkError_t readRegister(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes,
-                                     size_t &readBytes) = 0;
+                                     size_t &readBytes, uint32_t read_delay = 0) = 0;
     /**--------------------------------------------------------------------------
      *  @brief Read a single byte from the given register
      *
