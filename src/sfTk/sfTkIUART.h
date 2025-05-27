@@ -68,7 +68,7 @@ typedef enum _sfTkUARTDataBits
     kUARTDataBitsEight = 0x400ul,
 } sfTkUARTDataBits_t;
 
-inline const uint8_t dataBitsToValue(sfTkUARTDataBits_t dataBits)
+inline uint8_t dataBitsToValue(sfTkUARTDataBits_t dataBits)
 {
     static const uint8_t dataBitsArray[] = {5, 6, 7, 8};
 

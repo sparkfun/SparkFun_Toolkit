@@ -22,41 +22,63 @@ jobs:
           # Uno
           # https://github.com/arduino/ArduinoCore-avr/blob/master/boards.txt
           - fqbn: arduino:avr:mega
+            name: Arduino AVR
             platforms: |
               - name: arduino:avr
                 source-url: https://downloads.arduino.cc/packages/package_index.json
 
           # ESP32
           # https://github.com/espressif/arduino-esp32/blob/master/boards.txt
-          - fqbn: esp32:esp32:esp32
+          - fqbn: esp32:esp32:esp32thing_plus_c
+            name: ESP32 Thing Plus C
             platforms: |
               - name: esp32:esp32
                 source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
 
           # ESP32-S2
           # https://github.com/espressif/arduino-esp32/blob/master/boards.txt
-          - fqbn: esp32:esp32:esp32s2
+          - fqbn: esp32:esp32:sparkfun_esp32s2_thing_plus
+            name: ESP32-S2 Thing Plus
+            platforms: |
+              - name: esp32:esp32
+                source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+
+          # ESP32-S3
+          # https://github.com/espressif/arduino-esp32/blob/master/boards.txt
+          - fqbn: esp32:esp32:sparkfun_esp32s3_thing_plus
+            name: ESP32-S3 Thing Plus
             platforms: |
               - name: esp32:esp32
                 source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
 
           # ESP32-C3
           # https://github.com/espressif/arduino-esp32/blob/master/boards.txt
-          - fqbn: esp32:esp32:esp32c3
+          - fqbn: esp32:esp32:sparkfun_pro_micro_esp32c3
+            name: ESP32-C3 Pro Micro
+            platforms: |
+              - name: esp32:esp32
+                source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+
+          # ESP32-C6
+          # https://github.com/espressif/arduino-esp32/blob/master/boards.txt
+          - fqbn: esp32:esp32:sparkfun_esp32c6_thing_plus
+            name: ESP32-C6 Thing Plus
             platforms: |
               - name: esp32:esp32
                 source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
 
           # Artemis / Apollo3  Feb 25 - there some issue here -- will need to look at 
           # https://github.com/sparkfun/Arduino_Apollo3/blob/main/boards.txt
-        #   - fqbn: SparkFun:apollo3:sfe_artemis_atp
-        #     platforms: |
-        #       - name: SparkFun:apollo3
-        #         source-url: https://raw.githubusercontent.com/sparkfun/Arduino_Apollo3/master/package_sparkfun_apollo3_index.json
+          - fqbn: SparkFun:apollo3:sfe_artemis_atp
+            name: SparkFun Artemis ATP
+            platforms: |
+              - name: SparkFun:apollo3
+                source-url: https://raw.githubusercontent.com/sparkfun/Arduino_Apollo3/master/package_sparkfun_apollo3_index.json
 
           # ESP8266
           # https://github.com/esp8266/Arduino/blob/master/boards.txt
           - fqbn: esp8266:esp8266:thingdev
+            name: ESP8266 Thing Dev
             platforms: |
               - name: esp8266:esp8266
                 source-url: https://arduino.esp8266.com/stable/package_esp8266com_index.json
@@ -64,6 +86,7 @@ jobs:
           # SAMD21
           # https://github.com/arduino/ArduinoCore-samd/blob/master/boards.txt
           - fqbn: arduino:samd:mkr1000
+            name: SAMD21 MKR1000
             platforms: |
               - name: arduino:samd
                 # source-url: https://downloads.arduino.cc/packages/package_index.json
@@ -71,6 +94,7 @@ jobs:
           # Nano BLE 33 / nRF52840
           # https://github.com/arduino/ArduinoCore-mbed/blob/master/boards.txt
           - fqbn: arduino:mbed:nano33ble
+            name: Nano BLE 33
             platforms: |
               - name: arduino:mbed
                 # source-url: https://downloads.arduino.cc/packages/package_index.json
@@ -78,6 +102,15 @@ jobs:
           # RP2040
           # https://github.com/arduino/ArduinoCore-mbed/blob/master/boards.txt
           - fqbn: rp2040:rp2040:sparkfun_promicrorp2040
+            name: SparkFun Pro Micro RP2040
+            platforms: |
+              - name: rp2040:rp2040
+                source-url: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+
+          # RP2350
+          # https://github.com/arduino/ArduinoCore-mbed/blob/master/boards.txt
+          - fqbn: rp2040:rp2040:sparkfun_iotredboard_rp2350
+            name: SparkFun IoT RedBoard RP2350
             platforms: |
               - name: rp2040:rp2040
                 source-url: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
@@ -85,6 +118,7 @@ jobs:
           # STM32
           # https://github.com/arduino/ArduinoCore-mbed/blob/master/boards.txt
           - fqbn: STMicroelectronics:stm32:GenF4
+            name: STM32 GenF4
             platforms: |
               - name: STMicroelectronics:stm32
                 source-url: https://github.com/stm32duino/BoardManagerFiles/raw/main/package_stmicroelectronics_index.json
@@ -93,8 +127,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         
-      - name: Branch name
-        run: echo running on branch ${GITHUB_REF##*/}
+      - name: Branch name and details
+        run: |
+            echo "running on branch ${{ github.ref_name }}"
+            echo "Board: ${{matrix.board.name}}, fqbn: ${{ matrix.board.fqbn }}"
 
       - name: Compile Sketch
         uses: arduino/compile-sketches@v1.1.0
