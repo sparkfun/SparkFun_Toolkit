@@ -148,9 +148,11 @@ class sfTkArdSPI : public sfTkISPI
      * @param data Pointer to the buffer where the read data will be stored.
      * @param numBytes Number of bytes to read from the register.
      * @param readBytes Reference to a variable where the number of bytes actually read will be stored.
+     * @param read_delay After sending the address, delay in milliseconds before reading the data
      * @return sfTkError_t Error code indicating the success or failure of the read operation.
      */
-    sfTkError_t readRegister(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes, size_t &readBytes);
+    sfTkError_t readRegister(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes, size_t &readBytes,
+                             uint32_t read_delay = 0);
 
     /**
         @brief Reads a block of data from the given register.

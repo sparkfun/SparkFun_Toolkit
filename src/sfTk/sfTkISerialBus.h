@@ -17,6 +17,7 @@
 #include "sfTkError.h"
 #include "sfTkIBus.h"
 #include "sfTkISerial.h"
+#include "sfToolkit.h"
 // clang-format on
 
 const uint8_t ksfTkBusTypeSerialBus = 0x03;
@@ -81,23 +82,29 @@ class sfTkISerialBus : sfTkIBus
      * @param data The data to buffer to read into
      * @param numBytes The length of the data buffer
      * @param readBytes[out] The number of bytes read
+     * @param read_delay After sending the address, delay in milliseconds before reading the data
      * @return sfTkError_t Returns ksfTkErrOk on success, or ksfTkErrFail code
      */
     virtual sfTkError_t readRegister(uint8_t *devReg, size_t regLength, uint8_t *data, size_t numBytes,
-                                     size_t &readBytes) override
+                                     size_t &readBytes, uint32_t read_delay = 0) override
     {
         // Buffer valid?
         if (!data)
             return ksfTkErrBusNullBuffer;
 
+        if (devReg == nullptr || regLength == 0)
+            return ksfTkErrInvalidParam;
+
         sfTkError_t retVal = ksfTkErrOk;
 
         // Do we have a register? If so, write it, else skip.
-        if (devReg != nullptr && regLength > 0)
-            retVal = write(devReg, regLength);
+        retVal = write(devReg, regLength);
 
         if (retVal != ksfTkErrOk)
             return retVal;
+
+        if (read_delay)
+            sftk_delay_ms(read_delay);
 
         // Read the data.
         retVal = read(data, numBytes, readBytes);
