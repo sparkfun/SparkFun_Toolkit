@@ -1,6 +1,6 @@
 /**
  * @file SparkFun_Toolkit.h
- * @brief Arduino style header file for the SparkFun Toolkit 
+ * @brief Arduino style header file for the SparkFun Toolkit
  *
  * This file contains the Arduino style header for the SparkFun Toolkit library
  *
@@ -21,5 +21,4 @@
 // Just include the toolkit headers
 #include "sfTkArdI2C.h"
 #include "sfTkArdSPI.h"
-#include "sfTkArdUART.h"
 #include "sfTkArduino.h"
