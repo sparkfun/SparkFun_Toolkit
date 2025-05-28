@@ -6,8 +6,7 @@
 
 sfTkArdI2C myI2C;
 sfTkArdSPI mySPI;
-sfTkArdUART myUART;
-sfTkArdUARTBus myUARTBus(myUART);
+sfTkArdSerial mySerial;
 
 void setup()
 {
