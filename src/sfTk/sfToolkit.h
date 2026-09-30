@@ -46,10 +46,6 @@ int32_t sftk_byte_swap(int32_t i);
 // delay in milliseconds
 void sftk_delay_ms(uint32_t ms);
 
-// delay in microseconds
-// see: https://docs.arduino.cc/language-reference/en/functions/time/delayMicroseconds/
-void sftk_delay_us(uint32_t us);
-
 // ticks in milliseconds
 uint32_t sftk_ticks_ms(void);
 
